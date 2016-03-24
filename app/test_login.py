@@ -18,11 +18,17 @@ class LoginTest(TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_login(self):
-        response = self.client.post('/app/login/', {'username': 'test', 'password': 'test'})
+        response = self.client.post('/app/login/', {
+            'username': 'test',
+            'password': 'test'
+        })
 
         self.assertRedirects(response, '/app/')
 
     def test_login_error(self):
-        response = self.client.post('/app/login/', {'username': 'nope', 'password': 'nope'})
+        response = self.client.post('/app/login/', {
+            'username': 'nope',
+            'password': 'nope'
+        })
 
         self.assertEqual(200, response.status_code)

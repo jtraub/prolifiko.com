@@ -19,7 +19,10 @@ def register(request):
 
         u = form.save()
 
-        user = authenticate(username=u.username, password=request.POST['password1'])
+        user = authenticate(
+            username=u.username,
+            password=request.POST['password1']
+        )
 
         login(request, user)
 
