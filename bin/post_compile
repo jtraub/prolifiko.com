@@ -9,16 +9,16 @@ echo "-----> I'm post-compile hook"
 # compile phase. See: https://github.com/heroku/heroku-buildpack-python/issues/57
 export MEMCACHE_SERVERS='' MEMCACHIER_SERVERS=''
 
-if [ -f bin/run_collectstatic ]; then
-    echo "-----> Running run_collectstatic"
-    chmod +x bin/run_collectstatic
-    bin/run_collectstatic
-fi
+indent() {
+    RE="s/^/       /"
+    [ $(uname) == "Darwin" ] && sed -l "$RE" || sed -u "$RE"
+}
 
-if [ -f bin/run_compress ]; then
-    echo "-----> Running run_compress"
-    chmod +x bin/run_compress
-    bin/run_compress
-fi
+MANAGE_FILE=$(find . -maxdepth 3 -type f -name 'manage.py' | head -1)
+MANAGE_FILE=${MANAGE_FILE:2}
 
+echo "-----> Collecting static files"
+python $MANAGE_FILE collectstatic --noinput  2>&1 | sed '/^Copying/d;/^$/d;/^ /d' | indent
+
+echo
 echo "-----> Post-compile done"
