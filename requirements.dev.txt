@@ -1,1 +1,2 @@
 -r requirements.common.txt
+pep8==1.7.0
