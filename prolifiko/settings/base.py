@@ -136,3 +136,6 @@ MEDIA_URL = '/media/'
 # Wagtail settings
 
 WAGTAIL_SITE_NAME = "prolifiko"
+
+LOGIN_URL = '/app/login/'
+LOGIN_REDIRECT_URL = '/app/'
