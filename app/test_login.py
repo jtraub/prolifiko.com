@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 
 
-class AuthTest(TestCase):
+class LoginTest(TestCase):
     fixtures = ['users']
 
     def setUp(self):

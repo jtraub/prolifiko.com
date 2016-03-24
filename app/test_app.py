@@ -12,3 +12,8 @@ class AppTest(TestCase):
         response = self.client.get('/app/')
 
         self.assertEqual(200, response.status_code)
+
+    def test_shows_username(self):
+        response = self.client.get('/app/')
+
+        self.assertContains(response, 'test')
