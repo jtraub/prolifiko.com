@@ -1,38 +1,74 @@
 [
-{
-    "model": "auth.user",
-    "pk": 1,
-    "fields": {
-        "password": "pbkdf2_sha256$24000$AMCf5eTZHmq8$pvjmbC62r12Ot6/UHa5T0ucCg44bHwJiIdekQpUh++4=",
-        "last_login": "2016-03-24T10:38:53.146Z",
-        "is_superuser": true,
-        "username": "mbfisher",
-        "first_name": "",
-        "last_name": "",
-        "email": "mike@mbfisher.com",
-        "is_staff": true,
-        "is_active": true,
-        "date_joined": "2016-03-24T09:47:54.353Z",
-        "groups": [],
-        "user_permissions": []
+    {
+        "model": "auth.user",
+        "pk": 1,
+        "fields": {
+            "password": "pbkdf2_sha256$24000$AMCf5eTZHmq8$pvjmbC62r12Ot6/UHa5T0ucCg44bHwJiIdekQpUh++4=",
+            "last_login": "2016-03-24T10:38:53.146Z",
+            "is_superuser": true,
+            "username": "mbfisher",
+            "first_name": "",
+            "last_name": "",
+            "email": "mike@mbfisher.com",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2016-03-24T09:47:54.353Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+        {
+        "model": "auth.user",
+        "pk": 2,
+        "fields": {
+            "password": "pbkdf2_sha256$24000$KkVI9tg2xicB$9kKEodCzvPv63EjuSZuvSe8HQlAUiSnMSbrowNaN5/c=",
+            "last_login": "2016-03-25T17:54:38.364Z",
+            "is_superuser": true,
+            "username": "bec",
+            "first_name": "",
+            "last_name": "",
+            "email": "bec@prolifiko.com",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2016-03-24T13:52:18.110Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 3,
+        "fields": {
+            "password": "pbkdf2_sha256$24000$BFAq2mf4oMPH$6z4yJFy4YKK6zA62QC0XXMFmZ7f4XOG/8iarMWoiF0U=",
+            "last_login": "2016-03-25T18:35:34.661Z",
+            "is_superuser": true,
+            "username": "chris",
+            "first_name": "",
+            "last_name": "",
+            "email": "chris@prolifiko.com",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2016-03-24T13:52:43.127Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 4,
+        "fields": {
+            "password": "pbkdf2_sha256$24000$BCH8TZTp2fZA$LRm22yhp4Dn5nkgKKFOG+bdHvzR0TjFVn1rPaMJlmgE=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "test",
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2016-03-24T10:49:27.370Z",
+            "groups": [],
+            "user_permissions": []
+        }
     }
-},
-{
-    "model": "auth.user",
-    "pk": 2,
-    "fields": {
-        "password": "pbkdf2_sha256$24000$BCH8TZTp2fZA$LRm22yhp4Dn5nkgKKFOG+bdHvzR0TjFVn1rPaMJlmgE=",
-        "last_login": null,
-        "is_superuser": false,
-        "username": "test",
-        "first_name": "",
-        "last_name": "",
-        "email": "",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2016-03-24T10:49:27.370Z",
-        "groups": [],
-        "user_permissions": []
-    }
-}
 ]
