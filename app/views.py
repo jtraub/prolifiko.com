@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
+import keen
 
 from .forms import *
 
@@ -25,6 +26,12 @@ def register(request):
         )
 
         login(request, user)
+
+        keen.add_event('register', {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email
+        })
 
         return redirect('app_index')
     else:

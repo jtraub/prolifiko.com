@@ -3,3 +3,4 @@ wagtail>=1.4.1,<1.5
 gunicorn==19.4.5
 dj-database-url==0.4.0
 whitenoise==3.0
+keen==0.3.21

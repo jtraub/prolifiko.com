@@ -1,5 +1,6 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
+from unittest.mock import patch
 
 
 class RegistrationTest(TestCase):
@@ -11,7 +12,8 @@ class RegistrationTest(TestCase):
 
         self.assertEqual(200, response.status_code)
 
-    def test_register(self):
+    @patch('app.views.keen')
+    def test_register(self, keen):
         response = self.client.post('/app/register/', {
             'username': 'new',
             'email': 'new@test.com',
@@ -23,3 +25,9 @@ class RegistrationTest(TestCase):
 
         user = User.objects.get(username='new')
         self.assertEqual('new@test.com', user.email)
+
+        keen.add_event.assert_called_with('register', {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email
+        })
