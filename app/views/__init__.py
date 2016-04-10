@@ -1,14 +1,17 @@
-from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 import keen
 
-from .forms import *
+from app.forms import RegistrationForm
+from app.models import Goal
 
 
 @login_required
 def index(request):
+    if len(Goal.objects.filter(user=request.user)) == 0:
+        return redirect('app_goals_new')
+
     return render(request, 'index.html', {
         'user': request.user
     })

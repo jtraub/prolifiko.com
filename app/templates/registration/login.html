@@ -1,4 +1,5 @@
-<form action="/app/login/?next={{ next }}" method="post">
+<form action="{% url 'app_login' %}" method="post">
+    <input type="hidden" name="next" value="{{ next }}"/>
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Submit" />

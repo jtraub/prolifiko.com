@@ -1,19 +1,21 @@
 from django.test import TestCase, Client
+from django.core.urlresolvers import reverse
 
 
 class AppTest(TestCase):
-    fixtures = ['users']
+    fixtures = ['users', 'goals']
 
     def setUp(self):
         self.client = Client()
-        self.client.login(username='test', password='test')
 
-    def test_index(self):
-        response = self.client.get('/app/')
+    # def test_index(self):
+    #     self.client.login(username='test', password='test')
+    #     response = self.client.get(reverse('app_index'))
+    #
+    #     self.assertContains(response, 'App')
 
-        self.assertEqual(200, response.status_code)
+    def test_redirects_to_new_goal_if_none(self):
+        self.client.login(username='empty', password='test')
+        response = self.client.get(reverse('app_index'))
 
-    def test_shows_username(self):
-        response = self.client.get('/app/')
-
-        self.assertContains(response, 'test')
+        self.assertRedirects(response, reverse('app_goals_new'))

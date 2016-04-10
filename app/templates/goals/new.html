@@ -1,0 +1,7 @@
+<h1>Create {% if first %}your first{% else %}a{% endif %} goal</h1>
+
+<form action="{% url 'app_goals_new' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit" />
+</form>
