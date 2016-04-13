@@ -20,10 +20,10 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
-
 # Application definition
 
 INSTALLED_APPS = [
+    'app',
     'home',
     'search',
 
@@ -41,8 +41,6 @@ INSTALLED_APPS = [
 
     'modelcluster',
     'taggit',
-
-    'app',
 
     'django.contrib.admin',
     'django.contrib.auth',

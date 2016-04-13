@@ -1,11 +1,14 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.utils import timezone
+from django.conf import settings
 from datetime import timedelta
+import uuid
 
 
 class Goal(models.Model):
-    user = models.ForeignKey(User)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
 
     text = models.TextField(max_length=144)
     start = models.DateTimeField(default=timezone.now)
@@ -19,6 +22,8 @@ class Goal(models.Model):
 
 
 class Step(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
     goal = models.ForeignKey(Goal, on_delete=models.CASCADE)
 
     text = models.TextField(max_length=144)

@@ -18,7 +18,7 @@ def new(request):
             goal.user = request.user
             goal.save()
 
-            return redirect('app_index')
+            return redirect('app_steps_new', goal=goal.id)
         else:
             status = 400
 

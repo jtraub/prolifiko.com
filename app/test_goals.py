@@ -5,7 +5,7 @@ from django.utils import timezone
 from uuid import uuid1
 from datetime import timedelta
 
-from app.models import Goal
+from .models import Goal
 
 
 class GoalsTest(TestCase):

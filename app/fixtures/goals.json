@@ -1,9 +1,9 @@
 [
     {
         "model": "app.goal",
-        "pk": 1,
+        "pk": "5dc0bcf9-58e3-4f27-85e9-80c7dcf74ea9",
         "fields": {
-            "user": 5,
+            "user": "47fcf4c6-40dc-4e1c-9b3a-ebe302888b0a",
             "text": "test goal",
             "start": "2016-04-10T08:45:24.515Z",
             "end": "2016-04-15T08:45:24.515Z"
