@@ -9,12 +9,13 @@ from app.models import Goal
 
 @login_required
 def index(request):
-    if len(Goal.objects.filter(user=request.user)) == 0:
+    user_goals = Goal.objects.filter(user=request.user)
+    if len(user_goals) == 0:
         return redirect('app_goals_new')
 
-    return render(request, 'index.html', {
-        'user': request.user
-    })
+    goal = user_goals.order_by('-start').first()
+
+    return redirect('app_goals_timeline', goal_id=goal.id)
 
 
 def register(request):

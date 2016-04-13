@@ -1,0 +1,7 @@
+<h1>WELL DONE!</h1>
+
+<h2>The clock is ticking...</h2>
+
+<p>{{ step.end | date:"c" }}</p>
+
+<a href="{% url 'app_goals_timeline' goal_id step.goal.id %}">Go to my Timeline</a>

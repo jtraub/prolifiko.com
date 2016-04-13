@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-import uuid
 
 from .models import Goal, Step
 
@@ -11,12 +10,11 @@ class RegistrationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ("email", "password1", "password2")
+        fields = ('username', 'email', 'password1', 'password2')
 
     def save(self, commit=True):
         user = super(RegistrationForm, self).save(commit=False)
-        user.username = uuid.uuid4()
-        user.email = self.cleaned_data["email"]
+        user.email = self.cleaned_data['email']
         if commit:
             user.save()
         return user

@@ -24,13 +24,15 @@ class GoalsTest(TestCase):
 
     def test_new(self):
         text = uuid1()
-        response = self.client.post(reverse('app_goals_new'), {
+        response = self.client.post(reverse('app_goals_new'), data={
             'text': text
-        })
-
-        self.assertRedirects(response, reverse('app_index'))
+        }, follow=False)
 
         goal = Goal.objects.get(text=text)
+
+        self.assertRedirects(response, reverse('app_steps_new',
+                                               kwargs={'goal_id': goal.id}))
+
         self.assertIsNotNone(goal)
         self.assertEquals(self.user.id, goal.user.id)
         self.assertAlmostEquals(timezone.now(), goal.start,

@@ -15,7 +15,7 @@ class Goal(models.Model):
     end = models.DateTimeField()
 
     def save(self, *args, **kwargs):
-        if self.id is None:
+        if self.end is None:
             self.end = self.start + timedelta(days=5)
 
         super(Goal, self).save(*args, **kwargs)
@@ -24,11 +24,12 @@ class Goal(models.Model):
 class Step(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
-    goal = models.ForeignKey(Goal, on_delete=models.CASCADE)
+    goal = models.ForeignKey(Goal, related_name='steps',
+                             on_delete=models.CASCADE)
 
     text = models.TextField(max_length=144)
-    start = models.DateTimeField()
+    start = models.DateTimeField(default=timezone.now)
     end = models.DateTimeField()
 
-    complete = models.BooleanField()
-    comments = models.TextField(max_length=144)
+    complete = models.BooleanField(default=False)
+    comments = models.TextField(max_length=144, blank=True)

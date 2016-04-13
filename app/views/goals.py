@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.http import Http404
 
 from app.models import Goal
 from app.forms import GoalForm
@@ -15,10 +16,12 @@ def new(request):
 
         if form.is_valid():
             goal = form.save(commit=False)
+
             goal.user = request.user
+
             goal.save()
 
-            return redirect('app_steps_new', goal=goal.id)
+            return redirect('app_steps_new', goal_id=goal.id)
         else:
             status = 400
 
@@ -26,3 +29,17 @@ def new(request):
         'form': form,
         'first': Goal.objects.filter(user=request.user).count() == 0
     }, status=status)
+
+@login_required
+def timeline(request, goal_id):
+    try:
+        goal = Goal.objects.get(pk=goal_id)
+    except Goal.DoesNotExist:
+        raise Http404('Goal does not exist')
+
+    if goal.steps.count() == 0:
+        return redirect('app_steps_new', goal_id=goal.id)
+
+    return render(request, 'goals/timeline.html', {
+        'goal': goal
+    })

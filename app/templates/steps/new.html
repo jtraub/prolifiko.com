@@ -1,0 +1,7 @@
+<h1>Create your {% if first %}first{% else %}next{% endif %} step</h1>
+
+<form action="{% url 'app_steps_new' goal_id=goal.id%}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit" />
+</form>
