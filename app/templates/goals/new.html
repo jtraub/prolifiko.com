@@ -1,7 +1,25 @@
-<h1>Create {% if first %}your first{% else %}a{% endif %} goal</h1>
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Set your goal</h1>
+
+<p><strong>What do you want to achieve with your writing in the next 5 days?</strong></p>
+
+<p>You might want to write for a certain amount of time or aim for a word count.
+You might want to write something from scratch or progress something you’re already writing.</p>
+
+<p>The important thing is that you set a goal to work towards over the week.</p>
+
+<p>Once you’ve set a goal – <strong>this will be your writing pledge for the week.</strong></p>
+
+Need help setting a goal? Don’t suffer in silence! <a href="#">Get help</a> or
+check out these tips on goal setting <a href="#">on our blog</a>.</p>
 
 <form action="{% url 'app_goals_new' %}" method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit" />
+    <p>{{ form.non_field_errors }}</p>
+    <p>{{ form.text.errors }}</p>
+    <p>{{ form.text }}</p>
+    <p><input type="submit" value="Next" /></p>
 </form>
+{% endblock %}

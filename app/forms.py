@@ -24,9 +24,23 @@ class GoalForm(forms.ModelForm):
     class Meta:
         model = Goal
         fields = ['text']
+        widgets = {
+            'text': forms.Textarea(attrs={'placeholder': 'Define your step here'}),
+        }
 
 
-class StepForm(forms.ModelForm):
+class NewStepForm(forms.ModelForm):
     class Meta:
         model = Step
         fields = ['text']
+        widgets = {
+            'text': forms.Textarea(attrs={'placeholder': 'Define your step here'}),
+        }
+
+class TrackStepForm(forms.ModelForm):
+    class Meta:
+        model = Step
+        fields = ['comments']
+        widgets = {
+            'comments': forms.Textarea(attrs={'placeholder': 'Add some optional comments'}),
+        }

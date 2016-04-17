@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>TRACK YOUR PROGRESS</h1>
+
+<p>You wrote that your next step towards achieving your goal was:</p>
+
+<blockquote>{{ step.text|safe }}</blockquote>
+
+<p>Track if you’ve achieved this step.</p>
+
+<p>What did you write? What progress did you make – did you write for number
+or words or for a length of time?</p>
+
+<form action="{% url 'app_steps_track' goal_id=step.goal.id step_id=step.id %}" method="post">
+    {% csrf_token %}
+    <p>{{ form.comments }}</p>
+    <p><input type="submit" value="Track" /></p>
+</form>
+{% endblock %}

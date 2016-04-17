@@ -5,7 +5,7 @@ from django.utils import timezone
 from datetime import timedelta
 
 from app.models import Step, Goal
-from app.forms import StepForm
+from app.forms import NewStepForm, TrackStepForm
 
 
 @login_required
@@ -15,11 +15,11 @@ def new(request, goal_id):
     except Goal.DoesNotExist:
         raise Http404("Goal does not exist")
 
-    form = StepForm()
+    form = NewStepForm()
     status = 200
 
     if request.method == 'POST':
-        form = StepForm(request.POST)
+        form = NewStepForm(request.POST)
 
         if form.is_valid():
             step = form.save(commit=False)
@@ -30,7 +30,7 @@ def new(request, goal_id):
 
             step.save()
 
-            return redirect('app_steps_congrats',
+            return redirect('app_steps_start',
                             goal_id=goal.id, step_id=step.id)
         else:
             status = 400
@@ -59,15 +59,47 @@ def load_step(view):
 
 @login_required
 @load_step
-def congrats(request, step):
-    return render(request, 'steps/congrats.html', {
+def start(request, step):
+    return render(request, 'steps/start.html', {
         'step': step
     })
 
 
 @login_required
 @load_step
+def track(request, step):
+    form = TrackStepForm()
+
+    print(request.POST)
+    if request.method == 'POST':
+        form = TrackStepForm(request.POST, instance=step)
+        step = form.save(commit=False)
+
+        step.complete = True
+
+        step.save()
+
+        return redirect('app_steps_complete',
+                        goal_id=step.goal.id, step_id=step.id)
+
+    return render(request, 'steps/track.html', {
+        'step': step,
+        'form': form
+    })
+
+
+@login_required
+@load_step
 def complete(request, step):
+    return render(request, 'steps/complete.html', {
+        'step': step
+    })
+
+
+# This only used for completing a step atm.
+@login_required
+@load_step
+def update(request, step):
     if request.method == 'POST':
         step.complete = True
         step.save()

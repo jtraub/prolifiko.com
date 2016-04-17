@@ -1,7 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
 <h1>Create your {% if first %}first{% else %}next{% endif %} step</h1>
+
+<p><strong>What’s your {% if first %}first{% else %}next{% endif %} step to help you
+achieve your writing goal?</strong></p>
+
+<p>What’s the <strong>one thing</strong> you can do next to make progress?</p>
+
+{% if first %}
+<p>Make this a tiny step – just something to get started.</p>
+{% endif %}
+
+Need help setting a tiny step? Don’t suffer in silence! <a href="#">Get help</a> or
+check out these tips <a href="#">on our blog</a>.</p>
 
 <form action="{% url 'app_steps_new' goal_id=goal.id%}" method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit" />
+    <p>{{ form.non_field_errors }}</p>
+    <p>{{ form.text.errors }}</p>
+    <p>{{ form.text }}</p>
+    <p><input type="submit" value="Next" /></p>
 </form>
+{% endblock %}

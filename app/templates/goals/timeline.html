@@ -1,17 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
 <h1>TIMELINE</h1>
 
 <ol reversed>
     {% for step in goal.steps.all|dictsortreversed:"start" %}
         <li>
-            <div>{{ step.text|safe }}</div>
+            {{ step.text|safe }} -
             {% if step.complete %}
                 <span>Complete</span>
             {% else %}
-                <form action="{% url 'app_steps_complete' goal_id=step.goal.id step_id=step.id %}" method="POST">
-                    {% csrf_token %}
-                    <button type="submit">Complete</button>
-                </form>
+                <a href="{% url 'app_steps_track' goal_id=step.goal.id step_id=step.id %}">Track</a>
             {% endif %}
         </li>
     {% endfor %}
 </ol>
+{% endblock %}

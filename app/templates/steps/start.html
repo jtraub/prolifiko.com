@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>AWESOME! WELL DONE.</h1>
+
+<p>Don’t crack open the champagne yet.</p>
+
+<p>The clock is ticking.</p>
+
+<p>You have 24 hours from now to achieve your step and track.</p>
+
+<p><strong>If you don’t check in you will lose a life – you only have 2.</strong></p>
+
+<p><strong>Ready? Steady – go!</strong></p>
+
+<p><a href="{% url 'app_goals_timeline' goal_id=step.goal.id %}">Go to my timeline.</a></p>
+{% endblock %}
