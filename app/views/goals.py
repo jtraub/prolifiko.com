@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import Http404
+import keen
 
 from app.models import Goal
 from app.forms import GoalForm
@@ -21,14 +22,19 @@ def new(request):
 
             goal.save()
 
+            keen.add_event('goals.new', {
+                'id': goal.id,
+                'user_id': goal.user.id
+            })
+
             return redirect('app_steps_new', goal_id=goal.id)
         else:
             status = 400
 
     return render(request, 'goals/new.html', {
         'form': form,
-        'first': Goal.objects.filter(user=request.user).count() == 0
     }, status=status)
+
 
 @login_required
 def timeline(request, goal_id):

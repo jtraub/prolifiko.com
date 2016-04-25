@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from uuid import uuid1
 from datetime import timedelta
+from unittest.mock import patch
 
 from .models import Goal
 
@@ -22,7 +23,8 @@ class GoalsTest(TestCase):
 
         self.assertEquals(400, response.status_code)
 
-    def test_new(self):
+    @patch('app.views.goals.keen')
+    def test_new(self, keen):
         text = uuid1()
         response = self.client.post(reverse('app_goals_new'), data={
             'text': text
@@ -39,15 +41,12 @@ class GoalsTest(TestCase):
                                 delta=timedelta(seconds=3))
         self.assertEquals(goal.start + timedelta(days=5), goal.end)
 
-    def test_new_first(self):
-        self.client.login(username="empty", password="test")
-
-        response = self.client.get(reverse('app_goals_new'))
-
-        self.assertTrue(response.context['first'])
-        self.assertContains(response, 'Create your first goal')
+        keen.add_event.assert_called_with('goals.new', {
+            'id': goal.id,
+            'user_id': self.user.id
+        })
 
     def test_new_form(self):
         response = self.client.get(reverse('app_goals_new'))
 
-        self.assertFalse(response.context['first'])
+        self.assertEquals(200, response.status_code)

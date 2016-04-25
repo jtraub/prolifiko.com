@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.http import Http404, HttpResponse
 from django.utils import timezone
 from datetime import timedelta
+import keen
 
 from app.models import Step, Goal
 from app.forms import NewStepForm, TrackStepForm
@@ -29,6 +30,12 @@ def new(request, goal_id):
             step.end = step.start + timedelta(days=1)
 
             step.save()
+
+            keen.add_event('steps.new', {
+                'id': step.id,
+                'user_id': request.user.id,
+                'goal_id': step.goal.id
+            })
 
             return redirect('app_steps_start',
                             goal_id=goal.id, step_id=step.id)
@@ -70,7 +77,6 @@ def start(request, step):
 def track(request, step):
     form = TrackStepForm()
 
-    print(request.POST)
     if request.method == 'POST':
         form = TrackStepForm(request.POST, instance=step)
         step = form.save(commit=False)
@@ -78,6 +84,12 @@ def track(request, step):
         step.complete = True
 
         step.save()
+
+        keen.add_event('steps.track', {
+            'id': step.id,
+            'user_id': request.user.id,
+            'goal_id': step.goal.id
+        })
 
         return redirect('app_steps_complete',
                         goal_id=step.goal.id, step_id=step.id)
@@ -102,6 +114,13 @@ def complete(request, step):
 def update(request, step):
     if request.method == 'POST':
         step.complete = True
+
+        keen.add_event('steps.complete', {
+            'id': step.id,
+            'user_id': request.user.id,
+            'goal_id': step.goal.id
+        })
+
         step.save()
 
     return redirect('app_goals_timeline', goal_id=step.goal.id)
