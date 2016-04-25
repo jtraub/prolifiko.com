@@ -3,6 +3,10 @@
 {% block content %}
 <h1>TIMELINE</h1>
 
+{% if not in_progress %}
+<p><a href="{% url 'app_steps_new' goal_id=goal.id %}">Create your next step</a></p>
+{% endif %}
+
 <ol reversed>
     {% for step in goal.steps.all|dictsortreversed:"start" %}
         <li>
