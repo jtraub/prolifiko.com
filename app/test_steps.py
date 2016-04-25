@@ -53,8 +53,8 @@ class StepsTest(TestCase):
         self.assertEquals(step.start + timedelta(days=1), step.end)
 
         keen.add_event.assert_called_with('steps.new', {
-            'id': step.id,
-            'goal_id': step.goal.id,
+            'id': step.id.hex,
+            'goal_id': step.goal.id.hex,
             'user_id': self.user.id
         })
 
@@ -95,8 +95,8 @@ class StepsTest(TestCase):
         self.assertEquals('foobar', step.comments)
 
         keen.add_event.assert_called_with('steps.track', {
-            'id': step.id,
-            'goal_id': step.goal.id,
+            'id': step.id.hex,
+            'goal_id': step.goal.id.hex,
             'user_id': self.user.id
         })
 
@@ -118,8 +118,8 @@ class StepsTest(TestCase):
         self.assertEquals('', step.comments)
 
         keen.add_event.assert_called_with('steps.track', {
-            'id': step.id,
-            'goal_id': step.goal.id,
+            'id': step.id.hex,
+            'goal_id': step.goal.id.hex,
             'user_id': self.user.id
         })
 
@@ -150,7 +150,7 @@ class StepsTest(TestCase):
         self.assertEquals('', step.comments)
 
         keen.add_event.assert_called_with('steps.complete', {
-            'id': step.id,
-            'goal_id': step.goal.id,
+            'id': step.id.hex,
+            'goal_id': step.goal.id.hex,
             'user_id': self.user.id
         })

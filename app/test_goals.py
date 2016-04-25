@@ -42,7 +42,7 @@ class GoalsTest(TestCase):
         self.assertEquals(goal.start + timedelta(days=5), goal.end)
 
         keen.add_event.assert_called_with('goals.new', {
-            'id': goal.id,
+            'id': goal.id.hex,
             'user_id': self.user.id
         })
 

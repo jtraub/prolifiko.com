@@ -23,7 +23,7 @@ def new(request):
             goal.save()
 
             keen.add_event('goals.new', {
-                'id': goal.id,
+                'id': goal.id.hex,
                 'user_id': goal.user.id
             })
 

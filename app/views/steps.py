@@ -32,9 +32,9 @@ def new(request, goal_id):
             step.save()
 
             keen.add_event('steps.new', {
-                'id': step.id,
+                'id': step.id.hex,
                 'user_id': request.user.id,
-                'goal_id': step.goal.id
+                'goal_id': step.goal.id.hex
             })
 
             return redirect('app_steps_start',
@@ -86,9 +86,9 @@ def track(request, step):
         step.save()
 
         keen.add_event('steps.track', {
-            'id': step.id,
+            'id': step.id.hex,
             'user_id': request.user.id,
-            'goal_id': step.goal.id
+            'goal_id': step.goal.id.hex
         })
 
         return redirect('app_steps_complete',
@@ -116,9 +116,9 @@ def update(request, step):
         step.complete = True
 
         keen.add_event('steps.complete', {
-            'id': step.id,
+            'id': step.id.hex,
             'user_id': request.user.id,
-            'goal_id': step.goal.id
+            'goal_id': step.goal.id.hex
         })
 
         step.save()
