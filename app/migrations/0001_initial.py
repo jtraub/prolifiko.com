@@ -21,23 +21,35 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Goal',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('id', models.UUIDField(
+                    default=uuid.uuid4,
+                    editable=False,
+                    primary_key=True,
+                    serialize=False)),
                 ('text', models.TextField(max_length=144)),
-                ('start', models.DateTimeField(default=django.utils.timezone.now)),
+                ('start', models.DateTimeField(
+                    default=django.utils.timezone.now)),
                 ('end', models.DateTimeField()),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
             name='Step',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('id', models.UUIDField(default=uuid.uuid4,
+                                        editable=False,
+                                        primary_key=True,
+                                        serialize=False)),
                 ('text', models.TextField(max_length=144)),
                 ('start', models.DateTimeField()),
                 ('end', models.DateTimeField()),
                 ('complete', models.BooleanField()),
                 ('comments', models.TextField(max_length=144)),
-                ('goal', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.Goal')),
+                ('goal', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to='app.Goal')),
             ],
         ),
     ]

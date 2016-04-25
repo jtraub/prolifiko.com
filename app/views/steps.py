@@ -124,4 +124,3 @@ def update(request, step):
         step.save()
 
     return redirect('app_goals_timeline', goal_id=step.goal.id)
-
