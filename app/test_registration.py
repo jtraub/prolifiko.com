@@ -13,11 +13,33 @@ class RegistrationTest(TestCase):
 
         self.assertEqual(200, response.status_code)
 
-    @patch('app.views.keen')
+    def test_no_email(self):
+        response = self.client.post(reverse('app_register'), {
+            'first_name': 'new',
+            'password1': 'test',
+            'password2': 'test',
+        }, follow=True)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, len(response.redirect_chain))
+        self.assertTrue(response.context['form'].has_error('email'))
+
+    def test_no_first_name(self):
+        response = self.client.post(reverse('app_register'), {
+            'email': 'new@test.com',
+            'password1': 'test',
+            'password2': 'test',
+        }, follow=True)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, len(response.redirect_chain))
+        self.assertTrue(response.context['form'].has_error('first_name'))
+
+    @patch('app.views.auth.keen')
     def test_register(self, keen):
         response = self.client.post(reverse('app_register'), {
-            'username': 'new',
             'email': 'new@test.com',
+            'first_name': 'new',
             'password1': 'test',
             'password2': 'test',
         }, follow=True)
@@ -25,11 +47,12 @@ class RegistrationTest(TestCase):
         redirect_to_index = (reverse('app_index'), 302)
         self.assertEquals(redirect_to_index, response.redirect_chain[0])
 
-        user = User.objects.get(username='new')
+        user = User.objects.get(email='new@test.com')
         self.assertEqual('new@test.com', user.email)
+        self.assertEqual('new', user.first_name)
+        self.assertIsNotNone(user.username)
 
         keen.add_event.assert_called_with('register', {
             'id': user.id,
-            'username': user.username,
             'email': user.email
         })

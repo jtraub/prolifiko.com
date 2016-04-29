@@ -1,13 +1,11 @@
 from django.conf.urls import url
-from django.contrib.auth import views as auth_views
 
-from .views import *
-from .views import goals, steps
+from .views import index, auth, goals, steps
 
 
 urlpatterns = [
-    url(r'login/$', auth_views.login, name='app_login'),
-    url(r'register/$', register, name='app_register'),
+    url(r'login/$', auth.login, name='app_login'),
+    url(r'register/$', auth.register, name='app_register'),
 
     url(r'goals/new/$', goals.new, name='app_goals_new'),
 

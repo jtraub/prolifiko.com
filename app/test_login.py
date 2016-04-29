@@ -1,5 +1,8 @@
+from django.core.exceptions import NON_FIELD_ERRORS
 from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
+from unittest.mock import patch
+from django.contrib.auth.models import User
 
 
 class LoginTest(TestCase):
@@ -18,19 +21,50 @@ class LoginTest(TestCase):
 
         self.assertEqual(200, response.status_code)
 
-    def test_login(self):
+    @patch('app.views.auth.keen')
+    def test_login(self, keen):
         response = self.client.post(reverse('app_login'), {
-            'username': 'test',
+            'email': 'test@test.com',
             'password': 'test'
         }, follow=True)
 
         redirect_to_index = (reverse('app_index'), 302)
         self.assertEquals(redirect_to_index, response.redirect_chain[0])
 
-    def test_login_error(self):
-        response = self.client.post(reverse('app_login'), {
-            'username': 'nope',
-            'password': 'nope'
+        user = User.objects.get(email='test@test.com')
+
+        keen.add_event.assert_called_with('login', {
+            'id': user.id,
+            'email': user.email
         })
 
+    def test_invalid(self):
+        response = self.client.post(reverse('app_login'), {
+            'email': 'test@test.com',
+        }, follow=True)
+
         self.assertEqual(200, response.status_code)
+        self.assertEquals(0, len(response.redirect_chain))
+        self.assertTrue(response.context['form'].has_error('password'))
+
+    def test_bad_email(self):
+        response = self.client.post(reverse('app_login'), {
+            'email': 'nope@test.com',
+            'password': 'nope',
+        }, follow=True)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEquals(0, len(response.redirect_chain))
+        self.assertTrue(response.context['form'].has_error(
+                        NON_FIELD_ERRORS, 'bad_email'))
+
+    def test_bad_password(self):
+        response = self.client.post(reverse('app_login'), {
+            'email': 'test@test.com',
+            'password': 'nope'
+        }, follow=True)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEquals(0, len(response.redirect_chain))
+        self.assertTrue(response.context['form'].has_error(
+                        NON_FIELD_ERRORS, 'bad_password'))
