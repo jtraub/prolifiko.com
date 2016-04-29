@@ -50,7 +50,10 @@ class RegistrationTest(TestCase):
         user = User.objects.get(email='new@test.com')
         self.assertEqual('new@test.com', user.email)
         self.assertEqual('new', user.first_name)
+        # We should have generated a username
         self.assertIsNotNone(user.username)
+        # User.username.max_length=30
+        self.assertTrue(len(user.username) <= 30)
 
         keen.add_event.assert_called_with('register', {
             'id': user.id,
