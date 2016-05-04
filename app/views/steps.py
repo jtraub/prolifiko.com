@@ -7,6 +7,7 @@ import keen
 
 from app.models import Step, Goal
 from app.forms import NewStepForm, TrackStepForm
+from app.utils import send_email
 
 
 @login_required
@@ -31,11 +32,18 @@ def new(request, goal_id):
 
             step.save()
 
+            goal.refresh_from_db()
+
             keen.add_event('steps.new', {
                 'id': step.id.hex,
                 'user_id': request.user.id,
                 'goal_id': step.goal.id.hex
             })
+
+            if goal.steps.count() == 1:
+                send_email('new_goal', request.user, {
+                    'goal': goal
+                })
 
             return redirect('app_steps_start',
                             goal_id=goal.id, step_id=step.id)

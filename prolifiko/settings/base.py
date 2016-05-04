@@ -145,16 +145,17 @@ LOGGING = {
     'disable_existing_loggers': False,
     'handlers': {
         'console': {
-            'level': 'DEBUG' if DEBUG else 'INFO',
-            'class': 'logging.StreamHandler',
-            'stream': sys.stdout
+            'class': 'logging.StreamHandler'
         }
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'DEBUG' if DEBUG else 'INFO',
-            'propagate': True
+            'level': 'DEBUG' if DEBUG else 'INFO'
+        },
+        'prolifiko': {
+            'handlers': ['console'],
+            'level': 'DEBUG' if DEBUG else 'INFO'
         }
     }
 }

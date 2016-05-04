@@ -31,8 +31,9 @@ class StepsTest(TestCase):
 
         self.assertEquals(400, response.status_code)
 
+    @patch('app.views.steps.send_email')
     @patch('app.views.steps.keen')
-    def test_new(self, keen):
+    def test_new(self, keen, send_email):
         text = uuid4()
         response = self.client.post(
             reverse('app_steps_new', kwargs={'goal_id': self.goal.id}),
@@ -52,10 +53,14 @@ class StepsTest(TestCase):
                                 delta=timedelta(seconds=3))
         self.assertEquals(step.start + timedelta(days=1), step.end)
 
-        keen.add_event.assert_called_with('steps.new', {
+        keen.add_event.assert_called_once_with('steps.new', {
             'id': step.id.hex,
             'goal_id': step.goal.id.hex,
             'user_id': self.user.id
+        })
+
+        send_email.assert_called_once_with('new_goal', self.user, {
+            'goal': self.goal
         })
 
     def test_start_form(self):

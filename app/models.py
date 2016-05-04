@@ -33,3 +33,6 @@ class Step(models.Model):
 
     complete = models.BooleanField(default=False)
     comments = models.TextField(max_length=144, blank=True)
+
+    class Meta:
+        ordering = ('start',)

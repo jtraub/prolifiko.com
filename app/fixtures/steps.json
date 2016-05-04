@@ -1,0 +1,14 @@
+[
+    {
+        "model": "app.step",
+        "pk": "08ef52e2-0fd7-485b-a740-9b7541425cc2",
+        "fields": {
+            "goal": "5dc0bcf9-58e3-4f27-85e9-80c7dcf74ea9",
+            "text": "test",
+            "start": "2016-04-18T18:06:13.197Z",
+            "end": "2016-04-19T18:06:13.197Z",
+            "complete": false,
+            "comments": ""
+        }
+    }
+]

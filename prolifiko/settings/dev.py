@@ -11,7 +11,7 @@ for template_engine in TEMPLATES:
 SECRET_KEY = '+t!o-)1p_j+#03=(nx(xn(d)3a-h+pup_2%m6^cku3o!856iex'
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 
 os.environ.setdefault('KEEN_PROJECT_ID', '56f65f4446f9a7095a7b604b')
 os.environ.setdefault('KEEN_WRITE_KEY', '6d909c8dcad7466b173eb1e1114333455ba' +
