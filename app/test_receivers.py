@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 from unittest.mock import patch
-from datetime import datetime
 
 from .models import Step, Goal
 from .receivers import *
@@ -55,3 +54,16 @@ class ReceiversTest(TestCase):
             'user_id': self.step.goal.user.id,
             'goal_id': self.step.goal.id.hex
         })
+
+    def test_new_step_email(self, add_event, send_email):
+        goal = Goal.objects.create(user=self.user, text='test')
+
+        first_step = Step.create(goal, 'text')
+        receive_new_step(None, step=first_step)
+        send_email.assert_called_with('n2_new_goal', goal.user, {'goal': goal})
+
+        send_email.reset_mock()
+
+        second_step = Step.create(goal, 'text')
+        receive_new_step(None, step=second_step)
+        send_email.assert_not_called()
