@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.contrib.auth.models import User
 from django.core import mail
 from unittest.mock import patch, Mock, MagicMock
@@ -6,7 +6,7 @@ from django.template.backends.django import Template
 
 from app.models import Goal
 
-from .utils import send_email
+from . import utils
 
 
 class UtilsTest(TestCase):
@@ -26,7 +26,7 @@ class UtilsTest(TestCase):
         template.render.return_value = body
         loader.get_template = Mock(return_value=template)
 
-        send_email('new_goal', user, {'goal': goal})
+        utils.send_email('new_goal', user, {'goal': goal})
 
         socket.getfqdn.assert_any_call()
         loader.get_template.assert_called_once_with('emails/new_goal.html')
@@ -38,3 +38,24 @@ class UtilsTest(TestCase):
         self.assertEquals(body, message.body)
         self.assertEquals('email@prolifiko.com', message.from_email)
         self.assertEquals([user.email], message.to)
+
+    @override_settings(DEBUG=True)
+    def test_add_event_debug(self):
+        collection = 'test'
+        body = {'foo': 'bar'}
+
+        utils.add_event(collection, body)
+
+        self.assertEquals(1, len(utils.events))
+        self.assertEquals({'collection', collection, 'body', body}, utils.events[0])
+
+    @override_settings(DEBUG=False)
+    @patch('app.utils.keen')
+    def test_add_event_debug(self, keen):
+        collection = 'test'
+        body = {'foo': 'bar'}
+
+        utils.add_event(collection, body)
+
+        keen.add_event.assert_called_with(collection, body)
+

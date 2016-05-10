@@ -1,7 +1,7 @@
 from django.db import models
-from django.utils import timezone
 from django.conf import settings
 from datetime import timedelta
+from django.utils import timezone
 import uuid
 
 
@@ -36,3 +36,15 @@ class Step(models.Model):
 
     class Meta:
         ordering = ('start',)
+
+    @staticmethod
+    def create(goal: Goal, text: str):
+        start = timezone.now()
+        end = start + timedelta(days=1)
+
+        return Step.objects.create(
+            goal=goal,
+            text=text,
+            start=start,
+            end=end
+        )

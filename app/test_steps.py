@@ -5,8 +5,10 @@ from django.utils import timezone
 from uuid import uuid4
 from datetime import timedelta
 from unittest.mock import patch
+from django.dispatch import Signal
 
 from .models import Goal, Step
+from .views import steps as views
 
 
 class StepsTest(TestCase):
@@ -31,9 +33,8 @@ class StepsTest(TestCase):
 
         self.assertEquals(400, response.status_code)
 
-    @patch('app.views.steps.send_email')
-    @patch('app.views.steps.keen')
-    def test_new(self, keen, send_email):
+    @patch('app.views.steps.new_step', spec=Signal)
+    def test_new(self, new_step_signal):
         text = uuid4()
         response = self.client.post(
             reverse('app_steps_new', kwargs={'goal_id': self.goal.id}),
@@ -53,15 +54,7 @@ class StepsTest(TestCase):
                                 delta=timedelta(seconds=3))
         self.assertEquals(step.start + timedelta(days=1), step.end)
 
-        keen.add_event.assert_called_once_with('steps.new', {
-            'id': step.id.hex,
-            'goal_id': step.goal.id.hex,
-            'user_id': self.user.id
-        })
-
-        send_email.assert_called_once_with('new_goal', self.user, {
-            'goal': self.goal
-        })
+        new_step_signal.send.assert_called_with(views.new, step=step)
 
     def test_start_form(self):
         step = Step.objects.create(goal=self.goal, text=uuid4(),
@@ -81,8 +74,8 @@ class StepsTest(TestCase):
 
         self.assertEquals(200, response.status_code)
 
-    @patch('app.views.steps.keen')
-    def test_track_with_comments(self, keen):
+    @patch('app.views.steps.step_complete', spec=Signal)
+    def test_track_with_comments(self, step_complete_signal):
         step = Step.objects.create(goal=self.goal, text=uuid4(),
                                    start=timezone.now(), end=timezone.now())
 
@@ -99,14 +92,10 @@ class StepsTest(TestCase):
         step.refresh_from_db()
         self.assertEquals('foobar', step.comments)
 
-        keen.add_event.assert_called_with('steps.track', {
-            'id': step.id.hex,
-            'goal_id': step.goal.id.hex,
-            'user_id': self.user.id
-        })
+        step_complete_signal.send.assert_called_with(views.track, step=step)
 
-    @patch('app.views.steps.keen')
-    def test_track_no_comments(self, keen):
+    @patch('app.views.steps.step_complete', spec=Signal)
+    def test_track_no_comments(self, step_complete_signal):
         step = Step.objects.create(goal=self.goal, text=uuid4(),
                                    start=timezone.now(), end=timezone.now())
 
@@ -122,11 +111,7 @@ class StepsTest(TestCase):
         step.refresh_from_db()
         self.assertEquals('', step.comments)
 
-        keen.add_event.assert_called_with('steps.track', {
-            'id': step.id.hex,
-            'goal_id': step.goal.id.hex,
-            'user_id': self.user.id
-        })
+        step_complete_signal.send.assert_called_with(views.track, step=step)
 
     def test_complete_form(self):
         step = Step.objects.create(goal=self.goal, text=uuid4(),
@@ -136,26 +121,3 @@ class StepsTest(TestCase):
             'goal_id': step.goal.id, 'step_id': step.id}))
 
         self.assertEquals(200, response.status_code)
-
-    @patch('app.views.steps.keen')
-    def test_complete(self, keen):
-        step = Step.objects.create(goal=self.goal, text=uuid4(),
-                                   start=timezone.now(), end=timezone.now())
-
-        response = self.client.post(
-            reverse('app_steps_update', kwargs={
-                'goal_id': step.goal.id, 'step_id': step.id}),
-            follow=False)
-
-        redirect = reverse('app_goals_timeline',
-                           kwargs={'goal_id': self.goal.id})
-        self.assertRedirects(response, redirect)
-
-        step.refresh_from_db()
-        self.assertEquals('', step.comments)
-
-        keen.add_event.assert_called_with('steps.complete', {
-            'id': step.id.hex,
-            'goal_id': step.goal.id.hex,
-            'user_id': self.user.id
-        })

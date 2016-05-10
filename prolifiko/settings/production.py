@@ -1,14 +1,16 @@
 import dj_database_url
-
+from urllib.parse import urlparse
 
 from .base import *
 
 
 DEBUG = False
 
+BASE_URL = 'http://prolifikoapp.herokuapp.com'
+
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-ALLOWED_HOSTS = ['prolifikoapp.herokuapp.com']
+ALLOWED_HOSTS = [urlparse(BASE_URL).hostname]
 
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)

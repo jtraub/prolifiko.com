@@ -5,8 +5,10 @@ from django.utils import timezone
 from uuid import uuid1
 from datetime import timedelta
 from unittest.mock import patch
+from django.dispatch import Signal
 
 from .models import Goal
+from .views import goals as views
 
 
 class GoalsTest(TestCase):
@@ -23,8 +25,8 @@ class GoalsTest(TestCase):
 
         self.assertEquals(400, response.status_code)
 
-    @patch('app.views.goals.keen')
-    def test_new(self, keen):
+    @patch('app.views.goals.new_goal', spec=Signal)
+    def test_new(self, new_goal):
         text = uuid1()
         response = self.client.post(reverse('app_goals_new'), data={
             'text': text
@@ -41,10 +43,7 @@ class GoalsTest(TestCase):
                                 delta=timedelta(seconds=3))
         self.assertEquals(goal.start + timedelta(days=5), goal.end)
 
-        keen.add_event.assert_called_with('goals.new', {
-            'id': goal.id.hex,
-            'user_id': self.user.id
-        })
+        new_goal.send.assert_called_with(views.new, goal=goal)
 
     def test_new_form(self):
         response = self.client.get(reverse('app_goals_new'))

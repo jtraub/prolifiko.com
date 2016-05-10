@@ -17,6 +17,8 @@ import sys
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
 
+BASE_URL = 'https://prolifiko.com'
+
 DEBUG = False
 
 # Quick-start development settings - unsuitable for production
@@ -81,6 +83,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'app.context_processors.base_url',
             ],
         },
     },

@@ -3,11 +3,10 @@ from django.shortcuts import render, redirect
 from django.http import Http404, HttpResponse
 from django.utils import timezone
 from datetime import timedelta
-import keen
 
 from app.models import Step, Goal
 from app.forms import NewStepForm, TrackStepForm
-from app.utils import send_email
+from app.signals import new_step, step_complete
 
 
 @login_required
@@ -34,16 +33,7 @@ def new(request, goal_id):
 
             goal.refresh_from_db()
 
-            keen.add_event('steps.new', {
-                'id': step.id.hex,
-                'user_id': request.user.id,
-                'goal_id': step.goal.id.hex
-            })
-
-            if goal.steps.count() == 1:
-                send_email('new_goal', request.user, {
-                    'goal': goal
-                })
+            new_step.send(new, step=step)
 
             return redirect('app_steps_start',
                             goal_id=goal.id, step_id=step.id)
@@ -93,11 +83,7 @@ def track(request, step):
 
         step.save()
 
-        keen.add_event('steps.track', {
-            'id': step.id.hex,
-            'user_id': request.user.id,
-            'goal_id': step.goal.id.hex
-        })
+        step_complete.send(track, step=step)
 
         return redirect('app_steps_complete',
                         goal_id=step.goal.id, step_id=step.id)
@@ -114,21 +100,3 @@ def complete(request, step):
     return render(request, 'steps/complete.html', {
         'step': step
     })
-
-
-# This only used for completing a step atm.
-@login_required
-@load_step
-def update(request, step):
-    if request.method == 'POST':
-        step.complete = True
-
-        keen.add_event('steps.complete', {
-            'id': step.id.hex,
-            'user_id': request.user.id,
-            'goal_id': step.goal.id.hex
-        })
-
-        step.save()
-
-    return redirect('app_goals_timeline', goal_id=step.goal.id)

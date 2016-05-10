@@ -20,11 +20,6 @@ urlpatterns = [
         steps.track, name='app_steps_track'),
     url(r'goals/(?P<goal_id>[^/]+)/steps/(?P<step_id>[^/]+)/complete/$',
         steps.complete, name='app_steps_complete'),
-    url(r'goals/(?P<goal_id>[^/]+)/steps/(?P<step_id>[^/]+)/$',
-        steps.update, name='app_steps_update'),
-
-    url(r'goals/(?P<goal_id>[^/]+)/steps/(?P<step_id>[^/]+)/congrats/$',
-        steps.update, name='app_steps_congrats'),
 
     url(r'^$', index, name='app_index'),
 ]

@@ -5,6 +5,7 @@ import keen
 
 from app.models import Goal
 from app.forms import GoalForm
+from app.signals import new_goal
 
 
 @login_required
@@ -22,10 +23,7 @@ def new(request):
 
             goal.save()
 
-            keen.add_event('goals.new', {
-                'id': goal.id.hex,
-                'user_id': goal.user.id
-            })
+            new_goal.send(new, goal=goal)
 
             return redirect('app_steps_new', goal_id=goal.id)
         else:
