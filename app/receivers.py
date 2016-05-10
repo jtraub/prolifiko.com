@@ -40,7 +40,7 @@ def receive_new_step(sender, **kwargs):
     })
 
     if step.goal.steps.count() == 1:
-        send_email('n2_new_goal', step.goal.user, {
+        send_email('new_goal', step.goal.user, {
             'goal': step.goal
         })
 

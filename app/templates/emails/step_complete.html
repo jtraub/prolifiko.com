@@ -2,17 +2,13 @@
 
 {% block content %}{% endblock %}
 
-<p>Want to learn more? Here’s a blog we wrote with more resources and support.</p>
-
-<p>In our next email, you’ll learn why sharing your writing goals helps to keep you writing.</p>
-
 <p>But now, back to the challenge.</p>
 
 <p>If you haven't set your next step yet you can do it
 <a href="{{ BASE_URL }}{% url 'app_steps_new' goal_id=goal.id %}">here</a>.</p>
 
 <p>When you’ve completed this step, you need to track your progress.</p>
-
+{% block sign_off %}{% endblock %}
 <p>Remember, if you don’t track within 24 hours – you’ll lose a life.</p>
 
 <p>Happy writing!</p>

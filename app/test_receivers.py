@@ -60,7 +60,7 @@ class ReceiversTest(TestCase):
 
         first_step = Step.create(goal, 'text')
         receive_new_step(None, step=first_step)
-        send_email.assert_called_with('n2_new_goal', goal.user, {'goal': goal})
+        send_email.assert_called_with('new_goal', goal.user, {'goal': goal})
 
         send_email.reset_mock()
 
