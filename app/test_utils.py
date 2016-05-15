@@ -34,6 +34,7 @@ class UtilsTest(TestCase):
 
         self.assertEquals(1, len(mail.outbox))
         message = mail.outbox[0]
+        self.assertEquals('html', message.content_subtype)
         self.assertEquals('test', message.subject)
         self.assertEquals(body, message.body)
         self.assertEquals('email@prolifiko.com', message.from_email)

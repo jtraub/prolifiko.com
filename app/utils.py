@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.template import loader
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from django.conf import settings
 from typing import Dict
 import keen
@@ -24,7 +24,9 @@ def send_email(name: str, user: User, context: Dict):
 
     logger.info('Sending %s email to %s' % (name, user.email))
 
-    send_mail('test', body, 'email@prolifiko.com', [user.email])
+    msg = EmailMessage('test', body, 'email@prolifiko.com', [user.email])
+    msg.content_subtype = 'html'
+    msg.send()
 
 
 def add_event(collection, body):
