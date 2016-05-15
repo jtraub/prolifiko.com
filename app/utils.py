@@ -32,4 +32,3 @@ def add_event(collection, body):
         events.append({'collection': collection, 'body': body})
     else:
         keen.add_event(collection, body)
-

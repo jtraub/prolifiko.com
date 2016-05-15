@@ -43,4 +43,3 @@ def receive_new_step(sender, **kwargs):
         send_email('new_goal', step.goal.user, {
             'goal': step.goal
         })
-

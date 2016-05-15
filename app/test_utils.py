@@ -47,7 +47,8 @@ class UtilsTest(TestCase):
         utils.add_event(collection, body)
 
         self.assertEquals(1, len(utils.events))
-        self.assertEquals({'collection', collection, 'body', body}, utils.events[0])
+        self.assertEquals({'collection', collection, 'body', body},
+                          utils.events[0])
 
     @override_settings(DEBUG=False)
     @patch('app.utils.keen')
@@ -58,4 +59,3 @@ class UtilsTest(TestCase):
         utils.add_event(collection, body)
 
         keen.add_event.assert_called_with(collection, body)
-
