@@ -43,7 +43,6 @@ class UtilsTest(TestCase):
         self.assertEquals(html2text(body), message.body)
         self.assertEquals((body, 'text/html'), message.alternatives[0])
 
-
     @override_settings(DEBUG=True)
     def test_add_event_debug(self):
         collection = 'test'
