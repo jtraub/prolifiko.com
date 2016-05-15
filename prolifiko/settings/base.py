@@ -146,19 +146,39 @@ LOGIN_REDIRECT_URL = '/app/'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': ('%(asctime)s [%(levelname)s] %(name)s ' +
+                       '%(message)s'),
+            # 'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        }
+    },
     'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
         'console': {
-            'class': 'logging.StreamHandler'
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
         }
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'DEBUG' if DEBUG else 'INFO'
+            'level': 'INFO'
         },
         'prolifiko': {
             'handlers': ['console'],
-            'level': 'DEBUG' if DEBUG else 'INFO'
+            'level': 'DEBUG'
+        },
+        'requests': {
+            'handlers': ['console'],
+            'level': 'DEBUG'
         }
     }
 }

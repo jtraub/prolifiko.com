@@ -1,1 +1,1 @@
-web: gunicorn prolifiko.wsgi --log-file -
+web: gunicorn prolifiko.wsgi --log-file=-
