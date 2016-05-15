@@ -11,5 +11,3 @@ class AppConfig(Config):
     def ready(self):
         logger.info('Importing signal receivers')
         import app.receivers
-
-
