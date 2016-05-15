@@ -1,10 +1,11 @@
 from django.contrib.auth.models import User
 from django.template import loader
-from django.core.mail import send_mail, EmailMessage
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.conf import settings
 from typing import Dict
 import keen
 import logging
+from html2text import html2text
 
 events = []
 
@@ -20,12 +21,14 @@ def send_email(name: str, user: User, context: Dict):
 
     context.setdefault('user', user)
 
-    body = template.render(context)
+    html = template.render(context)
+    text = html2text(html)
 
     logger.info('Sending %s email to %s' % (name, user.email))
 
-    msg = EmailMessage('test', body, 'email@prolifiko.com', [user.email])
-    msg.content_subtype = 'html'
+    msg = EmailMultiAlternatives(
+        'test', text, 'email@prolifiko.com', [user.email])
+    msg.attach_alternative(html, 'text/html')
     msg.send()
 
 

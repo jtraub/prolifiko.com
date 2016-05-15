@@ -4,3 +4,4 @@ gunicorn==19.4.5
 dj-database-url==0.4.0
 whitenoise==3.0
 keen==0.3.21
+html2text==2016.4.2

@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core import mail
 from unittest.mock import patch, Mock, MagicMock
 from django.template.backends.django import Template
+from html2text import html2text
 
 from app.models import Goal
 
@@ -34,11 +35,14 @@ class UtilsTest(TestCase):
 
         self.assertEquals(1, len(mail.outbox))
         message = mail.outbox[0]
-        self.assertEquals('html', message.content_subtype)
+
         self.assertEquals('test', message.subject)
-        self.assertEquals(body, message.body)
         self.assertEquals('email@prolifiko.com', message.from_email)
         self.assertEquals([user.email], message.to)
+
+        self.assertEquals(html2text(body), message.body)
+        self.assertEquals((body, 'text/html'), message.alternatives[0])
+
 
     @override_settings(DEBUG=True)
     def test_add_event_debug(self):
