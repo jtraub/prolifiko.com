@@ -27,10 +27,6 @@ DEBUG = False
 # Application definition
 
 INSTALLED_APPS = [
-    'app',
-    'home',
-    'search',
-
     'wagtail.wagtailforms',
     'wagtail.wagtailredirects',
     'wagtail.wagtailembeds',
@@ -52,6 +48,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'app',
+    'home',
+    'search',
 ]
 
 MIDDLEWARE_CLASSES = [

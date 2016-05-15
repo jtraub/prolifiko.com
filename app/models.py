@@ -14,6 +14,9 @@ class Goal(models.Model):
     start = models.DateTimeField(default=timezone.now)
     end = models.DateTimeField()
 
+    def __str__(self):
+        return '%s (%s)' % (self.id, self.user.email)
+
     def save(self, *args, **kwargs):
         if self.end is None:
             self.end = self.start + timedelta(days=5)
