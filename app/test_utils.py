@@ -15,6 +15,7 @@ class UtilsTest(TestCase):
 
     @patch('app.utils.loader')
     @patch('django.core.mail.utils.socket')
+    @override_settings(EMAIL_META={'test': {'subject': 'Test Subject'}})
     def test_send_email(self, socket, loader):
         socket.getfqdn = Mock(return_value='test')
 
@@ -27,16 +28,16 @@ class UtilsTest(TestCase):
         template.render.return_value = body
         loader.get_template = Mock(return_value=template)
 
-        utils.send_email('new_goal', user, {'goal': goal})
+        utils.send_email('test', user, {'goal': goal})
 
         socket.getfqdn.assert_any_call()
-        loader.get_template.assert_called_once_with('emails/new_goal.html')
+        loader.get_template.assert_called_once_with('emails/test.html')
         template.render.assert_called_once_with({'user': user, 'goal': goal})
 
         self.assertEquals(1, len(mail.outbox))
         message = mail.outbox[0]
 
-        self.assertEquals('test', message.subject)
+        self.assertEquals('Test Subject', message.subject)
         self.assertEquals('email@prolifiko.com', message.from_email)
         self.assertEquals([user.email], message.to)
 

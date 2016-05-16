@@ -24,10 +24,12 @@ def send_email(name: str, user: User, context: Dict):
     html = template.render(context)
     text = html2text(html)
 
+    meta = settings.EMAIL_META[name]
+
     logger.info('Sending %s email to %s' % (name, user.email))
 
     msg = EmailMultiAlternatives(
-        'test', text, 'email@prolifiko.com', [user.email])
+        meta['subject'], text, 'email@prolifiko.com', [user.email])
     msg.attach_alternative(html, 'text/html')
     msg.send()
 

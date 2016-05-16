@@ -182,3 +182,24 @@ LOGGING = {
         }
     }
 }
+
+EMAIL_META = {
+    'new_goal': {
+        'subject': "You've started your Prolifiko journey!",
+    },
+    'step_1_complete': {
+        'subject': "You've completed your first step on Prolifiko!",
+    },
+    'step_2_complete': {
+        'subject': "You've completed your second step on Prolifiko!",
+    },
+    'step_3_complete': {
+        'subject': "You've completed your third step on Prolifiko!",
+    },
+    'step_4_complete': {
+        'subject': "You've completed your fourth step on Prolifiko!",
+    },
+    'step_5_complete': {
+        'subject': "You've completed your Prolifiko goal!",
+    },
+}
