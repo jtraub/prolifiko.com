@@ -16,13 +16,19 @@ def get_logger(name: str):
 logger = get_logger(__name__)
 
 
-def send_email(name: str, user: User, context: Dict):
+def render_email(name: str, user: User, context: Dict):
     template = loader.get_template('emails/%s.html' % name)
 
     context.setdefault('user', user)
 
     html = template.render(context)
     text = html2text(html)
+
+    return (html, text)
+
+
+def send_email(name: str, user: User, context: Dict):
+    (html, text) = render_email(name, user, context)
 
     meta = settings.EMAIL_META[name]
 
