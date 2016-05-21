@@ -11,16 +11,16 @@ from app import utils
 
 
 class UtilsTest(TestCase):
-    fixtures = ['goals', 'steps']
-
     @patch('app.utils.loader')
     @patch('django.core.mail.utils.socket')
     @override_settings(EMAIL_META={'test': {'subject': 'Test Subject'}})
     def test_send_email(self, socket, loader):
         socket.getfqdn = Mock(return_value='test')
 
-        user = User.objects.get(username='test')
-        goal = Goal.objects.all().first()
+        user = Mock(spec=User)
+        user.email = 'user@real.com'
+
+        goal = Mock(spec=Goal)
 
         body = 'some email body;'
 

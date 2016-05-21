@@ -40,8 +40,13 @@ def send_email(name: str, user: User, context: Dict={}):
 
     logger.debug('Sending %s email to %s' % (name, user.email))
 
+    if user.email[-8:] == 'test.com':
+        recipient = 'prolifikotest@gmail.com'
+    else:
+        recipient = user.email
+
     msg = EmailMultiAlternatives(
-        meta['subject'], text, 'email@prolifiko.com', [user.email])
+        meta['subject'], text, 'email@prolifiko.com', [recipient])
     msg.attach_alternative(html, 'text/html')
     msg.send()
 
