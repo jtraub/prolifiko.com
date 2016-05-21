@@ -6,7 +6,7 @@
 
 <p>You’ve made a promise that your goal this week is:</p>
 
-<p><pre>{{ goal.text }}</pre></p>
+<p><pre>{{ first_step.goal.text }}</pre></p>
 
 <p>And your first step to achieving it is:</p>
 
@@ -27,7 +27,7 @@
 
 <p>If you’re struggling, check out our free resource: <a href="http://blog.write-track.co.uk/goal-setting/startingblocks/">5 ways to get off the starting blocks and write</a>.</p>
 
-When you’ve completed this step, <a href="{{ BASE_URL }}{% url 'app_steps_track' goal_id=first_step.goal.id step_id=first_step.id %}">click here to track and tell us about your progress</a>.</p>
+When you’ve completed this step, <a href="{{ BASE_URL }}/{% url 'app_steps_track' goal_id=first_step.goal.id step_id=first_step.id %}">click here to track and tell us about your progress</a>.</p>
 
 <p>Sending you lots of luck.</p> 
 

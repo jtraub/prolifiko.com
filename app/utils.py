@@ -19,6 +19,7 @@ def render_email(name: str, user: User, context: Dict):
     template = loader.get_template('emails/%s.html' % name)
 
     context.setdefault('user', user)
+    context['BASE_URL'] = settings.BASE_URL
 
     try:
         html = template.render(context)

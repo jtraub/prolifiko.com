@@ -16,7 +16,7 @@
 
 <p><pre>{{ next_step.text }}</pre></p>
 
-<p>When you’ve completed this step, <a href="{{ BASE_URL }}{% url 'app_steps_track' goal_id=next_step.goal.id step_id=next_step.id %}">click here to track and tell us about your progress</a>.</p>
+<p>When you’ve completed this step, <a href="{{ BASE_URL }}/{% url 'app_steps_track' goal_id=next_step.goal.id step_id=next_step.id %}">click here to track and tell us about your progress</a>.</p>
 
 <p>We can’t wait to hear from you tomorrow. You’re so close!</p> 
 

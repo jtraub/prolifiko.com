@@ -1,8 +1,9 @@
 from django.test import TestCase, override_settings
 from django.contrib.auth.models import User
 from django.core import mail
-from unittest.mock import patch, Mock, MagicMock
+from unittest.mock import patch, Mock
 from django.template.backends.django import Template
+from django.conf import settings
 from html2text import html2text
 
 from app.models import Goal
@@ -31,7 +32,11 @@ class UtilsTest(TestCase):
         utils.send_email('test', user, {'goal': goal})
 
         loader.get_template.assert_called_once_with('emails/test.html')
-        template.render.assert_called_once_with({'user': user, 'goal': goal})
+        template.render.assert_called_once_with({
+            'user': user,
+            'goal': goal,
+            'BASE_URL': settings.BASE_URL
+        })
 
         self.assertEquals(1, len(mail.outbox))
         message = mail.outbox[0]

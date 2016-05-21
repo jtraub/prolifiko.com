@@ -158,11 +158,9 @@ LOGGING = {
     },
     'handlers': {
         'null': {
-            'level': 'DEBUG',
             'class': 'logging.NullHandler',
         },
         'console': {
-            'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         }
@@ -174,11 +172,11 @@ LOGGING = {
         },
         'prolifiko': {
             'handlers': ['console'],
-            'level': 'DEBUG'
+            'level': 'DEBUG' if DEBUG else 'INFO'
         },
         'requests': {
             'handlers': ['console'],
-            'level': 'DEBUG'
+            'level': 'DEBUG' if DEBUG else 'INFO'
         }
     }
 }
