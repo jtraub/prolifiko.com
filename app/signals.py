@@ -1,6 +1,8 @@
-import django.dispatch
+from django.dispatch import Signal
 
-new_goal = django.dispatch.Signal(providing_args=['goal'])
+registration = Signal(providing_args=['user'])
 
-step_complete = django.dispatch.Signal(providing_args=['step'])
-new_step = django.dispatch.Signal(providing_args=['step'])
+new_goal = Signal(providing_args=['goal'])
+
+step_complete = Signal(providing_args=['step'])
+new_step = Signal(providing_args=['step'])

@@ -1,11 +1,14 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import Http404
-import keen
 
 from app.models import Goal
 from app.forms import GoalForm
 from app.signals import new_goal
+from app.utils import get_logger
+
+
+logger = get_logger(__name__)
 
 
 @login_required
@@ -20,6 +23,8 @@ def new(request):
             goal = form.save(commit=False)
 
             goal.user = request.user
+
+            logger.debug('Creating goal user=%s' % request.user.email)
 
             goal.save()
 

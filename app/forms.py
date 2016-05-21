@@ -8,7 +8,6 @@ from .models import Goal, Step
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
-    first_name = forms.CharField(required=True)
 
     class Meta:
         model = User

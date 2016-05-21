@@ -1,13 +1,12 @@
 from django.core.exceptions import NON_FIELD_ERRORS
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 from django.core.urlresolvers import reverse
-from unittest.mock import patch
 from django.contrib.auth.models import User
+
+from .utils import events
 
 
 class LoginTest(TestCase):
-    fixtures = ['users']
-
     def setUp(self):
         self.client = Client()
 
@@ -21,8 +20,8 @@ class LoginTest(TestCase):
 
         self.assertEqual(200, response.status_code)
 
-    @patch('app.views.auth.keen')
-    def test_login(self, keen):
+    @override_settings(DEBUG=True)
+    def test_login(self):
         response = self.client.post(reverse('app_login'), {
             'email': 'test@test.com',
             'password': 'test'
@@ -33,9 +32,12 @@ class LoginTest(TestCase):
 
         user = User.objects.get(email='test@test.com')
 
-        keen.add_event.assert_called_with('login', {
-            'id': user.id,
-            'email': user.email
+        self.assertEquals(events.pop(), {
+            'collection': 'login',
+            'body': {
+                'id': user.id,
+                'email': user.email
+            }
         })
 
     def test_invalid(self):

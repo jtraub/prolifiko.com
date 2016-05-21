@@ -2,9 +2,13 @@ from django.contrib.auth import authenticate, login as do_login
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
-import keen
 
 from app.forms import RegistrationForm, LoginForm
+from app.utils import add_event, get_logger
+from app.signals import registration
+
+
+logger = get_logger(__name__)
 
 
 def login(request):
@@ -40,7 +44,7 @@ def login(request):
 
     do_login(request, user)
 
-    keen.add_event('login', {
+    add_event('login', {
         'id': user.id,
         'email': user.email
     })
@@ -49,26 +53,27 @@ def login(request):
 
 
 def register(request):
+    status = 200
+
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
 
         if form.is_valid():
-            u = form.save()
+            logger.debug('Registering user email=%s' %
+                         form.cleaned_data['email'])
 
-            user = authenticate(
-                username=u.username,
-                password=request.POST['password1']
-            )
+            user = form.save()
 
-            do_login(request, user)
+            registration.send('app.views.auth.register', user=user)
 
-            keen.add_event('register', {
-                'id': user.id,
-                'email': user.email
-            })
+            return render(request, 'registration/check_inbox.html', status=201)
+        else:
+            errors = {field: error[0] for field, error in form.errors.items()}
+            logger.debug('Registration failed ' + str(errors))
+            status = 400
 
-            return redirect('app_index')
     else:
         form = RegistrationForm()
 
-    return render(request, 'registration/register.html', {'form': form})
+    return render(request, 'registration/register.html', {'form': form},
+                  status=status)

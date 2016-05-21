@@ -7,7 +7,7 @@ from .models import Goal, Step
 
 
 class TimelineTest(TestCase):
-    fixtures = ['users', 'goals']
+    fixtures = ['goals']
 
     def setUp(self):
         self.client = Client()

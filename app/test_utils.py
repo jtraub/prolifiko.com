@@ -11,7 +11,7 @@ from . import utils
 
 
 class UtilsTest(TestCase):
-    fixtures = ['users', 'goals', 'steps']
+    fixtures = ['goals', 'steps']
 
     @patch('app.utils.loader')
     @patch('django.core.mail.utils.socket')

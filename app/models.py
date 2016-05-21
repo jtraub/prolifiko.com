@@ -2,6 +2,9 @@ from django.db import models
 from django.conf import settings
 from datetime import timedelta
 from django.utils import timezone
+from wagtail.wagtailsnippets.models import register_snippet
+from wagtail.wagtailcore.fields import RichTextField
+from wagtail.wagtailadmin.edit_handlers import FieldPanel, FieldRowPanel
 import uuid
 
 
@@ -51,3 +54,20 @@ class Step(models.Model):
             start=start,
             end=end
         )
+
+
+@register_snippet
+class Email(models.Model):
+    name = models.TextField()
+    user_journey_ref = models.TextField()
+    content = RichTextField()
+    subject = models.TextField()
+
+    panels = [
+        FieldRowPanel([
+            FieldPanel('name', classname='col6'),
+            FieldPanel('user_journey_ref', classname='col6')
+        ]),
+        FieldPanel('subject'),
+        FieldPanel('content', classname='full')
+    ]

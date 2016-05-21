@@ -1,7 +1,10 @@
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.dispatch import Signal
 from unittest.mock import patch
+
+from .views import auth as views
 
 
 class RegistrationTest(TestCase):
@@ -15,7 +18,6 @@ class RegistrationTest(TestCase):
 
     def test_no_email(self):
         response = self.client.post(reverse('app_register'), {
-            'first_name': 'new',
             'password1': 'test',
             'password2': 'test',
         }, follow=True)
@@ -24,28 +26,17 @@ class RegistrationTest(TestCase):
         self.assertEqual(0, len(response.redirect_chain))
         self.assertTrue(response.context['form'].has_error('email'))
 
-    def test_no_first_name(self):
+    @override_settings(DEBUG=True)
+    @patch('app.views.auth.registration', spec=Signal)
+    def test_register(self, registration_signal):
         response = self.client.post(reverse('app_register'), {
             'email': 'new@test.com',
             'password1': 'test',
             'password2': 'test',
         }, follow=True)
 
-        self.assertEqual(200, response.status_code)
-        self.assertEqual(0, len(response.redirect_chain))
-        self.assertTrue(response.context['form'].has_error('first_name'))
-
-    @patch('app.views.auth.keen')
-    def test_register(self, keen):
-        response = self.client.post(reverse('app_register'), {
-            'email': 'new@test.com',
-            'first_name': 'new',
-            'password1': 'test',
-            'password2': 'test',
-        }, follow=True)
-
-        redirect_to_index = (reverse('app_index'), 302)
-        self.assertEquals(redirect_to_index, response.redirect_chain[0])
+        self.assertEquals(201, response.status_code)
+        self.assertContains(response, 'Check your inbox')
 
         user = User.objects.get(email='new@test.com')
         self.assertEqual('new@test.com', user.email)
@@ -55,7 +46,4 @@ class RegistrationTest(TestCase):
         # User.username.max_length=30
         self.assertTrue(len(user.username) <= 30)
 
-        keen.add_event.assert_called_with('register', {
-            'id': user.id,
-            'email': user.email
-        })
+        registration_signal.send.assert_called_with(views.register, user=user)

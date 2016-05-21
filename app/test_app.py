@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 
 
 class AppTest(TestCase):
-    fixtures = ['users', 'goals']
+    fixtures = ['goals']
 
     def setUp(self):
         self.client = Client()

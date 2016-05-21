@@ -1,12 +1,11 @@
 from django.contrib.auth.models import User
 from django.template import loader
-from django.core.mail import send_mail, EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 from typing import Dict
 import keen
 import logging
 from html2text import html2text
-
 events = []
 
 
@@ -21,18 +20,25 @@ def render_email(name: str, user: User, context: Dict):
 
     context.setdefault('user', user)
 
-    html = template.render(context)
+    try:
+        html = template.render(context)
+    except Exception as e:
+        logger.error('%s raised when rendering %s email; %s' %
+                     (e.__name__, name, e))
+
+        raise e
+
     text = html2text(html)
 
-    return (html, text)
+    return html, text
 
 
-def send_email(name: str, user: User, context: Dict):
+def send_email(name: str, user: User, context: Dict={}):
     (html, text) = render_email(name, user, context)
 
     meta = settings.EMAIL_META[name]
 
-    logger.info('Sending %s email to %s' % (name, user.email))
+    logger.debug('Sending %s email to %s' % (name, user.email))
 
     msg = EmailMultiAlternatives(
         meta['subject'], text, 'email@prolifiko.com', [user.email])

@@ -7,6 +7,10 @@ from datetime import timedelta
 from app.models import Step, Goal
 from app.forms import NewStepForm, TrackStepForm
 from app.signals import new_step, step_complete
+from app.utils import get_logger
+
+
+logger = get_logger(__name__)
 
 
 @login_required
@@ -29,11 +33,14 @@ def new(request, goal_id):
             step.start = timezone.now()
             step.end = step.start + timedelta(days=1)
 
+            logger.debug('Creating step goal=%s user=%s' % (
+                goal.id, request.user.email))
+
             step.save()
 
             goal.refresh_from_db()
 
-            new_step.send(new, step=step)
+            new_step.send('app.views.steps.new', step=step)
 
             return redirect('app_steps_start',
                             goal_id=goal.id, step_id=step.id)
@@ -83,7 +90,7 @@ def track(request, step):
 
         step.save()
 
-        step_complete.send(track, step=step)
+        step_complete.send('app.views.steps.track', step=step)
 
         return redirect('app_steps_complete',
                         goal_id=step.goal.id, step_id=step.id)

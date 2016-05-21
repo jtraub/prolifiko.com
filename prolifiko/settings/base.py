@@ -184,22 +184,25 @@ LOGGING = {
 }
 
 EMAIL_META = {
-    'new_goal': {
-        'subject': "You've started your Prolifiko journey!",
+    'n1_registration': {
+        'subject': "Your 5 Day Writing Challenge – Welcome!",
     },
-    'step_1_complete': {
-        'subject': "You've completed your first step on Prolifiko!",
+    'n2_new_goal': {
+        'subject': "1st Goal Set + Important Information",
     },
-    'step_2_complete': {
-        'subject': "You've completed your second step on Prolifiko!",
+    'n3_step_1_complete': {
+        'subject': "You’ve Completed the Toughest Step – Well Done!",
     },
-    'step_3_complete': {
-        'subject': "You've completed your third step on Prolifiko!",
+    'n4_step_2_complete': {
+        'subject': "Step 2 Done: Set Your Next Step",
     },
-    'step_4_complete': {
-        'subject': "You've completed your fourth step on Prolifiko!",
+    'n5_step_3_complete': {
+        'subject': "Aced the 3rd Step: Only 2 Steps Remain",
     },
-    'step_5_complete': {
-        'subject': "You've completed your Prolifiko goal!",
+    'n6_step_4_complete': {
+        'subject': "4th Step Won: Just 1 More To Go!",
     },
+    'n7_goal_complete': {
+        'subject': "Way to Go! You’ve Finished the Challenge",
+    }
 }

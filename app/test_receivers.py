@@ -9,16 +9,33 @@ from .receivers import *
 @patch('app.receivers.send_email', spec=send_email)
 @patch('app.receivers.add_event', spec=add_event)
 class ReceiversTest(TestCase):
-    fixtures = ['users', 'goals', 'steps']
+    fixtures = ['goals', 'steps']
 
     def setUp(self):
         self.user = User.objects.get(username='test')
         self.step = Step.objects.first()
 
+    def test_registration_event(self, add_event, send_email):
+        user = User.objects.first()
+
+        receive_registration(self, user=user)
+
+        add_event.assert_called_with('register', {
+            'id': user.id,
+            'email': user.email
+        })
+
+    def test_registration_email(self, add_event, send_email):
+        user = User.objects.first()
+
+        receive_registration(self, user=user)
+
+        send_email.assert_called_with('n1_registration', user)
+
     def test_new_goal_event(self, add_event, send_email):
         goal = Goal.objects.first()
 
-        receive_new_goal(None, goal=goal)
+        receive_new_goal(self, goal=goal)
 
         add_event.assert_called_with('goals.new', {
             'id': goal.id.hex,
@@ -26,7 +43,7 @@ class ReceiversTest(TestCase):
         })
 
     def test_step_complete_event(self, add_event, send_email):
-        receive_step_complete(None, step=self.step)
+        receive_step_complete(self, step=self.step)
 
         add_event.assert_called_with('steps.track', {
             'id': self.step.id.hex,
@@ -40,14 +57,14 @@ class ReceiversTest(TestCase):
         for i in range(1, 5):
             step = Step.create(goal, 'test')
 
-            receive_step_complete(None, step=step)
+            receive_step_complete(self, step=step)
 
             send_email.assert_called_with('step_%d_complete' % i, goal.user, {
                 'goal': goal
             })
 
     def test_new_step_event(self, add_event, send_email):
-        receive_new_step(None, step=self.step)
+        receive_new_step(self, step=self.step)
 
         add_event.assert_called_with('steps.new', {
             'id': self.step.id.hex,
@@ -59,11 +76,11 @@ class ReceiversTest(TestCase):
         goal = Goal.objects.create(user=self.user, text='test')
 
         first_step = Step.create(goal, 'text')
-        receive_new_step(None, step=first_step)
+        receive_new_step(self, step=first_step)
         send_email.assert_called_with('new_goal', goal.user, {'goal': goal})
 
         send_email.reset_mock()
 
         second_step = Step.create(goal, 'text')
-        receive_new_step(None, step=second_step)
+        receive_new_step(self, step=second_step)
         send_email.assert_not_called()

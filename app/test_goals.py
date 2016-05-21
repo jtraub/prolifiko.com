@@ -12,7 +12,7 @@ from .views import goals as views
 
 
 class GoalsTest(TestCase):
-    fixtures = ['users', 'goals']
+    fixtures = ['goals']
 
     def setUp(self):
         self.client = Client()
