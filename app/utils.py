@@ -6,11 +6,20 @@ from typing import Dict
 import keen
 import logging
 from html2text import html2text
+
 events = []
+nth = {
+    1: 'first',
+    2: 'second',
+    3: 'third',
+    4: 'fourth',
+    5: 'fifth',
+}
 
 
 def get_logger(name: str):
     return logging.getLogger('prolifiko.%s' % name)
+
 
 logger = get_logger(__name__)
 
@@ -56,4 +65,5 @@ def add_event(collection, body):
     if settings.DEBUG:
         events.append({'collection': collection, 'body': body})
     else:
+        logger.debug('Recording %s event %s' % (collection, str(body)))
         keen.add_event(collection, body)

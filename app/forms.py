@@ -30,14 +30,22 @@ class LoginForm(forms.Form):
                                widget=forms.PasswordInput)
 
 
+new_goal_tip = 'Tip: What you write is up to you but try to be specific, eg ' \
+               'you might want to write for an amount of time or to a word ' \
+               'count, or on a specific project.'
+
+
 class GoalForm(forms.ModelForm):
     class Meta:
         model = Goal
         fields = ['text']
         widgets = {
             'text': forms.Textarea(
-                attrs={'placeholder': 'Define your step here'}),
-        }
+                attrs={'placeholder': new_goal_tip})}
+
+
+new_step_tip = 'Tip: Don’t think about the project as a whole. Just think ' \
+               'about the one thing you can do next to progress your writing.'
 
 
 class NewStepForm(forms.ModelForm):
@@ -46,8 +54,12 @@ class NewStepForm(forms.ModelForm):
         fields = ['text']
         widgets = {
             'text': forms.Textarea(
-                attrs={'placeholder': 'Define your step here'}),
-        }
+                attrs={'placeholder': new_step_tip})}
+
+
+track_step_tip = 'Tip: Tell us any progress you made. Number of words, ' \
+                 'length of time etc. If you struggled with this step, be ' \
+                 'nice to yourself, set a smaller step next time!'
 
 
 class TrackStepForm(forms.ModelForm):
@@ -56,5 +68,4 @@ class TrackStepForm(forms.ModelForm):
         fields = ['comments']
         widgets = {
             'comments': forms.Textarea(
-                attrs={'placeholder': 'Add some optional comments'}),
-        }
+                attrs={'placeholder': track_step_tip})}

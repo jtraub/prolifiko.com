@@ -1,16 +1,31 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>TRACK YOUR PROGRESS</h1>
+<h1>Progress?</h1>
 
-<p>You wrote that your next step towards achieving your goal was:</p>
+{% if step.number == 5 %}
+    <p>Your fifth and final step was:</p>
+{% else %}
+    <p>What progress did you make? Your {{ step.nth }} step was:</p>
+{% endif %}
 
 <blockquote>{{ step.text|safe }}</blockquote>
 
-<p>Track if you’ve achieved this step.</p>
+{% if step.number == 1 %}
+    <p>Any progress means you’ve completed this step – even if you didn’t achieve it in full :-)</p>
 
-<p>What did you write? What progress did you make – did you write for number
-or words or for a length of time?</p>
+    <p>Tell us what you wrote.</p>
+{% elif step.number == 2 %}
+    <p>Remember, any progress still means you’ve completed this step.</p>
+
+    <p>Tell us what you writing you did.</p>
+{% elif step.number == 3 %}
+    <p>Now, tell us what writing you did.</p>
+{% elif step.number == 4 %}
+    <p>Tell us what you did. We’d love to hear what you wrote.</p>
+{% else %}
+    <p>Tell us what you achieved.</p>
+{% endif %}
 
 <form action="{% url 'app_steps_track' goal_id=step.goal.id step_id=step.id %}" method="post">
     {% csrf_token %}

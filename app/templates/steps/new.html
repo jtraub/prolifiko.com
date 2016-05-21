@@ -1,25 +1,42 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Create your {% if first %}first{% else %}next{% endif %} step</h1>
+<h1>{% if first %}Set{% else %}Next{% endif %} step</h1>
 
-<p><strong>What’s your {% if first %}first{% else %}next{% endif %} step to help you
-achieve your writing goal?</strong></p>
+{% if next_step_num == 1 %}
+    <p>What’s the first step you can take to achieve your 5-day writing goal?</p>
+{% elif next_step_num == 2 %}
+    <p>Way to go! After achieving this first step you’re now 70% more likely to finish the 5-day challenge. That’s amazing!</p>
 
-<p>What’s the <strong>one thing</strong> you can do next to make progress?</p>
+    <p>What’s the next step you can take to achieve your 5-day writing goal? Tell us below.</p>
+{% elif next_step_num == 3 %}
+    <p>Well done!</p>
 
-{% if first %}
-<p>Make this a tiny step – just something to get started.</p>
+    <p>What’s the third step you can take to make progress on your goal?</p>
+{% elif next_step_num == 4 %}
+    <p>Amazing! You’ve completed three steps are you’re well over half way. Only two steps remain.</p>
+
+    <p>What’s the fourth step you can take to move your project forward?</p>
+{% else %}
+    <p>You’ve completed four steps – amazing! Just one final push to complete this challenge.</p>
+
+    <p>What’s the final step you can take?</p>
 {% endif %}
 
-Need help setting a tiny step? Don’t suffer in silence! <a href="#">Get help</a> or
-check out these tips <a href="#">on our blog</a>.</p>
-
 <form action="{% url 'app_steps_new' goal_id=goal.id%}" method="post">
+
     {% csrf_token %}
+
     <p>{{ form.non_field_errors }}</p>
     <p>{{ form.text.errors }}</p>
     <p>{{ form.text }}</p>
-    <p><input type="submit" value="Next" /></p>
+
+    {% if next_step_num == 1 %}
+        <p>Still struggling? Check out our blog on how to set a first step. [link]</p>
+    {% endif %}
+
+    <p>Ready to submit your step? Then click the button below.</p>
+
+    <p><input type="submit" value="Submit" /></p>
 </form>
 {% endblock %}

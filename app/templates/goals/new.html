@@ -1,25 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Set your goal</h1>
+
+<h1>Get started</h1>
+
+<p>Welcome to the challenge! It’s great to have you on board.</p>
+
+<p>Your first task is to set a writing goal.</p>
+
+<form action="{% url 'app_goals_new' %}" method="post">
 
 <p><strong>What do you want to achieve with your writing in the next 5 days?</strong></p>
 
-<p>You might want to write for a certain amount of time or aim for a word count.
-You might want to write something from scratch or progress something you’re already writing.</p>
-
-<p>The important thing is that you set a goal to work towards over the week.</p>
-
-<p>Once you’ve set a goal – <strong>this will be your writing pledge for the week.</strong></p>
-
-Need help setting a goal? Don’t suffer in silence! <a href="#">Get help</a> or
-check out these tips on goal setting <a href="#">on our blog</a>.</p>
-
-<form action="{% url 'app_goals_new' %}" method="post">
     {% csrf_token %}
+
     <p>{{ form.non_field_errors }}</p>
     <p>{{ form.text.errors }}</p>
     <p>{{ form.text }}</p>
+
+    <p>Still struggling? Check out our blog on <a href="http://blog.write-track.co.uk/goal-setting/goalsetting/">how to set a goal</a>.</p>
+
+    <p>All done? Great! Next, you need to set a step to help you achieve your goal.</p>
+
     <p><input type="submit" value="Next" /></p>
 </form>
 {% endblock %}

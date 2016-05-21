@@ -86,9 +86,9 @@ class StepsTest(TestCase):
             data={'comments': 'foobar'},
             follow=False)
 
-        self.assertRedirects(response, reverse('app_steps_complete',
-                                               kwargs={'goal_id': self.goal.id,
-                                                       'step_id': step.id}))
+        self.assertRedirects(response,
+                             reverse('app_steps_new',
+                                     kwargs={'goal_id': self.goal.id}))
 
         step.refresh_from_db()
         self.assertEquals('foobar', step.comments)
@@ -106,21 +106,12 @@ class StepsTest(TestCase):
                 'goal_id': step.goal.id, 'step_id': step.id}),
             follow=False)
 
-        self.assertRedirects(response, reverse('app_steps_complete',
-                                               kwargs={'goal_id': self.goal.id,
-                                                       'step_id': step.id}))
+        self.assertRedirects(response,
+                             reverse('app_steps_new',
+                                     kwargs={'goal_id': self.goal.id}))
 
         step.refresh_from_db()
         self.assertEquals('', step.comments)
 
         step_complete_signal.send.assert_called_with(
             'app.views.steps.track', step=step)
-
-    def test_complete_form(self):
-        step = Step.objects.create(goal=self.goal, text=uuid4(),
-                                   start=timezone.now(), end=timezone.now())
-
-        response = self.client.get(reverse('app_steps_complete', kwargs={
-            'goal_id': step.goal.id, 'step_id': step.id}))
-
-        self.assertEquals(200, response.status_code)

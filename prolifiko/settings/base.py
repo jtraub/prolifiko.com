@@ -172,11 +172,8 @@ LOGGING = {
         },
         'prolifiko': {
             'handlers': ['console'],
-            'level': 'DEBUG' if DEBUG else 'INFO'
-        },
-        'requests': {
-            'handlers': ['console'],
-            'level': 'DEBUG' if DEBUG else 'INFO'
+            'level': 'DEBUG',
+            # 'level': 'DEBUG' if DEBUG else 'INFO'
         }
     }
 }

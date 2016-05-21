@@ -6,6 +6,7 @@ from wagtail.wagtailsnippets.models import register_snippet
 from wagtail.wagtailcore.fields import RichTextField
 from wagtail.wagtailadmin.edit_handlers import FieldPanel, FieldRowPanel
 import uuid
+from .utils import nth
 
 
 class Goal(models.Model):
@@ -54,6 +55,17 @@ class Step(models.Model):
             start=start,
             end=end
         )
+
+    @property
+    def number(self):
+        if not hasattr(self, '_number'):
+            self._number = list(self.goal.steps.all()).index(self) + 1
+
+        return self._number
+
+    @property
+    def nth(self):
+        return nth[self.number]
 
 
 @register_snippet

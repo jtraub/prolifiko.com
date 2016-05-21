@@ -7,7 +7,7 @@ from datetime import timedelta
 from app.models import Step, Goal
 from app.forms import NewStepForm, TrackStepForm
 from app.signals import new_step, step_complete
-from app.utils import get_logger
+from app.utils import get_logger, nth
 
 
 logger = get_logger(__name__)
@@ -47,10 +47,13 @@ def new(request, goal_id):
         else:
             status = 400
 
+    next_step_num = goal.steps.count() + 1
+
     return render(request, 'steps/new.html', {
         'form': form,
-        'first': Step.objects.filter(goal=goal).count() == 0,
-        'goal': goal
+        'goal': goal,
+        'next_step_num': next_step_num,
+        'next_step_nth': nth[next_step_num],
     }, status=status)
 
 
@@ -92,18 +95,9 @@ def track(request, step):
 
         step_complete.send('app.views.steps.track', step=step)
 
-        return redirect('app_steps_complete',
-                        goal_id=step.goal.id, step_id=step.id)
+        return redirect('app_steps_new', goal_id=step.goal.id)
 
     return render(request, 'steps/track.html', {
         'step': step,
-        'form': form
-    })
-
-
-@login_required
-@load_step
-def complete(request, step):
-    return render(request, 'steps/complete.html', {
-        'step': step
+        'form': form,
     })
