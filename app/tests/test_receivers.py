@@ -2,8 +2,8 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from unittest.mock import patch
 
-from .models import Step, Goal
-from .receivers import *
+from app.models import Step, Goal
+from app.receivers import *
 
 
 @patch('app.receivers.send_email', spec=send_email)
@@ -42,27 +42,6 @@ class ReceiversTest(TestCase):
             'user_id': goal.user.id,
         })
 
-    def test_step_complete_event(self, add_event, send_email):
-        receive_step_complete(self, step=self.step)
-
-        add_event.assert_called_with('steps.track', {
-            'id': self.step.id.hex,
-            'user_id': self.step.goal.user.id,
-            'goal_id': self.step.goal.id.hex
-        })
-
-    def test_step_complete_emails(self, add_event, send_email):
-        goal = Goal.objects.create(user=self.user, text='test')
-
-        for i in range(1, 5):
-            step = Step.create(goal, 'test')
-
-            receive_step_complete(self, step=step)
-
-            send_email.assert_called_with('step_%d_complete' % i, goal.user, {
-                'goal': goal
-            })
-
     def test_new_step_event(self, add_event, send_email):
         receive_new_step(self, step=self.step)
 
@@ -75,12 +54,36 @@ class ReceiversTest(TestCase):
     def test_new_step_email(self, add_event, send_email):
         goal = Goal.objects.create(user=self.user, text='test')
 
-        first_step = Step.create(goal, 'text')
-        receive_new_step(self, step=first_step)
-        send_email.assert_called_with('new_goal', goal.user, {'goal': goal})
+        step = Step.create(goal, 'test')
 
-        send_email.reset_mock()
+        receive_new_step(self, step=step)
 
-        second_step = Step.create(goal, 'text')
-        receive_new_step(self, step=second_step)
-        send_email.assert_not_called()
+        send_email.assert_called_with('n2_new_goal', goal.user,
+                                      {'first_step': step})
+
+        for i in range(1, 4):
+            step = Step.create(goal, 'test')
+
+            receive_new_step(self, step=step)
+
+            send_email.assert_called_with('n%d_step_%d_complete' % (i+2, i),
+                                          goal.user, {'next_step': step})
+
+    def test_step_complete_event(self, add_event, send_email):
+        receive_step_complete(self, step=self.step)
+
+        add_event.assert_called_with('steps.track', {
+            'id': self.step.id.hex,
+            'user_id': self.step.goal.user.id,
+            'goal_id': self.step.goal.id.hex
+        })
+
+    def test_step_complete_email(self, add_event, send_email):
+        goal = Goal.objects.create(user=self.user, text='test')
+
+        for i in range(0, 5):
+            step = Step.create(goal, 'test')
+
+        receive_step_complete(self, step=step)
+
+        send_email.assert_called_with('n7_goal_complete', goal.user)

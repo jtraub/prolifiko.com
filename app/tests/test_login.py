@@ -3,7 +3,7 @@ from django.test import TestCase, Client, override_settings
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
-from .utils import events
+from app.utils import events
 
 
 class LoginTest(TestCase):

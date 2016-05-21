@@ -7,8 +7,8 @@ from datetime import timedelta
 from unittest.mock import patch
 from django.dispatch import Signal
 
-from .models import Goal, Step
-from .views import steps as views
+from app.models import Goal, Step
+from app.views import steps as views
 
 
 class StepsTest(TestCase):
@@ -54,7 +54,8 @@ class StepsTest(TestCase):
                                 delta=timedelta(seconds=3))
         self.assertEquals(step.start + timedelta(days=1), step.end)
 
-        new_step_signal.send.assert_called_with(views.new, step=step)
+        new_step_signal.send.assert_called_with(
+            'app.views.steps.new', step=step)
 
     def test_start_form(self):
         step = Step.objects.create(goal=self.goal, text=uuid4(),
@@ -92,7 +93,8 @@ class StepsTest(TestCase):
         step.refresh_from_db()
         self.assertEquals('foobar', step.comments)
 
-        step_complete_signal.send.assert_called_with(views.track, step=step)
+        step_complete_signal.send.assert_called_with(
+            'app.views.steps.track', step=step)
 
     @patch('app.views.steps.step_complete', spec=Signal)
     def test_track_no_comments(self, step_complete_signal):
@@ -111,7 +113,8 @@ class StepsTest(TestCase):
         step.refresh_from_db()
         self.assertEquals('', step.comments)
 
-        step_complete_signal.send.assert_called_with(views.track, step=step)
+        step_complete_signal.send.assert_called_with(
+            'app.views.steps.track', step=step)
 
     def test_complete_form(self):
         step = Step.objects.create(goal=self.goal, text=uuid4(),

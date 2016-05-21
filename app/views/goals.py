@@ -28,7 +28,7 @@ def new(request):
 
             goal.save()
 
-            new_goal.send(new, goal=goal)
+            new_goal.send('app.views.goals.new', goal=goal)
 
             return redirect('app_steps_new', goal_id=goal.id)
         else:

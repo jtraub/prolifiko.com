@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 import logging
 
-from .models import Goal
+from app.models import Goal
 
 
 logger = logging.getLogger('prolifiko.app.test_user_journey')

@@ -7,7 +7,7 @@ from html2text import html2text
 
 from app.models import Goal
 
-from . import utils
+from app import utils
 
 
 class UtilsTest(TestCase):
@@ -30,7 +30,6 @@ class UtilsTest(TestCase):
 
         utils.send_email('test', user, {'goal': goal})
 
-        socket.getfqdn.assert_any_call()
         loader.get_template.assert_called_once_with('emails/test.html')
         template.render.assert_called_once_with({'user': user, 'goal': goal})
 

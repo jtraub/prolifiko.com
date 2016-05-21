@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-from .models import Goal, Step
+from app.models import Goal, Step
 
 
 class TimelineTest(TestCase):

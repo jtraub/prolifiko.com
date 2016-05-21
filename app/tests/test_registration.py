@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.dispatch import Signal
 from unittest.mock import patch
 
-from .views import auth as views
+from app.views import auth as views
 
 
 class RegistrationTest(TestCase):
@@ -22,7 +22,7 @@ class RegistrationTest(TestCase):
             'password2': 'test',
         }, follow=True)
 
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(400, response.status_code)
         self.assertEqual(0, len(response.redirect_chain))
         self.assertTrue(response.context['form'].has_error('email'))
 
@@ -35,15 +35,14 @@ class RegistrationTest(TestCase):
             'password2': 'test',
         }, follow=True)
 
-        self.assertEquals(201, response.status_code)
-        self.assertContains(response, 'Check your inbox')
+        self.assertContains(response, 'Check your inbox', status_code=201)
 
         user = User.objects.get(email='new@test.com')
         self.assertEqual('new@test.com', user.email)
-        self.assertEqual('new', user.first_name)
         # We should have generated a username
         self.assertIsNotNone(user.username)
         # User.username.max_length=30
         self.assertTrue(len(user.username) <= 30)
 
-        registration_signal.send.assert_called_with(views.register, user=user)
+        registration_signal.send.assert_called_with(
+            'app.views.auth.register', user=user)

@@ -7,8 +7,8 @@ from datetime import timedelta
 from unittest.mock import patch
 from django.dispatch import Signal
 
-from .models import Goal
-from .views import goals as views
+from app.models import Goal
+from app.views import goals as views
 
 
 class GoalsTest(TestCase):
@@ -43,7 +43,7 @@ class GoalsTest(TestCase):
                                 delta=timedelta(seconds=3))
         self.assertEquals(goal.start + timedelta(days=5), goal.end)
 
-        new_goal.send.assert_called_with(views.new, goal=goal)
+        new_goal.send.assert_called_with('app.views.goals.new', goal=goal)
 
     def test_new_form(self):
         response = self.client.get(reverse('app_goals_new'))
