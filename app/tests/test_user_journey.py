@@ -1,8 +1,8 @@
 from django.test import TestCase, Client, override_settings
 from django.core.urlresolvers import reverse
 from django.core import mail
-from django.conf import settings
 from django.contrib.auth.models import User
+from unittest.mock import patch, Mock
 import logging
 
 from app.models import Goal
@@ -11,12 +11,15 @@ from app.models import Goal
 logger = logging.getLogger('prolifiko.app.test_user_journey')
 
 
+@patch('django.core.mail.utils.socket')
 class UserJourneyTest(TestCase):
     def setUp(self):
         self.client = Client()
 
     @override_settings(DEBUG=True)
-    def test_user_journey(self):
+    def test_user_journey(self, socket):
+        socket.getfqdn = Mock(return_value='test')
+
         ######################################################################
         # Register
         ######################################################################
@@ -175,7 +178,7 @@ class UserJourneyTest(TestCase):
         pass
 
     def assertEmail(self, name, email):
-        self.assertEquals(settings.EMAIL_META[name]['subject'], email.subject)
+        self.assertEquals(name, email.prolifiko_name)
 
     def create_step(self, text, goal):
         logger.debug('Creating ' + text)

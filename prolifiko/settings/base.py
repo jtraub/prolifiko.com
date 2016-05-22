@@ -212,6 +212,15 @@ EMAIL_META = {
     'dr3': {
         'subject': 'Writing Challenge: Check in Anytime',
     },
+    'd1': {
+        'subject': 'Writing Challenge: 1st life lost!',
+    },
+    'd2': {
+        'subject': 'Writing Challenge: 2nd life lost!',
+    },
+    'd3': {
+        'subject': 'Writing Challenge: Check in Anytime',
+    },
 }
 
 BROKER_URL = 'django://'

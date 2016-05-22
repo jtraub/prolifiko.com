@@ -57,6 +57,7 @@ def send_email(name: str, user: User, context: Dict={}):
 
     msg = EmailMultiAlternatives(
         meta['subject'], text, 'email@prolifiko.com', [recipient])
+    msg.prolifiko_name = name
     msg.attach_alternative(html, 'text/html')
     msg.send()
 

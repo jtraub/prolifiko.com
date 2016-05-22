@@ -50,20 +50,101 @@ class TasksTest(TestCase):
 
         self.assertEquals(3, len(mail.outbox))
 
-        emails = [{'subject': email.subject, 'to': email.to[0]}
+        emails = [{'name': email.prolifiko_name, 'to': email.to[0]}
                   for email in mail.outbox]
 
         self.assertIn({
-            'subject': settings.EMAIL_META['dr1']['subject'],
+            'name': 'dr1',
             'to': dr1_user.email
         }, emails)
 
         self.assertIn({
-            'subject': settings.EMAIL_META['dr2']['subject'],
+            'name': 'dr2',
             'to': dr2_user.email
         }, emails)
 
         self.assertIn({
-            'subject': settings.EMAIL_META['dr3']['subject'],
+            'name': 'dr3',
             'to': dr3_user.email
+        }, emails)
+
+    def test_send_d_emails(self, socket):
+        socket.getfqdn = Mock(return_value='test')
+
+        now = timezone.now()
+
+        active_user1 = User.objects.create(
+            username='active1',
+            email='active@t.com',
+        )
+        Step.objects.create(
+            goal=Goal.objects.create(user=active_user1, text='test'),
+            start=now - timedelta(hours=2),
+            end=now + timedelta(hours=22)
+        )
+
+        active_user2 = User.objects.create(
+            username='active2',
+            email='active@t.com',
+        )
+        Step.objects.create(
+            goal=Goal.objects.create(user=active_user2, text='test'),
+            start=now - timedelta(hours=64),
+            end=now - timedelta(hours=40),
+            complete=True
+        )
+
+        d1_user = User.objects.create(
+            username='d1',
+            email='d1@t.com',
+        )
+        Step.objects.create(
+            goal=Goal.objects.create(user=d1_user, text='test'),
+            text='test',
+            start=now - timedelta(hours=48),
+            end=now - timedelta(hours=24)
+        )
+
+        d2_user = User.objects.create(
+            username='d2',
+            email='d2@t.com',
+        )
+        Step.objects.create(
+            goal=Goal.objects.create(user=d2_user, text='test'),
+            text='test',
+            start=now - timedelta(hours=72),
+            end=now - timedelta(hours=48)
+        )
+
+        d3_user = User.objects.create(
+            username='d3',
+            email='d3@t.com',
+        )
+        Step.objects.create(
+            goal=Goal.objects.create(user=d3_user, text='test'),
+            text='test',
+            start=now - timedelta(hours=96),
+            end=now - timedelta(hours=72)
+        )
+
+        send_d_emails()
+
+        self.assertEquals(3, len(mail.outbox))
+
+        emails = [{'name': email.prolifiko_name, 'to': email.to[0]}
+                  for email in mail.outbox]
+
+        self.assertIn({
+            'name': 'd1',
+            'to': d1_user.email
+        }, emails)
+
+        self.assertIn({
+            'name': 'd2',
+            'to': d2_user.email
+        }, emails)
+
+        self.assertIn({
+            'name': 'd3',
+            'to': d3_user.email
         }, emails)
