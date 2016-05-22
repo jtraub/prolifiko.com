@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-import sys
+from datetime import timedelta
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
@@ -48,6 +48,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'djcelery',
+    'kombu.transport.django',
 
     'app',
     'home',
@@ -199,5 +202,28 @@ EMAIL_META = {
     },
     'n7_goal_complete': {
         'subject': "Way to Go! You’ve Finished the Challenge",
-    }
+    },
+    'dr1': {
+        'subject': 'Do You Want to Kickstart Your Writing?',
+    },
+    'dr2': {
+        'subject': 'Writing Challenge: Don’t quit now',
+    },
+    'dr3': {
+        'subject': 'Writing Challenge: Check in Anytime',
+    },
+}
+
+BROKER_URL = 'django://'
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+
+CELERYBEAT_SCHEDULE = {
+    'send-dr-emails': {
+        'task': 'prolifiko.celery.dr_email_task',
+        'schedule': timedelta(hours=1),
+    },
+    'send-d-emails': {
+        'task': 'prolifiko.celery.d_email_task',
+        'schedule': timedelta(hours=1),
+    },
 }

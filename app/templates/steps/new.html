@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>{% if first %}Set{% else %}Next{% endif %} step</h1>
+<h1>{% if next_step_num == 1 %}Set{% else %}Next{% endif %} step</h1>
 
 {% if next_step_num == 1 %}
     <p>What’s the first step you can take to achieve your 5-day writing goal?</p>
