@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db.models import Count
 from django.utils import timezone
 from datetime import timedelta
+from celery import shared_task
 
 from .utils import send_email, get_logger
 from .models import Step
@@ -20,7 +21,8 @@ def dr_users(now, hours):
         .filter(goal_count=0)
 
 
-def send_dr_emails(self):
+@shared_task
+def send_dr_emails():
     now = timezone.now()
 
     for user in dr_users(now, 24):
@@ -33,5 +35,6 @@ def send_dr_emails(self):
         send_email('dr3', user)
 
 
-def send_d_emails(self):
+@shared_task
+def send_d_emails():
     pass

@@ -219,11 +219,11 @@ CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 
 CELERYBEAT_SCHEDULE = {
     'send-dr-emails': {
-        'task': 'prolifiko.celery.dr_email_task',
+        'task': 'app.tasks.send_dr_emails',
         'schedule': timedelta(hours=1),
     },
     'send-d-emails': {
-        'task': 'prolifiko.celery.d_email_task',
+        'task': 'app.tasks.send_d_emails',
         'schedule': timedelta(hours=1),
     },
 }

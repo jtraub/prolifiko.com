@@ -1,3 +1,3 @@
 web: gunicorn prolifiko.wsgi --log-file=-
-worker: celery -A prolifiko worker -l info
-scheduler: celery -A prolifiko beat
+worker: ./manage.py celery worker -l info
+scheduler: ./manage.py celery beat

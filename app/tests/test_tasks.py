@@ -46,7 +46,7 @@ class TasksTest(TestCase):
             email='dr3@t.com'
         )
 
-        send_dr_emails(None)
+        send_dr_emails()
 
         self.assertEquals(3, len(mail.outbox))
 
