@@ -35,23 +35,22 @@ def send_dr_emails():
         send_email('dr3', user)
 
 
-def d_users(now, hours):
+def d_steps(now, hours):
     before = now - timedelta(hours=hours)
     after = before - timedelta(hours=24)
 
-    return [step.goal.user for step in Step.objects
-            .filter(complete=False, end__lt=before, end__gt=after)]
+    return Step.objects.filter(complete=False, end__lt=before, end__gt=after)
 
 
 @shared_task
 def send_d_emails():
     now = timezone.now()
 
-    for user in d_users(now, 24):
-        send_email('d1', user)
+    for step in d_steps(now, 24):
+        send_email('d1', step.goal.user, {'step': step})
 
-    for user in d_users(now, 48):
-        send_email('d2', user)
+    for step in d_steps(now, 48):
+        send_email('d2', step.goal.user, {'step': step})
 
-    for user in d_users(now, 72):
-        send_email('d3', user)
+    for step in d_steps(now, 72):
+        send_email('d3', step.goal.user, {'step': step})
