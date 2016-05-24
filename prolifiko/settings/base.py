@@ -226,6 +226,7 @@ EMAIL_META = {
 BROKER_URL = 'django://'
 CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 CELERYBEAT_SCHEDULE = {
     'send-dr-emails': {
         'task': 'app.tasks.send_dr_emails',
