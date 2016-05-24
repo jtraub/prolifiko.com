@@ -29,6 +29,11 @@ class Goal(models.Model):
 
         super(Goal, self).save(*args, **kwargs)
 
+    def lose_life(self, commit=False):
+        self.lives -= 1
+        if commit:
+            self.save()
+
 
 class Step(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

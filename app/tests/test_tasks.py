@@ -98,8 +98,9 @@ class TasksTest(TestCase):
             username='d1',
             email='d1@t.com',
         )
+        d1_goal = Goal.objects.create(user=d1_user, text='test')
         Step.objects.create(
-            goal=Goal.objects.create(user=d1_user, text='test'),
+            goal=d1_goal,
             text='test',
             start=now - timedelta(hours=48),
             end=now - timedelta(hours=24)
@@ -109,8 +110,9 @@ class TasksTest(TestCase):
             username='d2',
             email='d2@t.com',
         )
+        d2_goal = Goal.objects.create(user=d2_user, text='test', lives=2)
         Step.objects.create(
-            goal=Goal.objects.create(user=d2_user, text='test'),
+            goal=d2_goal,
             text='test',
             start=now - timedelta(hours=72),
             end=now - timedelta(hours=48)
@@ -120,8 +122,9 @@ class TasksTest(TestCase):
             username='d3',
             email='d3@t.com',
         )
+        d3_goal = Goal.objects.create(user=d3_user, text='test', lives=1)
         Step.objects.create(
-            goal=Goal.objects.create(user=d3_user, text='test'),
+            goal=d3_goal,
             text='test',
             start=now - timedelta(hours=96),
             end=now - timedelta(hours=72)
@@ -134,16 +137,22 @@ class TasksTest(TestCase):
         emails = [{'name': email.prolifiko_name, 'to': email.to[0]}
                   for email in mail.outbox]
 
+        d1_goal.refresh_from_db()
+        self.assertEquals(2, d1_goal.lives)
         self.assertIn({
             'name': 'd1',
             'to': d1_user.email
         }, emails)
 
+        d2_goal.refresh_from_db()
+        self.assertEquals(1, d2_goal.lives)
         self.assertIn({
             'name': 'd2',
             'to': d2_user.email
         }, emails)
 
+        d3_goal.refresh_from_db()
+        self.assertEquals(0, d3_goal.lives)
         self.assertIn({
             'name': 'd3',
             'to': d3_user.email

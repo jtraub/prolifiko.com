@@ -35,22 +35,19 @@ def send_dr_emails():
         send_email('dr3', user)
 
 
-def d_steps(now, hours):
-    before = now - timedelta(hours=hours)
-    after = before - timedelta(hours=24)
-
-    return Step.objects.filter(complete=False, end__lt=before, end__gt=after)
-
-
 @shared_task
 def send_d_emails():
-    now = timezone.now()
+    steps = Step.objects.filter(complete=False,
+                                end__lt=timezone.now() - timedelta(hours=24))
 
-    for step in d_steps(now, 24):
-        send_email('d1', step.goal.user, {'step': step})
+    for step in steps:
+        step.goal.lose_life(commit=True)
 
-    for step in d_steps(now, 48):
-        send_email('d2', step.goal.user, {'step': step})
+        if step.goal.lives == 2:
+            send_email('d1', step.goal.user, {'step': step})
 
-    for step in d_steps(now, 72):
-        send_email('d3', step.goal.user, {'step': step})
+        if step.goal.lives == 1:
+            send_email('d2', step.goal.user, {'step': step})
+
+        if step.goal.lives == 0:
+            send_email('d3', step.goal.user, {'step': step})
