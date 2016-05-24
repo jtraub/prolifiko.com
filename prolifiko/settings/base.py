@@ -236,3 +236,5 @@ CELERYBEAT_SCHEDULE = {
         'schedule': timedelta(hours=1),
     },
 }
+
+CELERY_TASK_SERIALIZER = 'json'
