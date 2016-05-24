@@ -229,7 +229,7 @@ CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 CELERYBEAT_SCHEDULE = {
     'send-dr-emails': {
         'task': 'app.tasks.send_dr_emails',
-        'schedule': timedelta(hours=1),
+        'schedule': timedelta(seconds=10),
     },
     'send-d-emails': {
         'task': 'app.tasks.send_d_emails',

@@ -1,6 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import Http404
+from django.utils.timezone import now
+from math import floor
+from dateutil.relativedelta import relativedelta
 
 from app.models import Goal
 from app.forms import GoalForm
@@ -23,6 +26,9 @@ def new(request):
             goal = form.save(commit=False)
 
             goal.user = request.user
+
+            days_since_start = relativedelta(now(), goal.user.date_joined).days
+            goal.lives = 3 - days_since_start
 
             logger.debug('Creating goal user=%s' % request.user.email)
 

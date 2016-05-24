@@ -1,8 +1,10 @@
-from django.test import TestCase, Client
+from django.test import TestCase, Client, RequestFactory, override_settings
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.utils import timezone
 from uuid import uuid1
+
+from django.utils.timezone import now
 from datetime import timedelta
 from unittest.mock import patch
 from django.dispatch import Signal
@@ -49,3 +51,45 @@ class GoalsTest(TestCase):
         response = self.client.get(reverse('app_goals_new'))
 
         self.assertEquals(200, response.status_code)
+
+
+@override_settings(DEBUG=True)
+class LivesTest(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+
+    def test_0_lives_lost(self):
+        user = User.objects.create(username='lives0', password='test')
+        request = self.factory.post(reverse('app_goals_new'),
+                                    data={'text': 'test'})
+        request.user = user
+
+        views.new(request)
+
+        goal = Goal.objects.filter(user=user).first()
+        self.assertEquals(3, goal.lives)
+
+    def test_1_life_lost(self):
+        user = User.objects.create(username='lives1', password='test',
+                                   date_joined=now() - timedelta(hours=24))
+        request = self.factory.post(reverse('app_goals_new'),
+                                    data={'text': 'test'})
+        request.user = user
+
+        views.new(request)
+
+        goal = Goal.objects.filter(user=user).first()
+        self.assertEquals(2, goal.lives)
+
+    def test_2_lives_lost(self):
+        user = User.objects.create(username='lives1', password='test',
+                                   date_joined=now() - timedelta(hours=48))
+
+        request = self.factory.post(reverse('app_goals_new'),
+                                    data={'text': 'test'})
+        request.user = user
+
+        views.new(request)
+
+        goal = Goal.objects.filter(user=user).first()
+        self.assertEquals(1, goal.lives)

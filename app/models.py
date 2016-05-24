@@ -18,6 +18,8 @@ class Goal(models.Model):
     start = models.DateTimeField(default=timezone.now)
     end = models.DateTimeField()
 
+    lives = models.IntegerField(default=3)
+
     def __str__(self):
         return '%s (%s)' % (self.id, self.user.email)
 
