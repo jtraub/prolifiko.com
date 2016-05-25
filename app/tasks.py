@@ -23,6 +23,8 @@ def dr_users(now, hours):
 
 @shared_task
 def send_dr_emails():
+    logger.info('Sending DR emails')
+
     now = timezone.now()
 
     for user in dr_users(now, 24):
@@ -37,6 +39,8 @@ def send_dr_emails():
 
 @shared_task
 def send_d_emails():
+    logger.info('Sending D emails')
+
     steps = Step.objects.filter(complete=False,
                                 end__lt=timezone.now() - timedelta(hours=24))
 
