@@ -1,13 +1,21 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.core.validators import validate_email
 from uuid import uuid4
 
 from .models import Goal, Step
 
 
+def validate_unique_email(value):
+    print(value)
+    if User.objects.filter(email=value).count() > 0:
+        raise forms.ValidationError('Email address already registered')
+
+
 class RegistrationForm(UserCreationForm):
-    email = forms.EmailField(required=True)
+    email = forms.EmailField(required=True, validators=[
+        validate_email, validate_unique_email])
 
     class Meta:
         model = User

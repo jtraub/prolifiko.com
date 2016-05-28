@@ -46,3 +46,17 @@ class RegistrationTest(TestCase):
 
         registration_signal.send.assert_called_with(
             'app.views.auth.register', user=user)
+
+    def test_register_existing_email(self):
+        User.objects.create(email='already@test.com')
+
+        response = self.client.post(reverse('app_register'), {
+            'email': 'already@test.com',
+            'password1': 'test',
+            'password2': 'test',
+        }, follow=True)
+
+        self.assertEquals(400, response.status_code)
+
+        self.assertEquals(['Email address already registered'],
+                          response.context['form'].errors['email'])
