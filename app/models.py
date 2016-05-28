@@ -19,6 +19,7 @@ class Goal(models.Model):
     end = models.DateTimeField()
 
     lives = models.IntegerField(default=3)
+    complete = models.BooleanField(default=False)
 
     def __str__(self):
         return '%s (%s)' % (self.id, self.user.email)

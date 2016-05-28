@@ -77,13 +77,3 @@ class ReceiversTest(TestCase):
             'user_id': self.step.goal.user.id,
             'goal_id': self.step.goal.id.hex
         })
-
-    def test_step_complete_email(self, add_event, send_email):
-        goal = Goal.objects.create(user=self.user, text='test')
-
-        for i in range(0, 5):
-            step = Step.create(goal, 'test')
-
-        receive_step_complete(self, step=step)
-
-        send_email.assert_called_with('n7_goal_complete', goal.user)

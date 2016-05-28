@@ -8,7 +8,7 @@ from dateutil.relativedelta import relativedelta
 from app.models import Goal
 from app.forms import GoalForm
 from app.signals import new_goal
-from app.utils import get_logger
+from app.utils import get_logger, send_email
 
 
 logger = get_logger(__name__)
@@ -61,3 +61,19 @@ def timeline(request, goal_id):
         'goal': goal,
         'in_progress': in_progress
     })
+
+
+@login_required
+def complete(request, goal_id):
+    try:
+        goal = Goal.objects.get(pk=goal_id)
+    except Goal.DoesNotExist:
+        raise Http404('Goal does not exist')
+
+    if request.method == 'POST':
+        logger.info('Goal complete goal=%s' % goal.id)
+        send_email('n7_goal_complete', goal.user)
+
+        return render(request, 'goals/feedback.html', {'goal': goal})
+
+    return render(request, 'goals/complete.html', {'goal': goal})

@@ -11,6 +11,8 @@ urlpatterns = [
 
     url(r'goals/(?P<goal_id>[^/]+)/$',
         goals.timeline, name='app_goals_timeline'),
+    url(r'goals/(?P<goal_id>[^/]+)/complete/$',
+        goals.complete, name='app_goals_complete'),
 
     url(r'goals/(?P<goal_id>[^/]+)/steps/new/$',
         steps.new, name='app_steps_new'),

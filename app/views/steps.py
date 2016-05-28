@@ -95,7 +95,16 @@ def track(request, step):
 
         step_complete.send('app.views.steps.track', step=step)
 
-        return redirect('app_steps_new', goal_id=step.goal.id)
+        goal = step.goal
+
+        if goal.steps.all().count() == 5:
+            goal.complete = True
+            goal.save()
+
+        if goal.complete:
+            return redirect('app_goals_complete', goal_id=goal.id)
+
+        return redirect('app_steps_new', goal_id=goal.id)
 
     return render(request, 'steps/track.html', {
         'step': step,

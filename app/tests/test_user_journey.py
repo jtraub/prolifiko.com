@@ -154,7 +154,17 @@ class UserJourneyTest(TestCase):
         # Track 5th step
         ######################################################################
 
-        self.track_step(fifth_step)
+        complete = self.track_step(fifth_step)
+
+        self.assertRedirects(complete, reverse('app_goals_complete',
+                                               kwargs={'goal_id': goal.id}))
+
+        ######################################################################
+        # Complete
+        ######################################################################
+
+        self.client.post(reverse('app_goals_complete',
+                                 kwargs={'goal_id': goal.id}))
 
         ######################################################################
         # Receive N7
@@ -162,18 +172,6 @@ class UserJourneyTest(TestCase):
 
         self.assertEquals(1, len(mail.outbox))
         self.assertEmail('n7_goal_complete', mail.outbox.pop())
-
-        # Track 2nd step and set 3rd
-        # Get N4
-
-        # Track 3rd step and set 4th
-        # Get N5
-
-        # Track 4th step and set 5th
-        # Get N6
-
-        # Track 5th step
-        # Get N7
 
         pass
 
@@ -194,5 +192,7 @@ class UserJourneyTest(TestCase):
     def track_step(self, step):
         logger.debug('Tracking ' + step.text)
 
-        self.client.post(reverse('app_steps_track', kwargs={
-            'goal_id': step.goal.id, 'step_id': step.id}))
+        return self.client.post(reverse('app_steps_track',
+                                        kwargs={
+                                            'goal_id': step.goal.id,
+                                            'step_id': step.id}))

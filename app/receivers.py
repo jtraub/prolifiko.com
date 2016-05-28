@@ -85,6 +85,3 @@ def receive_step_complete(sender, **kwargs):
         'user_id': step.goal.user.id,
         'goal_id': step.goal.id.hex
     })
-
-    if step.goal.steps.count() == 5:
-        send_email('n7_goal_complete', step.goal.user)

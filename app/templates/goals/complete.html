@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Winner!</h1>
+
+<p>Hurrah! Congratulations! Well done! You’re a winner!</p>
+
+<p>Tracking your final step means you’ve finished this kickstart challenge. Amazing!</p>
+
+<p>Click on the button to complete.</p>
+
+<form action="{% url 'app_goals_complete' goal_id=goal.id %}" method="post">
+    {% csrf_token %}
+    <p><input type="submit" value="Complete"/></p>
+</form>
+{% endblock %}
