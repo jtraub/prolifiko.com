@@ -8,7 +8,6 @@ from .models import Goal, Step
 
 
 def validate_unique_email(value):
-    print(value)
     if User.objects.filter(email=value).count() > 0:
         raise forms.ValidationError('Email address already registered')
 
