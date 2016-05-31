@@ -7,14 +7,9 @@ import keen
 import logging
 from html2text import html2text
 
+from .models import Email
+
 events = []
-nth = {
-    1: 'first',
-    2: 'second',
-    3: 'third',
-    4: 'fourth',
-    5: 'fifth',
-}
 
 
 def get_logger(name: str):
@@ -60,6 +55,8 @@ def send_email(name: str, user: User, context: Dict={}):
     msg.prolifiko_name = name
     msg.attach_alternative(html, 'text/html')
     msg.send()
+
+    Email.objects.create(name=name, recipient=user)
 
 
 def add_event(collection, body):

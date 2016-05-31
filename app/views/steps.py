@@ -7,7 +7,7 @@ from datetime import timedelta
 from app.models import Step, Goal
 from app.forms import NewStepForm, TrackStepForm
 from app.signals import new_step, step_complete
-from app.utils import get_logger, nth
+from app.utils import get_logger
 
 
 logger = get_logger(__name__)
@@ -47,13 +47,11 @@ def new(request, goal_id):
         else:
             status = 400
 
-    next_step_num = goal.steps.count() + 1
-
     return render(request, 'steps/new.html', {
         'form': form,
         'goal': goal,
-        'next_step_num': next_step_num,
-        'next_step_nth': nth[next_step_num],
+        'next_step_num': goal.next_step_num,
+        'next_step_nth': goal.next_step_nth
     }, status=status)
 
 

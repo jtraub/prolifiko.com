@@ -2,11 +2,15 @@ from django.db import models
 from django.conf import settings
 from datetime import timedelta
 from django.utils import timezone
-from wagtail.wagtailsnippets.models import register_snippet
-from wagtail.wagtailcore.fields import RichTextField
-from wagtail.wagtailadmin.edit_handlers import FieldPanel, FieldRowPanel
 import uuid
-from .utils import nth
+
+nth = {
+    1: 'first',
+    2: 'second',
+    3: 'third',
+    4: 'fourth',
+    5: 'fifth',
+}
 
 
 class Goal(models.Model):
@@ -34,6 +38,18 @@ class Goal(models.Model):
         self.lives -= 1
         if commit:
             self.save()
+
+    @property
+    def next_step_num(self):
+        return self.steps.count() + 1
+
+    @property
+    def next_step_nth(self):
+        return nth[int(self.next_step_num)]
+
+    @property
+    def current_step(self):
+        return self.steps.last()
 
 
 class Step(models.Model):
@@ -76,18 +92,9 @@ class Step(models.Model):
         return nth[self.number]
 
 
-@register_snippet
 class Email(models.Model):
     name = models.TextField()
-    user_journey_ref = models.TextField()
-    content = RichTextField()
-    subject = models.TextField()
+    sent = models.DateTimeField(auto_now_add=True)
 
-    panels = [
-        FieldRowPanel([
-            FieldPanel('name', classname='col6'),
-            FieldPanel('user_journey_ref', classname='col6')
-        ]),
-        FieldPanel('subject'),
-        FieldPanel('content', classname='full')
-    ]
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                  related_name='recipient')

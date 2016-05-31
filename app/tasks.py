@@ -1,24 +1,17 @@
 from django.contrib.auth.models import User
 from django.db.models import Count
 from django.utils import timezone
+from django.conf import settings
 from datetime import timedelta
 from celery import shared_task
 
 from .utils import send_email, get_logger
-from .models import Step
+from .models import Goal, Email, Step
 
 
 logger = get_logger(__name__)
 
-
-def dr_users(now, hours):
-    before = now - timedelta(hours=hours)
-    after = before - timedelta(hours=24)
-
-    return User.objects \
-        .annotate(goal_count=Count('goal')) \
-        .filter(date_joined__lt=before, date_joined__gt=after) \
-        .filter(goal_count=0)
+DELTA = {settings.INACTIVE_TIME_UNIT: settings.INACTIVE_TIME}
 
 
 @shared_task
@@ -27,31 +20,40 @@ def send_dr_emails():
 
     now = timezone.now()
 
-    for user in dr_users(now, 24):
-        send_email('dr1', user)
+    def dr_users(delta):
+        before = now - timedelta(**{settings.INACTIVE_TIME_UNIT: delta})
+        after = before - timedelta(**DELTA)
 
-    for user in dr_users(now, 48):
-        send_email('dr2', user)
+        return User.objects \
+            .annotate(goal_count=Count('goal')) \
+            .filter(date_joined__lt=before, date_joined__gt=after) \
+            .filter(goal_count=0)
 
-    for user in dr_users(now, 72):
-        send_email('dr3', user)
+    for name, multiplier in (('dr1', 1), ('dr2', 2), ('dr3', 3)):
+        for user in dr_users(settings.INACTIVE_TIME * multiplier):
+            email_names = [email.name for email in
+                           Email.objects.filter(recipient=user).all()]
+
+            if name not in email_names:
+                send_email(name, user)
 
 
 @shared_task
 def send_d_emails():
     logger.info('Sending D emails')
 
-    steps = Step.objects.filter(complete=False,
-                                end__lt=timezone.now() - timedelta(hours=24))
+    deadline = timezone.now() - timedelta(**DELTA)
 
-    for step in steps:
-        step.goal.lose_life(commit=True)
+    goals = Goal.objects.filter(complete=False,
+                                steps__complete=False,
+                                steps__end__lte=deadline,
+                                lives__gt=0)
 
-        if step.goal.lives == 2:
-            send_email('d1', step.goal.user, {'step': step})
+    for goal in goals:
+        goal.lose_life(commit=True)
+        email_names = [email.name for email in
+                       Email.objects.filter(recipient=goal.user)]
 
-        if step.goal.lives == 1:
-            send_email('d2', step.goal.user, {'step': step})
-
-        if step.goal.lives == 0:
-            send_email('d3', step.goal.user, {'step': step})
+        for lives, email in ((2, 'd1'), (1, 'd2'), (0, 'd3')):
+            if goal.lives == lives and email not in email_names:
+                send_email(email, goal.user, {'step': goal.current_step})

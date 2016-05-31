@@ -6,7 +6,7 @@ from django.template.backends.django import Template
 from django.conf import settings
 from html2text import html2text
 
-from app.models import Goal
+from app.models import Goal, Email
 
 from app import utils
 
@@ -18,8 +18,7 @@ class UtilsTest(TestCase):
     def test_send_email(self, socket, loader):
         socket.getfqdn = Mock(return_value='test')
 
-        user = Mock(spec=User)
-        user.email = 'user@real.com'
+        user = User.objects.create(email='user@real.com')
 
         goal = Mock(spec=Goal)
 
@@ -47,6 +46,13 @@ class UtilsTest(TestCase):
 
         self.assertEquals(html2text(body), message.body)
         self.assertEquals((body, 'text/html'), message.alternatives[0])
+
+        self.assertEquals('test', message.prolifiko_name)
+
+        emails = Email.objects.filter(recipient=user)
+        self.assertEquals(1, emails.count())
+        email = emails.first()
+        self.assertEquals('test', email.name)
 
     @override_settings(DEBUG=True)
     def test_add_event_debug(self):
