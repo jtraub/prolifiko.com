@@ -3,6 +3,7 @@ from django.conf import settings
 from datetime import timedelta
 from django.utils import timezone
 import uuid
+from itertools import chain
 
 nth = {
     1: 'first',
@@ -34,7 +35,7 @@ class Goal(models.Model):
 
         super(Goal, self).save(*args, **kwargs)
 
-    def lose_life(self, commit=False):
+    def lose_life(self, commit=True):
         self.lives -= 1
         if commit:
             self.save()
@@ -50,6 +51,18 @@ class Goal(models.Model):
     @property
     def current_step(self):
         return self.steps.last()
+
+    @property
+    def step_emails(self):
+        return list(chain.from_iterable(
+            [step.emails.all() for step in self.steps.all()]))
+
+    def step_email(self, name):
+        for email in self.step_emails:
+            if email.name == name:
+                return email
+
+        return None
 
 
 class Step(models.Model):
@@ -98,3 +111,18 @@ class Email(models.Model):
 
     recipient = models.ForeignKey(settings.AUTH_USER_MODEL,
                                   related_name='recipient')
+
+    step = models.ForeignKey(Step,
+                             blank=True,
+                             null=True,
+                             related_name='emails')
+
+    TYPE_D = 'd'
+    TYPE_DR = 'dr'
+
+    class Meta:
+        ordering = ('sent',)
+
+    @property
+    def type(self):
+        return Email.TYPE_DR if self.name[:2] == 'dr' else Email.TYPE_D

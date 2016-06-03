@@ -56,7 +56,7 @@ def send_email(name: str, user: User, context: Dict={}):
     msg.attach_alternative(html, 'text/html')
     msg.send()
 
-    Email.objects.create(name=name, recipient=user)
+    return Email.objects.create(name=name, recipient=user)
 
 
 def add_event(collection, body):

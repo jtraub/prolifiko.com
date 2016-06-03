@@ -10,7 +10,7 @@ import logging
 
 from app.models import Goal, Step
 
-DAY = 3
+DAY = 4
 DAY_DELTA = {'seconds': DAY}
 
 logger = logging.getLogger('prolifiko.app.test_user_journey')
@@ -188,28 +188,32 @@ class UserJourneyTest(TestCase):
         ######################################################################
         # Start
         # - All users join
-        # - dr_user does not set a goal
+        # - dr_user and dr_d_user do not set a goals
         # - d_user_1 and d_user_2 set a goal and first step
         #
         # End of Day 1
-        # - dr_user receives DR1
+        # - dr_user and dr_d_user receive DR1
         # - d_user_1 does not track first step so receives D1
         # - d_user_2 completes first step and sets second
         #
         # End of Day 2
         # - dr_user receives DR2
+        # - dr_d_user sets goal and first step
         # - d_user_1 receives D2
         # - d_user_2 does not track second step so receives D1
         #
         # End of Day 3
         # - dr_user receives DR3
+        # - dr_d_user does not track first step and so receives D1
         # - d_user_1 receives D3
         # - d_user_2 tracks second step and sets third
         #
         # End of Day 4
+        # - dr_d_user tracks first step and sets second
         # - d_user_2 does not track third step and so receives D2
         #
         # End of Day 5
+        # - dr_d_user tracks second step and sets third
         # - d_user_2 receives D3
         ######################################################################
 
@@ -225,6 +229,10 @@ class UserJourneyTest(TestCase):
         dr_user = User.objects.create(username='dr',
                                       email='dr@t.com',
                                       date_joined=start)
+
+        dr_d_user = User.objects.create(username='dr_d',
+                                        email='dr_d@t.com',
+                                        date_joined=start)
 
         # d_user_1
 
@@ -302,38 +310,71 @@ class UserJourneyTest(TestCase):
             complete=True,
         )
 
-        # Introduce a small offset
-        sleep(1)
+        logger.debug('Day 0')
 
         ######################################################################
         # Day 1
         ######################################################################
 
-        logger.debug('Day 1')
+        sleep(DAY/4)
+        logger.debug('Day 0.25')
+        send_d_emails()
+        send_dr_emails()
+        sleep(DAY / 4)
+        logger.debug('Day 0.5')
+        send_d_emails()
+        send_dr_emails()
+        sleep(DAY / 4)
+        logger.debug('Day 0.75')
+        send_d_emails()
+        send_dr_emails()
 
-        sleep(DAY)
-
+        logger.debug('d2@t.com first step complete')
         d_user_2_first_step = d_user_2_goal.steps.first()
         d_user_2_first_step.complete = True
         d_user_2_first_step.save()
 
+        sleep(DAY / 4)
+        logger.debug('Day 1')
         send_d_emails()
         send_dr_emails()
-        self.assertEquals(2, len(mail.outbox))
+
+        self.assertInbox(3)
         self.assertEmail('d1', d_user_1)
         self.assertEmail('dr1', dr_user)
+        self.assertEmail('dr1', dr_d_user)
 
         ######################################################################
         # Day 2
         ######################################################################
 
-        logger.debug('Day 2')
-
-        sleep(DAY)
-
+        sleep(DAY / 4)
+        logger.debug('Day 1.25')
         send_d_emails()
         send_dr_emails()
-        self.assertEquals(3, len(mail.outbox))
+        sleep(DAY / 4)
+        logger.debug('Day 1.5')
+        send_d_emails()
+        send_dr_emails()
+        sleep(DAY / 4)
+        logger.debug('Day 1.75')
+        send_d_emails()
+        send_dr_emails()
+
+        logger.debug('dr_d@t.com sets goal and first step')
+        dr_d_user_goal = Goal.objects.create(user=dr_d_user, text='test')
+        dr_d_user_first_step = Step.objects.create(
+            goal=dr_d_user_goal,
+            text='test',
+            end=start + timedelta(seconds=DAY * 2)
+        )
+
+        sleep(DAY / 4)
+        logger.debug('Day 2')
+        send_d_emails()
+        send_dr_emails()
+
+        self.assertInbox(3)
         self.assertEmail('d2', d_user_1)
         self.assertEmail('d1', d_user_2)
         self.assertEmail('dr2', dr_user)
@@ -342,44 +383,102 @@ class UserJourneyTest(TestCase):
         # Day 3
         ######################################################################
 
-        logger.debug('Day 3')
+        sleep(DAY / 4)
+        logger.debug('Day 2.25')
+        send_d_emails()
+        send_dr_emails()
+        sleep(DAY / 4)
+        logger.debug('Day 2.5')
+        send_d_emails()
+        send_dr_emails()
+        sleep(DAY / 4)
+        logger.debug('Day 2.75')
+        send_d_emails()
+        send_dr_emails()
 
-        sleep(DAY)
-
+        logger.debug('d2@t.com second step complete)')
         d_user_2_second_step = d_user_2_goal.steps.all()[1]
         d_user_2_second_step.complete = True
         d_user_2_second_step.save()
 
+        sleep(DAY / 4)
+        logger.debug('Day 3')
         send_d_emails()
         send_dr_emails()
-        self.assertEquals(2, len(mail.outbox))
+
+        self.assertInbox(3)
         self.assertEmail('d3', d_user_1)
+        self.assertEmail('d2', dr_d_user)
         self.assertEmail('dr3', dr_user)
 
         ######################################################################
         # Day 4
         ######################################################################
 
-        logger.debug('Day 4')
-
-        sleep(DAY)
-
+        sleep(DAY / 4)
+        logger.debug('Day 3.25')
         send_d_emails()
         send_dr_emails()
-        self.assertEquals(1, len(mail.outbox))
+        sleep(DAY / 4)
+        logger.debug('Day 3.5')
+        send_d_emails()
+        send_dr_emails()
+        sleep(DAY / 4)
+        logger.debug('Day 3.75')
+        send_d_emails()
+        send_dr_emails()
+
+        logger.debug('dr_d@t.com tracks first step and sets second')
+        dr_d_user_first_step.complete = True
+        dr_d_user_first_step.save()
+
+        dr_d_user_second_step = Step.objects.create(
+            goal=dr_d_user_goal,
+            text='test',
+            end=start + timedelta(seconds=DAY * 4)
+        )
+
+        sleep(DAY / 4)
+        logger.debug('Day 4')
+        send_d_emails()
+        send_dr_emails()
+
+        self.assertInbox(1)
         self.assertEmail('d2', d_user_2)
 
         ######################################################################
         # Day 5
         ######################################################################
 
-        logger.debug('Day 5')
-
-        sleep(DAY)
-
+        sleep(DAY / 4)
+        logger.debug('Day 4.25')
         send_d_emails()
         send_dr_emails()
-        self.assertEquals(1, len(mail.outbox))
+        sleep(DAY / 4)
+        logger.debug('Day 4.5')
+        send_d_emails()
+        send_dr_emails()
+        sleep(DAY / 4)
+        logger.debug('Day 4.75')
+        send_d_emails()
+        send_dr_emails()
+
+        logger.debug('dr_d@t.com tracks first step and sets second')
+        dr_d_user_second_step.complete = True
+        dr_d_user_second_step.save()
+
+        Step.objects.create(
+            goal=dr_d_user_goal,
+            text='test',
+            end=start + timedelta(seconds=DAY * 5)
+        )
+
+        sleep(DAY / 4)
+        logger.debug('Day 5')
+        send_d_emails()
+        send_dr_emails()
+
+        self.assertInbox(1)
         self.assertEmail('d3', d_user_2)
 
     def assertEmail(self, name, user):
@@ -390,6 +489,11 @@ class UserJourneyTest(TestCase):
 
         self.assertEquals(user.email, email.to[0], name)
         self.assertEquals(name, email.prolifiko_name, name)
+
+    def assertInbox(self, unread):
+        self.assertEquals(unread, len(mail.outbox), [
+            (email.prolifiko_name, email.to[0]) for email in mail.outbox
+        ])
 
     def create_step(self, text, goal):
         logger.debug('Creating ' + text)
