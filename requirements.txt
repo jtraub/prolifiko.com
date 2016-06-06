@@ -1,4 +1,4 @@
 -r requirements.common.txt
 psycopg2==2.6.1
-django-mailgun==0.8.0
-newrelic
+django-mailgun==0.9.1
+newrelic==2.66.0.49
