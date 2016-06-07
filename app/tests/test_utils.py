@@ -43,7 +43,8 @@ class UtilsTest(TestCase):
         message = mail.outbox[0]
 
         self.assertEquals('Test Subject', message.subject)
-        self.assertEquals('Bec and Chris', message.from_email)
+        self.assertEquals('Bec and Chris <email@prolifiko.com>',
+                          message.from_email)
         self.assertEquals([self.user.email], message.to)
 
         self.assertEquals(html2text(body), message.body)
