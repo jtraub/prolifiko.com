@@ -54,35 +54,46 @@ def send_d_emails():
     email_progression = ('d1', 'd2', 'd3')
 
     for goal in goals:
+        user = goal.user
+
+        logger.debug('Found goal %s for %s' % (goal.id, user.email))
+
         current_step = goal.current_step
 
-        sent_emails = list(Email.objects.filter(recipient=goal.user))
+        sent_emails = list(email for email in
+                           Email.objects.filter(recipient=user).all()
+                           if email.type == Email.TYPE_D)
 
         if len(sent_emails) == 0:
+            logger.debug('No emails sent to %s; sending D1' % user.email)
             goal.lose_life()
-            email = send_email('d1', goal.user, {'step': current_step})
+            email = send_email('d1', user, {'step': current_step})
             email.step = current_step
             email.save()
 
             break
 
+        logger.debug('Already sent %s emails to %s' % (
+            [email.name for email in sent_emails], user.email))
+
         if len(sent_emails) >= 3:
+            logger.debug('All D emails sent to %s; stopping' % user.email)
             break
 
         previous_email = sent_emails[-1] if len(sent_emails) > 1 \
             else sent_emails[0]
 
+        logger.debug('Last email sent to %s was %s at %s' % (
+            user.email, previous_email.name, previous_email.sent
+        ))
+
         if previous_email.sent + delta < now:
             goal.lose_life()
 
-            d_emails_sent = len([email for email in sent_emails
-                                if email.type == Email.TYPE_D])
+            next_email = email_progression[len(sent_emails)]
 
-            if d_emails_sent > 2:
-                break
-
-            next_email = email_progression[d_emails_sent]
-
-            email = send_email(next_email, goal.user, {'step': current_step})
+            email = send_email(next_email, user, {'step': current_step})
             email.step = current_step
             email.save()
+        else:
+            logger.debug('%s not ready for next email; stopping' % user.email)

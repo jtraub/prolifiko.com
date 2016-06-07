@@ -516,13 +516,10 @@ class UserJourneyTest(TestCase):
     def assertInbox(self, emails):
         outbox = [(email.prolifiko_name, email.to[0]) for email in mail.outbox]
 
-        self.assertEquals(len(mail.outbox), len(emails), {
+        self.assertCountEqual(outbox, emails, {
             'expected': emails,
             'actual': outbox
         })
-
-        for email in emails:
-            self.assertIn(email, outbox)
 
         mail.outbox = []
 
