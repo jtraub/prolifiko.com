@@ -5,6 +5,7 @@ from unittest.mock import patch, Mock
 from django.template.backends.django import Template
 from django.conf import settings
 from html2text import html2text
+from requests.models import Response
 
 from app.models import Goal, Email
 
@@ -12,27 +13,28 @@ from app import utils
 
 
 class UtilsTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(email='user@real.com')
+
     @patch('app.utils.loader')
     @patch('django.core.mail.utils.socket')
     @override_settings(EMAIL_META={'test': {'subject': 'Test Subject'}})
     def test_send_email(self, socket, loader):
         socket.getfqdn = Mock(return_value='test')
 
-        user = User.objects.create(email='user@real.com')
-
         goal = Mock(spec=Goal)
 
-        body = 'some email body;'
+        body = 'some email body'
 
         template = Mock(spec=Template)
         template.render.return_value = body
         loader.get_template = Mock(return_value=template)
 
-        utils.send_email('test', user, {'goal': goal})
+        utils.send_email('test', self.user, {'goal': goal})
 
         loader.get_template.assert_called_once_with('emails/test.html')
         template.render.assert_called_once_with({
-            'user': user,
+            'user': self.user,
             'goal': goal,
             'BASE_URL': settings.BASE_URL
         })
@@ -42,14 +44,14 @@ class UtilsTest(TestCase):
 
         self.assertEquals('Test Subject', message.subject)
         self.assertEquals('Bec and Chris', message.from_email)
-        self.assertEquals([user.email], message.to)
+        self.assertEquals([self.user.email], message.to)
 
         self.assertEquals(html2text(body), message.body)
         self.assertEquals((body, 'text/html'), message.alternatives[0])
 
         self.assertEquals('test', message.prolifiko_name)
 
-        emails = Email.objects.filter(recipient=user)
+        emails = Email.objects.filter(recipient=self.user)
         self.assertEquals(1, emails.count())
         email = emails.first()
         self.assertEquals('test', email.name)

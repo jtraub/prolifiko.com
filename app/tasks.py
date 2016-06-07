@@ -6,7 +6,7 @@ from datetime import timedelta
 from celery import shared_task
 
 from .utils import send_email, get_logger
-from .models import Goal, Email
+from .models import Goal, Email, Step
 
 DELTA = {settings.INACTIVE_TIME_UNIT: settings.INACTIVE_TIME}
 
@@ -47,19 +47,17 @@ def send_d_emails():
     delta = timedelta(**DELTA)
     deadline = now - delta
 
-    goals = Goal.objects.filter(complete=False,
-                                steps__complete=False,
-                                steps__end__lte=deadline,
-                                lives__gt=0)
+    steps = Step.objects.filter(complete=False,
+                                end__lte=deadline,
+                                goal__lives__gt=0)
 
     email_progression = ('d1', 'd2', 'd3')
 
-    for goal in goals:
+    for step in steps:
+        goal = step.goal
         user = goal.user
 
-        logger.debug('Found goal %s for %s' % (goal.id, user.email))
-
-        current_step = goal.current_step
+        logger.debug('Found late step %s for %s' % (step.id, user.email))
 
         sent_emails = list(email for email in
                            Email.objects.filter(recipient=user).all()
@@ -68,8 +66,8 @@ def send_d_emails():
         if len(sent_emails) == 0:
             logger.debug('No emails sent to %s; sending D1' % user.email)
             goal.lose_life()
-            email = send_email('d1', user, {'step': current_step})
-            email.step = current_step
+            email = send_email('d1', user, {'step': step})
+            email.step = step
             email.save()
 
             break
@@ -93,8 +91,8 @@ def send_d_emails():
 
             next_email = email_progression[len(sent_emails)]
 
-            email = send_email(next_email, user, {'step': current_step})
-            email.step = current_step
+            email = send_email(next_email, user, {'step': step})
+            email.step = step
             email.save()
         else:
             logger.debug('%s not ready for next email; stopping' % user.email)

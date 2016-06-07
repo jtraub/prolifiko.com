@@ -6,6 +6,7 @@ from typing import Dict
 import keen
 import logging
 from html2text import html2text
+from django_mailgun import MailgunAPIError
 
 from .models import Email
 
@@ -54,7 +55,16 @@ def send_email(name: str, user: User, context: Dict={}):
         meta['subject'], text, 'Bec and Chris', [recipient])
     msg.prolifiko_name = name
     msg.attach_alternative(html, 'text/html')
-    msg.send()
+
+    try:
+        msg.send()
+    except MailgunAPIError as e:
+        response = e.args[0]
+        logger.error('MailgunAPIError sending %s email to %s '
+                     'status_code=%d content=%s' % (
+                        name, user.email, response.status_code, response.text))
+
+        raise e
 
     return Email.objects.create(name=name, recipient=user)
 
