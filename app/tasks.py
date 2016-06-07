@@ -46,9 +46,6 @@ def send_d_emails():
     delta = timedelta(**DELTA)
     deadline = now - delta
 
-    print('now', now)
-    print('deadline', deadline)
-
     goals = Goal.objects.filter(complete=False,
                                 steps__complete=False,
                                 steps__end__lte=deadline,
@@ -57,19 +54,12 @@ def send_d_emails():
     email_progression = ('d1', 'd2', 'd3')
 
     for goal in goals:
-        print('goal user=%s lives=%d' % (goal.user.email, goal.lives))
-
         current_step = goal.current_step
-
-        print('step.end', current_step.end)
 
         sent_emails = list(Email.objects.filter(recipient=goal.user))
 
-        print('sent_emails', [email.name for email in sent_emails])
-
         if len(sent_emails) == 0:
             goal.lose_life()
-            print('send to=%s name=d1' % goal.user.email)
             email = send_email('d1', goal.user, {'step': current_step})
             email.step = current_step
             email.save()
@@ -82,31 +72,17 @@ def send_d_emails():
         previous_email = sent_emails[-1] if len(sent_emails) > 1 \
             else sent_emails[0]
 
-        print('previous email', previous_email)
-        print('previous_email name=%s sent=%s deadline=%s' %
-              (previous_email.name,
-               previous_email.sent,
-               previous_email.sent + delta))
-
         if previous_email.sent + delta < now:
             goal.lose_life()
 
-            dr_emails_sent = len([email for email in sent_emails
-                                  if email.type == Email.TYPE_DR])
             d_emails_sent = len([email for email in sent_emails
-                                 if email.type == Email.TYPE_D])
+                                if email.type == Email.TYPE_D])
 
-            print('dr_emails_sent', dr_emails_sent)
-            print('d_emails_sent', d_emails_sent)
-
-            next_email_pos = dr_emails_sent + d_emails_sent
-
-            if next_email_pos > 2:
+            if d_emails_sent > 2:
                 break
 
-            next_email = email_progression[next_email_pos]
+            next_email = email_progression[d_emails_sent]
 
-            print('send to=%s name=%s' % (goal.user.email, next_email))
             email = send_email(next_email, goal.user, {'step': current_step})
             email.step = current_step
             email.save()

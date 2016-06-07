@@ -43,8 +43,7 @@ class UserJourneyTest(TestCase):
         # Receive N1
         ######################################################################
 
-        self.assertEquals(1, len(mail.outbox))
-        self.assertEmail('n1_registration', user)
+        self.assertInbox([('n1_registration', user.email)])
 
         ######################################################################
         # Login
@@ -62,7 +61,7 @@ class UserJourneyTest(TestCase):
             'text': 'test goal',
         })
 
-        self.assertEquals(0, len(mail.outbox))
+        self.assertInbox([])
 
         goal = Goal.objects.filter(user=user).first()
 
@@ -76,8 +75,7 @@ class UserJourneyTest(TestCase):
         # Receive N2
         ######################################################################
 
-        self.assertEquals(1, len(mail.outbox))
-        self.assertEmail('n2_new_goal', user)
+        self.assertInbox([('n2_new_goal', user.email)])
 
         ######################################################################
         # Track 1st step
@@ -95,8 +93,7 @@ class UserJourneyTest(TestCase):
         # Receive N3
         ######################################################################
 
-        self.assertEquals(1, len(mail.outbox))
-        self.assertEmail('n3_step_1_complete', user)
+        self.assertInbox([('n3_step_1_complete', user.email)])
 
         ######################################################################
         # Track 2nd step
@@ -114,8 +111,7 @@ class UserJourneyTest(TestCase):
         # Receive N4
         ######################################################################
 
-        self.assertEquals(1, len(mail.outbox))
-        self.assertEmail('n4_step_2_complete', user)
+        self.assertInbox([('n4_step_2_complete', user.email)])
 
         ######################################################################
         # Track 3rd step
@@ -133,8 +129,7 @@ class UserJourneyTest(TestCase):
         # Receive N5
         ######################################################################
 
-        self.assertEquals(1, len(mail.outbox))
-        self.assertEmail('n5_step_3_complete', user)
+        self.assertInbox([('n5_step_3_complete', user.email)])
 
         ######################################################################
         # Track 4rd step
@@ -152,8 +147,7 @@ class UserJourneyTest(TestCase):
         # Receive N6
         ######################################################################
 
-        self.assertEquals(1, len(mail.outbox))
-        self.assertEmail('n6_step_4_complete', user)
+        self.assertInbox([('n6_step_4_complete', user.email)])
 
         ######################################################################
         # Track 5th step
@@ -175,10 +169,7 @@ class UserJourneyTest(TestCase):
         # Receive N7
         ######################################################################
 
-        self.assertEquals(1, len(mail.outbox))
-        self.assertEmail('n7_goal_complete', user)
-
-        pass
+        self.assertInbox([('n7_goal_complete', user.email)])
 
     @override_settings(INACTIVE_TIME=DAY, INACTIVE_TIME_UNIT='seconds')
     def test_emails(self, socket):
@@ -187,34 +178,40 @@ class UserJourneyTest(TestCase):
 
         ######################################################################
         # Start
-        # - All users join
-        # - dr_user and dr_d_user do not set a goals
-        # - d_user_1 and d_user_2 set a goal and first step
+        # - dr_user - does not set a goal
+        # - dr_d_user - does not set a goal
+        # - d_user_1 - sets a goal and first step
+        # - d_user_2 - sets a goal and first step
         #
         # End of Day 1
-        # - dr_user and dr_d_user receive DR1
-        # - d_user_1 does not track first step so receives D1
-        # - d_user_2 completes first step and sets second
+        # - dr_user - receives DR1
+        # - dr_d_user - receives DR1
+        # - d_user_1 -  does not track first step so receives D1
+        # - d_user_2 - completes first step and sets second
         #
         # End of Day 2
-        # - dr_user receives DR2
-        # - dr_d_user sets goal and first step
-        # - d_user_1 receives D2
-        # - d_user_2 does not track second step so receives D1
+        # - dr_user(DR1) - receives DR2
+        # - dr_d_user(DR1) - sets goal and first step
+        # - d_user_1(D1) - does not track first step so receives D2
+        # - d_user_2 - does not track second step so receives D1
         #
         # End of Day 3
-        # - dr_user receives DR3
-        # - dr_d_user does not track first step and so receives D1
-        # - d_user_1 receives D3
-        # - d_user_2 tracks second step and sets third
+        # - dr_user(DR1, DR2) - receives DR3
+        # - dr_d_user(DR1) - does not track first step and so receives D1
+        # - d_user_1(D1, D2) - receives D3
+        # - d_user_2(D1) - tracks second step and sets third
         #
         # End of Day 4
-        # - dr_d_user tracks first step and sets second
-        # - d_user_2 does not track third step and so receives D2
+        # - dr_user(DR1, DR2, DR3) - out
+        # - dr_d_user(DR1, D1) tracks first step and sets second
+        # - dr_user_1(D1, D2, D3) - out
+        # - d_user_2(D1) does not track third step and so receives D2
         #
         # End of Day 5
-        # - dr_d_user tracks second step and sets third
-        # - d_user_2 receives D3
+        # - dr_user - out
+        # - dr_d_user(DR1, D1) - tracks second step and sets third
+        # - dr_user_1(D1, D2, D3) - out
+        # - d_user_2(D1, D2) - receives D3
         ######################################################################
 
         start = timezone.now()
@@ -318,16 +315,16 @@ class UserJourneyTest(TestCase):
 
         sleep(DAY/4)
         logger.debug('Day 0.25')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
         sleep(DAY / 4)
         logger.debug('Day 0.5')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
         sleep(DAY / 4)
         logger.debug('Day 0.75')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
 
         logger.debug('d2@t.com first step complete')
         d_user_2_first_step = d_user_2_goal.steps.first()
@@ -336,13 +333,20 @@ class UserJourneyTest(TestCase):
 
         sleep(DAY / 4)
         logger.debug('Day 1')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
 
-        self.assertInbox(3)
-        self.assertEmail('d1', d_user_1)
-        self.assertEmail('dr1', dr_user)
-        self.assertEmail('dr1', dr_d_user)
+        # End of Day 1
+        # - dr_user - receives DR1
+        # - dr_d_user - receives DR1
+        # - d_user_1 -  does not track first step so receives D1
+        # - d_user_2 - completes first step and sets second
+
+        self.assertInbox([
+            ('dr1', dr_user.email),
+            ('dr1', dr_d_user.email),
+            ('d1', d_user_1.email)
+        ])
 
         ######################################################################
         # Day 2
@@ -350,16 +354,16 @@ class UserJourneyTest(TestCase):
 
         sleep(DAY / 4)
         logger.debug('Day 1.25')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
         sleep(DAY / 4)
         logger.debug('Day 1.5')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
         sleep(DAY / 4)
         logger.debug('Day 1.75')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
 
         logger.debug('dr_d@t.com sets goal and first step')
         dr_d_user_goal = Goal.objects.create(user=dr_d_user, text='test')
@@ -371,13 +375,20 @@ class UserJourneyTest(TestCase):
 
         sleep(DAY / 4)
         logger.debug('Day 2')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
 
-        self.assertInbox(3)
-        self.assertEmail('d2', d_user_1)
-        self.assertEmail('d1', d_user_2)
-        self.assertEmail('dr2', dr_user)
+        # End of Day 2
+        # - dr_user(DR1) - receives DR2
+        # - dr_d_user(DR1) - sets goal and first step
+        # - d_user_1(D1) - does not track first step so receives D2
+        # - d_user_2 - does not track second step so receives D1
+
+        self.assertInbox([
+            ('dr2', dr_user.email),
+            ('d2', d_user_1.email),
+            ('d1', d_user_2.email)
+        ])
 
         ######################################################################
         # Day 3
@@ -385,31 +396,38 @@ class UserJourneyTest(TestCase):
 
         sleep(DAY / 4)
         logger.debug('Day 2.25')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
         sleep(DAY / 4)
         logger.debug('Day 2.5')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
         sleep(DAY / 4)
         logger.debug('Day 2.75')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
 
-        logger.debug('d2@t.com second step complete)')
+        logger.debug('d2@t.com second step complete')
         d_user_2_second_step = d_user_2_goal.steps.all()[1]
         d_user_2_second_step.complete = True
         d_user_2_second_step.save()
 
         sleep(DAY / 4)
         logger.debug('Day 3')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
 
-        self.assertInbox(3)
-        self.assertEmail('d3', d_user_1)
-        self.assertEmail('d2', dr_d_user)
-        self.assertEmail('dr3', dr_user)
+        # End of Day 3
+        # - dr_user(DR1, DR2) - receives DR3
+        # - dr_d_user(DR1) - does not track first step and so receives D1
+        # - d_user_1(D1, D2) - receives D3
+        # - d_user_2(D1) - tracks second step and sets third
+
+        self.assertInbox([
+            ('dr3', dr_user.email),
+            ('d1', dr_d_user.email),
+            ('d3', d_user_1.email)
+        ])
 
         ######################################################################
         # Day 4
@@ -417,16 +435,16 @@ class UserJourneyTest(TestCase):
 
         sleep(DAY / 4)
         logger.debug('Day 3.25')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
         sleep(DAY / 4)
         logger.debug('Day 3.5')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
         sleep(DAY / 4)
         logger.debug('Day 3.75')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
 
         logger.debug('dr_d@t.com tracks first step and sets second')
         dr_d_user_first_step.complete = True
@@ -440,11 +458,18 @@ class UserJourneyTest(TestCase):
 
         sleep(DAY / 4)
         logger.debug('Day 4')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
 
-        self.assertInbox(1)
-        self.assertEmail('d2', d_user_2)
+        # End of Day 4
+        # - dr_user(DR1, DR2, DR3) - out
+        # - dr_d_user(DR1, D1) tracks first step and sets second
+        # - dr_user_1(D1, D2, D3) - out
+        # - d_user_2(D1) does not track third step and so receives D2
+
+        self.assertInbox([
+            ('d2', d_user_2.email)
+        ])
 
         ######################################################################
         # Day 5
@@ -452,16 +477,16 @@ class UserJourneyTest(TestCase):
 
         sleep(DAY / 4)
         logger.debug('Day 4.25')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
         sleep(DAY / 4)
         logger.debug('Day 4.5')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
         sleep(DAY / 4)
         logger.debug('Day 4.75')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
 
         logger.debug('dr_d@t.com tracks first step and sets second')
         dr_d_user_second_step.complete = True
@@ -475,25 +500,31 @@ class UserJourneyTest(TestCase):
 
         sleep(DAY / 4)
         logger.debug('Day 5')
-        send_d_emails()
         send_dr_emails()
+        send_d_emails()
 
-        self.assertInbox(1)
-        self.assertEmail('d3', d_user_2)
+        # End of Day 5
+        # - dr_user - out
+        # - dr_d_user(DR1, D1) - tracks second step and sets third
+        # - dr_user_1(D1, D2, D3) - out
+        # - d_user_2(D1, D2) - receives D3
 
-    def assertEmail(self, name, user):
-        if len(mail.outbox) == 0:
-            self.fail('No emails in outbox')
-
-        email = mail.outbox.pop(0)
-
-        self.assertEquals(user.email, email.to[0], name)
-        self.assertEquals(name, email.prolifiko_name, name)
-
-    def assertInbox(self, unread):
-        self.assertEquals(unread, len(mail.outbox), [
-            (email.prolifiko_name, email.to[0]) for email in mail.outbox
+        self.assertInbox([
+            ('d3', d_user_2.email)
         ])
+
+    def assertInbox(self, emails):
+        outbox = [(email.prolifiko_name, email.to[0]) for email in mail.outbox]
+
+        self.assertEquals(len(mail.outbox), len(emails), {
+            'expected': emails,
+            'actual': outbox
+        })
+
+        for email in emails:
+            self.assertIn(email, outbox)
+
+        mail.outbox = []
 
     def create_step(self, text, goal):
         logger.debug('Creating ' + text)

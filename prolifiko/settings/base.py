@@ -223,6 +223,14 @@ EMAIL_META = {
     },
 }
 
+INACTIVE_TIME = int(os.environ.setdefault('PF_INACTIVE_TIME', '24'))
+INACTIVE_TIME_UNIT = os.environ.setdefault('PF_INACTIVE_TIME_UNT', 'hours')
+
+EMAIL_SEND_PERIOD = int(os.environ.setdefault('PF_EMAIL_SEND_PERIOD', '1'))
+EMAIL_SEND_PERIOD_UNITS = os.environ.setdefault(
+    'PF_EMAIL_SEND_PERIOD_UNITS', 'hours')
+EMAIL_SEND_SCHEDULE = timedelta(**{EMAIL_SEND_PERIOD_UNITS: EMAIL_SEND_PERIOD})
+
 BROKER_URL = 'django://'
 CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 
@@ -230,16 +238,13 @@ CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 CELERYBEAT_SCHEDULE = {
     'send-dr-emails': {
         'task': 'app.tasks.send_dr_emails',
-        'schedule': timedelta(hours=1),
+        'schedule': EMAIL_SEND_SCHEDULE,
     },
     'send-d-emails': {
         'task': 'app.tasks.send_d_emails',
-        'schedule': timedelta(hours=1),
+        'schedule': EMAIL_SEND_SCHEDULE,
     },
 }
 
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json']
-
-INACTIVE_TIME = 24
-INACTIVE_TIME_UNIT = 'hours'
