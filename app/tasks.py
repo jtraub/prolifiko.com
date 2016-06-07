@@ -4,12 +4,12 @@ from django.utils import timezone
 from django.conf import settings
 from datetime import timedelta
 from celery import shared_task
+from celery.utils.log import get_task_logger
 
-from .utils import send_email, get_logger
-from .models import Goal, Email, Step
+from .utils import send_email
+from .models import Goal, Email
 
-
-logger = get_logger(__name__)
+logger = get_task_logger(__name__)
 
 DELTA = {settings.INACTIVE_TIME_UNIT: settings.INACTIVE_TIME}
 
