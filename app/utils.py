@@ -60,11 +60,12 @@ def send_email(name: str, user: User, context: Dict={}):
         msg.send()
     except MailgunAPIError as e:
         response = e.args[0]
-        logger.error('MailgunAPIError sending %s email to %s '
-                     'status_code=%d content=%s' % (
-                        name, user.email, response.status_code, response.text))
 
-        raise e
+        msg = 'MailgunAPIError sending %s email to %s ' + \
+              'status_code=%d content=%s'
+
+        raise MailgunAPIError(msg % (
+                name, user.email, response.status_code, response.text))
 
     return Email.objects.create(name=name, recipient=user)
 
