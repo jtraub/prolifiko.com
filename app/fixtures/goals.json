@@ -6,7 +6,8 @@
             "user": "5",
             "text": "test goal",
             "start": "2016-04-10T08:45:24.515Z",
-            "end": "2016-04-15T08:45:24.515Z"
+            "active": false,
+            "complete": false
         }
     }
 ]

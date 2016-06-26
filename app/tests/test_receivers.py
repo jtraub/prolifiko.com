@@ -42,6 +42,19 @@ class ReceiversTest(TestCase):
             'user_id': goal.user.id,
         })
 
+    def test_goal_complete_event(self, add_event, send_email):
+        goal = Goal.objects.first()
+
+        receive_goal_complete(self, goal=goal)
+
+        add_event.assert_called_with('goals.complete', {
+            'id': goal.id.hex,
+            'user_id': goal.user.id,
+        })
+
+        send_email.assert_called_with('n7_goal_complete', goal.user,
+                                      {'goal': goal})
+
     def test_new_step_event(self, add_event, send_email):
         receive_new_step(self, step=self.step)
 

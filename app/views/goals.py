@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 
 from app.models import Goal
 from app.forms import GoalForm
-from app.signals import new_goal
+from app.signals import new_goal, goal_complete
 from app.utils import get_logger, send_email
 
 
@@ -30,7 +30,7 @@ def new(request):
             days_since_start = relativedelta(now(), goal.user.date_joined).days
             goal.lives = 3 - days_since_start
 
-            logger.debug('Creating goal user=%s' % request.user.email)
+            logger.debug('Creating goal user=%s' % goal.user.email)
 
             goal.save()
 
@@ -71,8 +71,12 @@ def complete(request, goal_id):
         raise Http404('Goal does not exist')
 
     if request.method == 'POST':
-        logger.info('Goal complete goal=%s' % goal.id)
-        send_email('n7_goal_complete', goal.user)
+        logger.info('Goal complete user=%s' % goal.user.email)
+
+        goal.complete = True
+        goal.save()
+
+        goal_complete.send('app.views.goals.complete', goal=goal)
 
         return render(request, 'goals/feedback.html', {'goal': goal})
 

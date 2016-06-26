@@ -50,6 +50,19 @@ def receive_new_goal(sender, **kwargs):
     })
 
 
+@receiver(goal_complete)
+@log_signal
+def receive_goal_complete(send, **kwargs):
+    goal = kwargs['goal']
+
+    add_event('goals.complete', {
+        'id': goal.id.hex,
+        'user_id': goal.user.id
+    })
+
+    send_email('n7_goal_complete', goal.user, {'goal': goal})
+
+
 @receiver(new_step)
 @log_signal
 def receive_new_step(sender, **kwargs):

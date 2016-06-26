@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import Http404, HttpResponse
 from django.utils import timezone
-from datetime import timedelta
+from django.conf import settings
 
 from app.models import Step, Goal
 from app.forms import NewStepForm, TrackStepForm
@@ -31,12 +31,15 @@ def new(request, goal_id):
 
             step.goal = goal
             step.start = timezone.now()
-            step.end = step.start + timedelta(days=1)
+            step.end = step.start + settings.INACTIVE_DELTA
 
             logger.debug('Creating step goal=%s user=%s' % (
                 goal.id, request.user.email))
 
             step.save()
+
+            step.goal.active = True
+            step.goal.save()
 
             goal.refresh_from_db()
 
@@ -87,6 +90,7 @@ def track(request, step):
         form = TrackStepForm(request.POST, instance=step)
         step = form.save(commit=False)
 
+        step.time_tracked = timezone.now()
         step.complete = True
 
         step.save()
@@ -94,10 +98,9 @@ def track(request, step):
         step_complete.send('app.views.steps.track', step=step)
 
         goal = step.goal
+        goal.active = False
 
-        if goal.steps.all().count() == 5:
-            goal.complete = True
-            goal.save()
+        goal.save()
 
         if goal.complete:
             return redirect('app_goals_complete', goal_id=goal.id)

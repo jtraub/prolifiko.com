@@ -43,9 +43,24 @@ class GoalsTest(TestCase):
         self.assertEquals(self.user.id, goal.user.id)
         self.assertAlmostEquals(timezone.now(), goal.start,
                                 delta=timedelta(seconds=3))
-        self.assertEquals(goal.start + timedelta(days=5), goal.end)
 
         new_goal.send.assert_called_with('app.views.goals.new', goal=goal)
+
+    @patch('app.views.goals.goal_complete', spec=Signal)
+    def test_complete(self, goal_complete):
+        goal = Goal.objects.filter(user=self.user).first()
+
+        response = self.client.post(reverse('app_goals_complete',
+                                            kwargs={'goal_id': goal.id}))
+
+        self.assertContains(response, 'feedback')
+
+        goal.refresh_from_db()
+
+        self.assertTrue(goal.complete)
+
+        goal_complete.send.assert_called_with(
+            'app.views.goals.complete', goal=goal)
 
     def test_new_form(self):
         response = self.client.get(reverse('app_goals_new'))

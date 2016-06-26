@@ -225,6 +225,7 @@ EMAIL_META = {
 
 INACTIVE_TIME = int(os.environ.setdefault('PF_INACTIVE_TIME', '24'))
 INACTIVE_TIME_UNIT = os.environ.setdefault('PF_INACTIVE_TIME_UNIT', 'hours')
+INACTIVE_DELTA = timedelta(**{INACTIVE_TIME_UNIT: INACTIVE_TIME})
 
 EMAIL_SEND_PERIOD = int(os.environ.setdefault('PF_EMAIL_SEND_PERIOD', '1'))
 EMAIL_SEND_PERIOD_UNIT = os.environ.setdefault(

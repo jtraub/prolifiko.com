@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from datetime import timedelta
 from django.utils import timezone
+from django.conf import settings
 import uuid
 from itertools import chain
 
@@ -21,19 +22,13 @@ class Goal(models.Model):
 
     text = models.TextField(max_length=144)
     start = models.DateTimeField(default=timezone.now)
-    end = models.DateTimeField()
 
+    active = models.BooleanField(default=False)
     lives = models.IntegerField(default=3)
     complete = models.BooleanField(default=False)
 
     def __str__(self):
         return '%s (%s)' % (self.id, self.user.email)
-
-    def save(self, *args, **kwargs):
-        if self.end is None:
-            self.end = self.start + timedelta(days=5)
-
-        super(Goal, self).save(*args, **kwargs)
 
     def lose_life(self, commit=True):
         self.lives -= 1
@@ -74,6 +69,7 @@ class Step(models.Model):
     text = models.TextField(max_length=144)
     start = models.DateTimeField(default=timezone.now)
     end = models.DateTimeField()
+    time_tracked = models.DateTimeField(blank=True, null=True)
 
     complete = models.BooleanField(default=False)
     comments = models.TextField(max_length=144, blank=True)
@@ -84,7 +80,7 @@ class Step(models.Model):
     @staticmethod
     def create(goal: Goal, text: str):
         start = timezone.now()
-        end = start + timedelta(days=1)
+        end = start + settings.INACTIVE_DELTA
 
         return Step.objects.create(
             goal=goal,
@@ -104,6 +100,10 @@ class Step(models.Model):
     def nth(self):
         return nth[self.number]
 
+    @property
+    def user(self):
+        return self.goal.user
+
 
 class Email(models.Model):
     name = models.TextField()
@@ -119,10 +119,17 @@ class Email(models.Model):
 
     TYPE_D = 'd'
     TYPE_DR = 'dr'
+    TYPE_N = 'n'
 
     class Meta:
         ordering = ('sent',)
 
     @property
     def type(self):
-        return Email.TYPE_DR if self.name[:2] == 'dr' else Email.TYPE_D
+        if self.name[:2] == 'dr':
+            return Email.TYPE_DR
+
+        if self.name[0] == 'n':
+            return Email.TYPE_N
+
+        return Email.TYPE_D
