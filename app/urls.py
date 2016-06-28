@@ -1,11 +1,14 @@
 from django.conf.urls import url
 
-from .views import index, auth, goals, steps
+from .views import index, auth, goals, steps, account
 
 
 urlpatterns = [
     url(r'login/$', auth.login, name='app_login'),
     url(r'register/$', auth.register, name='app_register'),
+
+    url(r'users/(?P<user_id>[^/]+)/deactivate/$',
+        account.deactivate, name='app_deactivate'),
 
     url(r'goals/new/$', goals.new, name='app_goals_new'),
 

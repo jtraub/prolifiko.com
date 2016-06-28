@@ -42,6 +42,9 @@ def login(request):
         form.add_error(None, error)
         return do_render(form)
 
+    if not user.is_active:
+        return redirect('app_deactivate', user_id=user.id)
+
     do_login(request, user)
 
     add_event('login', {

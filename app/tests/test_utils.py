@@ -1,7 +1,7 @@
 from django.test import TestCase, override_settings
 from django.contrib.auth.models import User
 from django.core import mail
-from unittest.mock import patch, Mock
+from unittest.mock import patch, Mock, MagicMock
 from django.template.backends.django import Template
 from django.conf import settings
 from html2text import html2text
@@ -30,7 +30,7 @@ class UtilsTest(TestCase):
         template.render.return_value = body
         loader.get_template = Mock(return_value=template)
 
-        utils.send_email('test', self.user, {'goal': goal})
+        utils.send_email('test', self.user, goal)
 
         loader.get_template.assert_called_once_with('emails/test.html')
         template.render.assert_called_once_with({
@@ -56,6 +56,14 @@ class UtilsTest(TestCase):
         self.assertEquals(1, emails.count())
         email = emails.first()
         self.assertEquals('test', email.name)
+
+    def test_send_email_raises_on_inactive_user(self):
+        user = MagicMock(spec=User)
+        user.is_active = False
+        user.email = 'test'
+
+        with self.assertRaises(ValueError):
+            utils.send_email('test', user)
 
     @override_settings(DEBUG=True)
     def test_add_event_debug(self):

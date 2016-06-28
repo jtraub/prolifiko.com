@@ -1,4 +1,7 @@
-<p>Amazing! You’ve now completed day three of your 5-day writing challenge.</p>  
+{% extends 'base.html' %}
+
+{% block content %}
+<p>Amazing! You’ve now completed day three of your 5-day writing challenge.</p>
 
 <p>Just two days remain – keep going!</p>
 
@@ -16,11 +19,11 @@
 
 <p><pre>{{ next_step.text }}</pre></p>
 
-<p>When you’ve completed this step, <a href="{{ BASE_URL }}{% url 'app_steps_track' goal_id=next_step.goal.id step_id=next_step.id %}">click here to track and tell us about your progress</a>.</p>
+<p>When you’ve completed this step, <a href="{{ BASE_URL }}{% url 'app_steps_track' goal_id=goal.id step_id=goal.current_step.id %}">click here to track and tell us about your progress</a>.</p>
 
 <p>Remember, if you don’t track within 24 hours – you’ll lose a life.</p> 
 
 <p>Good luck for the final challenge, you’re nearly there.</p> 
 
 <p>Bec and Chris</p>
-
+{% endblock %}

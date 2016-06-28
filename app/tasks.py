@@ -24,6 +24,7 @@ def send_dr_emails():
         return User.objects \
             .annotate(goal_count=Count('goal')) \
             .annotate(step_count=Count('goal__steps')) \
+            .filter(is_active=True) \
             .filter(date_joined__lt=before, date_joined__gt=after) \
             .filter(Q(goal_count=0) | Q(step_count=0))
 
@@ -54,13 +55,15 @@ def send_d_emails():
     logger.debug('Looking for incomplete steps with an end time before %s'
                  % now)
 
-    for step in Step.objects.filter(complete=False, goal__lives__gt=0):
+    for step in Step.objects.filter(
+            complete=False, goal__lives__gt=0, goal__user__is_active=True):
         logger.debug('> Step num=%d user=%s end=%s' % (
             step.number, step.user.email, step.end
         ))
 
     late_steps = Step.objects \
-        .filter(complete=False, end__lte=now, goal__lives__gt=0)
+        .filter(goal__lives__gt=0, goal__user__is_active=True) \
+        .filter(complete=False, end__lte=now,)
 
     for step in late_steps:
         logger.debug('Found late step user=%s step=%s overdue=%s end=%s' % (
@@ -74,6 +77,7 @@ def send_d_emails():
 
     for goal in Goal.objects \
             .annotate(step_count=Count('steps')) \
+            .filter(user__is_active=True) \
             .filter(active=False, complete=False, step_count__gt=0):
 
         logger.debug('> Goal user=%s last_track=%s delta=%s' % (
@@ -100,7 +104,7 @@ def send_d_emails():
         if len(sent_emails) == 0:
             logger.debug('No emails sent to %s; sending D1' % user.email)
             goal.lose_life()
-            email = send_email('d1', user, {'step': step})
+            email = send_email('d1', user, goal)
             email.step = step
             email.save()
 
@@ -125,7 +129,7 @@ def send_d_emails():
 
             next_email = email_progression[len(sent_emails)]
 
-            email = send_email(next_email, user, {'step': step})
+            email = send_email(next_email, user, goal)
             email.step = step
             email.save()
         else:

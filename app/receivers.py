@@ -60,7 +60,7 @@ def receive_goal_complete(send, **kwargs):
         'user_id': goal.user.id
     })
 
-    send_email('n7_goal_complete', goal.user, {'goal': goal})
+    send_email('n7_goal_complete', goal.user, goal)
 
 
 @receiver(new_step)
@@ -75,17 +75,15 @@ def receive_new_step(sender, **kwargs):
     })
 
     if step.goal.steps.count() == 1:
-        send_email('n2_new_goal', step.goal.user, {
-            'first_step': step
-        })
+        send_email('n2_new_goal', step.goal.user, step.goal)
     else:
         # We want the step before this one - that's the one that's been
         # completed. E.g. if we've received step 2 here, we want step_num to be
         # 1, which is the list index of step 2.
         step_num = list(step.goal.steps.all()).index(step)
         n_num = step_num + 2
-        send_email('n%d_step_%d_complete' % (n_num, step_num), step.goal.user,
-                   {'next_step': step})
+        email = 'n%d_step_%d_complete' % (n_num, step_num)
+        send_email(email, step.goal.user, step.goal)
 
 
 @receiver(step_complete)

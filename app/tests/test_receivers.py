@@ -52,8 +52,7 @@ class ReceiversTest(TestCase):
             'user_id': goal.user.id,
         })
 
-        send_email.assert_called_with('n7_goal_complete', goal.user,
-                                      {'goal': goal})
+        send_email.assert_called_with('n7_goal_complete', goal.user, goal)
 
     def test_new_step_event(self, add_event, send_email):
         receive_new_step(self, step=self.step)
@@ -71,8 +70,7 @@ class ReceiversTest(TestCase):
 
         receive_new_step(self, step=step)
 
-        send_email.assert_called_with('n2_new_goal', goal.user,
-                                      {'first_step': step})
+        send_email.assert_called_with('n2_new_goal', goal.user, goal)
 
         for i in range(1, 4):
             step = Step.create(goal, 'test')
@@ -80,7 +78,7 @@ class ReceiversTest(TestCase):
             receive_new_step(self, step=step)
 
             send_email.assert_called_with('n%d_step_%d_complete' % (i+2, i),
-                                          goal.user, {'next_step': step})
+                                          goal.user, goal)
 
     def test_step_complete_event(self, add_event, send_email):
         receive_step_complete(self, step=self.step)

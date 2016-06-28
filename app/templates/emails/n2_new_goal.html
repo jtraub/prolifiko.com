@@ -1,4 +1,7 @@
-<p>Hi</p> 
+{% extends 'base.html' %}
+
+{% block content %}
+<p>Hi</p>
 
 <p>Great news! You’ve set a goal for this 5-day writing challenge and agreed your first step – amazing.</p> 
 
@@ -25,8 +28,9 @@
 
 <p>If you’re struggling, check out our free resource: <a href="http://blog.write-track.co.uk/5waysstartingblocks/">5 ways to get off the starting blocks and write</a>.</p>
 
-When you’ve completed this step, <a href="{{ BASE_URL }}{% url 'app_steps_track' goal_id=first_step.goal.id step_id=first_step.id %}">click here to track and tell us about your progress</a>.</p>
+When you’ve completed this step, <a href="{{ BASE_URL }}{% url 'app_steps_track' goal_id=goal.id step_id=goal.current_step.id %}">click here to track and tell us about your progress</a>.</p>
 
 <p>Sending you lots of luck.</p> 
 
 <p>Bec and Chris</p>
+{% endblock %}

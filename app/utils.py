@@ -8,7 +8,7 @@ import logging
 from html2text import html2text
 from django_mailgun import MailgunAPIError
 
-from .models import Email
+from .models import Email, Goal
 
 events = []
 
@@ -20,17 +20,22 @@ def get_logger(name: str):
 logger = get_logger(__name__)
 
 
-def render_email(name: str, user: User, context: Dict):
+def render_email(name: str, user: User, goal: Goal=None):
     template = loader.get_template('emails/%s.html' % name)
 
-    context.setdefault('user', user)
-    context['BASE_URL'] = settings.BASE_URL
+    context = {
+        'user': user,
+        'BASE_URL': settings.BASE_URL
+    }
+
+    if goal:
+        context['goal'] = goal
 
     try:
         html = template.render(context)
     except Exception as e:
         logger.error('%s raised when rendering %s email; %s' %
-                     (e.__name__, name, e))
+                     (type(e).__name__, name, e))
 
         raise e
 
@@ -39,8 +44,11 @@ def render_email(name: str, user: User, context: Dict):
     return html, text
 
 
-def send_email(name: str, user: User, context: Dict={}):
-    (html, text) = render_email(name, user, context)
+def send_email(name: str, user: User, goal: Goal=None):
+    if not user.is_active:
+        raise ValueError('Cannot send email to inactive user ' + user.email)
+
+    (html, text) = render_email(name, user, goal)
 
     meta = settings.EMAIL_META[name]
 
