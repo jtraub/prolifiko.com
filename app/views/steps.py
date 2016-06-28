@@ -100,6 +100,9 @@ def track(request, step):
         goal = step.goal
         goal.active = False
 
+        if goal.steps.count() == 5:
+            goal.complete = True
+
         goal.save()
 
         if goal.complete:

@@ -115,3 +115,19 @@ class StepsTest(TestCase):
 
         step_complete_signal.send.assert_called_with(
             'app.views.steps.track', step=step)
+
+    @patch('app.views.steps.step_complete', spec=Signal)
+    def test_track_last_step_redirects_to_complete(self, step_complete_signal):
+        goal = Goal.objects.create(user=self.user, text='test')
+
+        for i in range(5):
+            Step.create(goal, 'test')
+
+        response = self.client.post(
+            reverse('app_steps_track', kwargs={
+                'goal_id': goal.id, 'step_id': goal.current_step.id}),
+            follow=False)
+
+        self.assertRedirects(response,
+                             reverse('app_goals_complete',
+                                     kwargs={'goal_id': goal.id}))
