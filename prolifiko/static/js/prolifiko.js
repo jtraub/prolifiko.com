@@ -42,3 +42,25 @@ function limitText(textarea) {
 
     LimitTextDone = true;
 }
+
+var passwordInputs = document.querySelectorAll('input[type=password]');
+
+passwordInputs.forEach(function (password) {
+    var passwordShown = false;
+
+    var toggle = document.createElement('button');
+    toggle.innerHTML = 'Show password';
+
+    toggle.addEventListener('click', function (event) {
+        event.preventDefault();
+        return false;
+    });
+
+    toggle.addEventListener('click', function () {
+        passwordShown = !passwordShown;
+        toggle.innerHTML = (passwordShown ? 'Hide' : 'Show') + ' password';
+        password.type = passwordShown ? 'text' : 'password';
+    });
+
+    password.parentNode.insertBefore(toggle, password.nextSibling);
+});

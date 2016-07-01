@@ -18,8 +18,7 @@ class RegistrationTest(TestCase):
 
     def test_no_email(self):
         response = self.client.post(reverse('app_register'), {
-            'password1': 'test',
-            'password2': 'test',
+            'password': 'test',
         }, follow=True)
 
         self.assertEqual(400, response.status_code)
@@ -31,11 +30,10 @@ class RegistrationTest(TestCase):
     def test_register(self, registration_signal):
         response = self.client.post(reverse('app_register'), {
             'email': 'new@test.com',
-            'password1': 'test',
-            'password2': 'test',
+            'password': 'test',
         }, follow=True)
 
-        self.assertContains(response, 'Check your inbox', status_code=201)
+        self.assertContains(response, 'check your inbox', status_code=201)
 
         user = User.objects.get(email='new@test.com')
         self.assertEqual('new@test.com', user.email)
@@ -52,8 +50,7 @@ class RegistrationTest(TestCase):
 
         response = self.client.post(reverse('app_register'), {
             'email': 'already@test.com',
-            'password1': 'test',
-            'password2': 'test',
+            'password': 'test',
         }, follow=True)
 
         self.assertEquals(400, response.status_code)

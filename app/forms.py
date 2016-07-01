@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import password_validation
 from django.core.validators import validate_email
 from uuid import uuid4
 
@@ -12,24 +12,28 @@ def validate_unique_email(value):
         raise forms.ValidationError('Email address already registered')
 
 
-class RegistrationForm(UserCreationForm):
+class RegistrationForm(forms.ModelForm):
     email = forms.EmailField(required=True, validators=[
         validate_email, validate_unique_email])
 
-    # Override this to remove help text
-    password2 = forms.CharField(
-        label="Password confirmation",
-        widget=forms.PasswordInput,
-        strip=False)
+    password = forms.CharField(
+        label="Password",
+        strip=False,
+        widget=forms.PasswordInput)
 
     class Meta:
         model = User
-        fields = ('email', 'password1', 'password2')
+        fields = ('email', 'password')
 
     def save(self, commit=True):
-        user = super(RegistrationForm, self).save(commit=False)
+        user = super().save(commit=False)
+
         user.email = self.cleaned_data['email']
         user.username = uuid4().hex[:-2]
+
+        password_validation.validate_password(
+            self.cleaned_data.get('password'), self.instance)
+        user.set_password(self.cleaned_data.get('password'))
 
         if commit:
             user.save()
