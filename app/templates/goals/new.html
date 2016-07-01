@@ -22,6 +22,14 @@
 
     <p>All done? Great! Next, you need to set a step to help you achieve your goal.</p>
 
-    <p><input type="submit" value="Next" /></p>
+    <p><input type="submit" value="Next" id="next_button" disabled/></p>
 </form>
+
+<script type="text/javascript">
+    var nextButton = $('#next_button');
+
+    $('#id_text').on('input', function () {
+        nextButton.prop('disabled', !this.value.length);
+    });
+</script>
 {% endblock %}
