@@ -5,10 +5,7 @@
     <input type="hidden" name="next" value="{{ next }}"/>
     {% csrf_token %}
 
-    <p>{{ form.non_field_errors }}</p>
-    <p>{{ form.email.label_tag }} {{ form.email }}</p>
-    <p>{{ form.password.label_tag }} {{ form.password }}</p>
-
+    {{ form.as_p }}
     <p><input type="submit" value="Log in" /></p>
 </form>
 

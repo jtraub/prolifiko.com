@@ -22,13 +22,13 @@ def login(request):
         form.add_error(None, error)
         return do_render(form)
 
-    if request.method is 'GET':
+    if request.method == 'GET':
         return do_render(LoginForm())
 
     form = LoginForm(request.POST)
 
     if not form.is_valid():
-        return do_error('invalid')
+        return do_render(form)
 
     try:
         u = User.objects.get(email=form.cleaned_data['email'])
