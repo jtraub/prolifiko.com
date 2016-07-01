@@ -16,6 +16,12 @@ class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True, validators=[
         validate_email, validate_unique_email])
 
+    # Override this to remove help text
+    password2 = forms.CharField(
+        label="Password confirmation",
+        widget=forms.PasswordInput,
+        strip=False)
+
     class Meta:
         model = User
         fields = ('email', 'password1', 'password2')
