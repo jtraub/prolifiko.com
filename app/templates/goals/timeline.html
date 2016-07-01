@@ -3,7 +3,7 @@
 {% block content %}
 <h1>TIMELINE</h1>
 
-{% if not in_progress %}
+{% if not in_progress and not goal.complete %}
 <p><a href="{% url 'app_steps_new' goal_id=goal.id %}">Create your next step</a></p>
 {% endif %}
 
