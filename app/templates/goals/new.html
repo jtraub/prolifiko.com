@@ -24,12 +24,4 @@
 
     <p><input type="submit" value="Next" id="next_button" disabled/></p>
 </form>
-
-<script type="text/javascript">
-    var nextButton = $('#next_button');
-
-    $('#id_text').on('input', function () {
-        nextButton.prop('disabled', !this.value.length);
-    });
-</script>
 {% endblock %}

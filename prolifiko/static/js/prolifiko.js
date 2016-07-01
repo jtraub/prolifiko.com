@@ -6,6 +6,8 @@ function limitText(textarea) {
         return;
     }
 
+    var submit = textarea.form.querySelector('input[type=submit]');
+
     var remaining = document.createElement('span');
     remaining.innerHTML = MAX_WORDS;
 
@@ -20,6 +22,8 @@ function limitText(textarea) {
             return word.length > 0;
         });
         var wordsLeft = MAX_WORDS - words.length;
+
+        submit.disabled = words.length === 0;
 
         remaining.innerHTML = wordsLeft;
         remaining.style.color = wordsLeft >= 0 ? 'black' : 'red';
