@@ -47,8 +47,10 @@ class GoalForm(forms.ModelForm):
         model = Goal
         fields = ['text']
         widgets = {
-            'text': forms.Textarea(
-                attrs={'placeholder': new_goal_tip})}
+            'text': forms.Textarea(attrs={
+                'placeholder': new_goal_tip,
+                'onClick': 'limitText(this)'
+            })}
 
 
 new_step_tip = 'Tip: Don’t think about the project as a whole. Just think ' \
@@ -60,8 +62,10 @@ class NewStepForm(forms.ModelForm):
         model = Step
         fields = ['text']
         widgets = {
-            'text': forms.Textarea(
-                attrs={'placeholder': new_step_tip})}
+            'text': forms.Textarea(attrs={
+                'placeholder': new_step_tip,
+                'onClick': 'limitText(this)'
+            })}
 
 
 track_step_tip = 'Tip: Tell us any progress you made. Number of words, ' \
@@ -74,5 +78,7 @@ class TrackStepForm(forms.ModelForm):
         model = Step
         fields = ['comments']
         widgets = {
-            'comments': forms.Textarea(
-                attrs={'placeholder': track_step_tip})}
+            'comments': forms.Textarea(attrs={
+                'placeholder': track_step_tip,
+                'onClick': 'limitText(this)'
+            })}

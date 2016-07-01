@@ -1,8 +1,7 @@
 from django.db import models
-from django.conf import settings
-from datetime import timedelta
 from django.utils import timezone
 from django.conf import settings
+from django import forms
 import uuid
 from itertools import chain
 
@@ -66,7 +65,7 @@ class Step(models.Model):
     goal = models.ForeignKey(Goal, related_name='steps',
                              on_delete=models.CASCADE)
 
-    text = models.TextField(max_length=144)
+    text = models.CharField(max_length=144)
     start = models.DateTimeField(default=timezone.now)
     end = models.DateTimeField()
     time_tracked = models.DateTimeField(blank=True, null=True)
