@@ -16,6 +16,12 @@ class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True, validators=[
         validate_email, validate_unique_email])
 
+    # Override this to remove help text
+    password2 = forms.CharField(
+        label="Password confirmation",
+        widget=forms.PasswordInput,
+        strip=False)
+
     class Meta:
         model = User
         fields = ('email', 'password1', 'password2')
@@ -32,9 +38,8 @@ class RegistrationForm(UserCreationForm):
 
 
 class LoginForm(forms.Form):
-    email = forms.EmailField(required=True)
-    password = forms.CharField(required=True, strip=False,
-                               widget=forms.PasswordInput)
+    email = forms.EmailField()
+    password = forms.CharField(strip=False, widget=forms.PasswordInput)
 
 
 new_goal_tip = 'Tip: What you write is up to you but try to be specific, eg ' \

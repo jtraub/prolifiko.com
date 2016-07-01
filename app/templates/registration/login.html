@@ -4,7 +4,12 @@
 <form action="{% url 'app_login' %}" method="post">
     <input type="hidden" name="next" value="{{ next }}"/>
     {% csrf_token %}
+
     {{ form.as_p }}
-    <input type="submit" value="Submit" />
+    <p><input type="submit" value="Log in" /></p>
 </form>
+
+<p>Forgotten your password? <a href="{% url 'password_reset' %}">Click here</a> to reset it.</p>
+<p>Not registered? <a href="{% url 'app_register' %}">Click here</a> to join.</p>
+<p>Need some help? <a href="mailto:bec@write-track.co.uk">Send us an email</a>.</p>
 {% endblock %}
