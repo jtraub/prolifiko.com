@@ -33,10 +33,12 @@ class AccountTest(TestCase):
 
     def test_user_is_not_deactivated_if_already_inactive(self, add_event):
         user = User.objects.create(email='already_inactive@t.com')
+        user.is_active = False
+        user.save()
 
         response = self.client.get(reverse('app_deactivate',
                                            kwargs={'user_id': user.id}))
 
         self.assertContains(response, 'Your account has been deactivated')
 
-        add_event.assert_never_called()
+        self.assertFalse(add_event.called)
