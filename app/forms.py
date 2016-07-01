@@ -32,9 +32,8 @@ class RegistrationForm(UserCreationForm):
 
 
 class LoginForm(forms.Form):
-    email = forms.EmailField(required=True)
-    password = forms.CharField(required=True, strip=False,
-                               widget=forms.PasswordInput)
+    email = forms.EmailField()
+    password = forms.CharField(strip=False, widget=forms.PasswordInput)
 
 
 new_goal_tip = 'Tip: What you write is up to you but try to be specific, eg ' \

@@ -15,21 +15,25 @@ def login(request):
     def do_render(f):
         return render(request, 'registration/login.html', {'form': f})
 
+    def do_error(code):
+        error = ValidationError('Invalid email address or password',
+                                code=code)
+
+        form.add_error(None, error)
+        return do_render(form)
+
     if request.method is 'GET':
         return do_render(LoginForm())
 
     form = LoginForm(request.POST)
 
     if not form.is_valid():
-        return do_render(form)
+        return do_error('invalid')
 
     try:
         u = User.objects.get(email=form.cleaned_data['email'])
     except User.DoesNotExist:
-        error = ValidationError('Invalid email address or password',
-                                code='bad_email')
-        form.add_error(None, error)
-        return do_render(form)
+        return do_error('bad_email')
 
     user = authenticate(
         username=u.username,
@@ -37,10 +41,7 @@ def login(request):
     )
 
     if user is None:
-        error = ValidationError('Invalid email address or password',
-                                code='bad_password')
-        form.add_error(None, error)
-        return do_render(form)
+        return do_error('bad_password')
 
     if not user.is_active:
         return redirect('app_deactivate', user_id=user.id)
