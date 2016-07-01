@@ -37,6 +37,14 @@
 
     <p>Ready to submit your step? Then click the button below.</p>
 
-    <p><input type="submit" value="Submit" /></p>
+    <p><input type="submit" value="Submit" id="next_button" disabled/></p>
 </form>
+
+<script type="text/javascript">
+    var nextButton = $('#next_button');
+
+    $('#id_text').on('input', function () {
+        nextButton.prop('disabled', !this.value.length);
+    });
+</script>
 {% endblock %}
