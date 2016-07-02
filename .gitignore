@@ -6,3 +6,5 @@ __pycache__/
 /static/
 /media/
 celerybeat-schedule
+node_modules/
+webpack-stats.json
