@@ -2,6 +2,8 @@
 
 $primary-font: "Trebuchet MS", Helvetica, sans-serif;
 
+$text-secondary: #11bcf2;
+
 $yellow: #fde700;
 $gray: #838488;
 $gray-light: #ceced0;
@@ -13,6 +15,10 @@ html {
 body {
   font-family: $primary-font;
   text-align: center;
+}
+
+a {
+  color: $text-secondary;
 }
 
 .content {
