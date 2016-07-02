@@ -1,12 +1,14 @@
 {% extends "base.html" %}
 
+{% block heading %}Login{% endblock %}
+
 {% block content %}
 <form action="{% url 'app_login' %}" method="post">
     <input type="hidden" name="next" value="{{ next }}"/>
     {% csrf_token %}
 
     {{ form.as_p }}
-    <p><button type="submit">Log in"</button></p>
+    <p><button type="submit">Log in</button></p>
 </form>
 
 <p>Forgotten your password? <a href="{% url 'password_reset' %}">Click here</a> to reset it.</p>

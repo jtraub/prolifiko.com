@@ -9,7 +9,12 @@
     {% render_bundle 'main' 'css' %}
 </head>
 <body>
-    {% block content %}{% endblock %}
+    <nav>
+        <div class="logo-container"><img class="logo"/></div>
+        <h1>{% block heading %}{%  endblock %}</h1>
+    </nav>
+
+    <div class="content">{% block content %}{% endblock %}</div>
 
     {% render_bundle 'main'  'js' %}
 </body>

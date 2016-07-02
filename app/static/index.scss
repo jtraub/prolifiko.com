@@ -1,28 +1,71 @@
+@import url('~normalize.css');
+
 $primary-font: "Trebuchet MS", Helvetica, sans-serif;
 
 $yellow: #fde700;
+$gray: #838488;
+$gray-light: #ceced0;
+
+html {
+  font-size: 14px;
+}
 
 body {
   font-family: $primary-font;
   text-align: center;
 }
 
+.content {
+  padding: 1em;
+}
+
+nav {
+  background: $yellow;
+  padding: 1em;
+
+  .logo-container {
+    position: absolute;
+    top: 0.5em;
+  }
+
+  .logo {
+    background: url('/static/logo.png');
+    background-size: 50px;
+    width: 50px;
+    height: 44px;
+  }
+
+  h1 {
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+
+    //float: left;
+  }
+}
+
 textarea {
   font-family: "Courier", serif;
+  width: 100%;
+  border: 1px solid $gray-light;
 }
 
 button {
-  font-family: $primary-font;
   font-weight: bold;
 
   border: 0;
   padding: 0.5em 4em;
   text-transform: uppercase;
   
-  background-color: $yellow;
+  background: $yellow;
 }
 
 button:disabled {
-  background-color: #ceced0;
-  color: #838488;
+  background: $gray;
+  color: $gray-light;
+}
+
+blockquote {
+  color: $gray;
+  font-style: italic;
+  border-left: 1px solid $gray-light;
 }

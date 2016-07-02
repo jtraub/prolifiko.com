@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block heading %}Register{% endblock %}
+
 {% block content %}
 <form action="{% url 'app_register' %}" method="post">
     {% csrf_token %}

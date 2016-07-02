@@ -58,7 +58,7 @@ class GoalForm(forms.ModelForm):
         widgets = {
             'text': forms.Textarea(attrs={
                 'placeholder': new_goal_tip,
-                'onClick': 'limitText(this)'
+                'onClick': 'limitText(this, true)'
             })}
 
 
@@ -73,7 +73,7 @@ class NewStepForm(forms.ModelForm):
         widgets = {
             'text': forms.Textarea(attrs={
                 'placeholder': new_step_tip,
-                'onClick': 'limitText(this)'
+                'onClick': 'limitText(this, true)'
             })}
 
 

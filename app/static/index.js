@@ -5,7 +5,7 @@ var $ = require('jquery');
 var LimitTextDone = false;
 var MAX_WORDS = 100;
 
-window.limitText = function limitText(textarea) {
+window.limitText = function limitText(textarea, requireText) {
     if (LimitTextDone) {
         return;
     }
@@ -27,10 +27,12 @@ window.limitText = function limitText(textarea) {
         });
         var wordsLeft = MAX_WORDS - words.length;
 
-        submit.disabled = words.length === 0;
+        if (requireText) {
+            submit.disabled = words.length === 0;
+        }
 
         remaining.innerHTML = wordsLeft;
-        remaining.style.color = wordsLeft >= 0 ? 'black' : 'red';
+        wrapper.style.color = wordsLeft >= 0 ? 'black' : 'red';
     });
 
     textarea.form.addEventListener('submit', function(event) {
@@ -52,7 +54,7 @@ var passwordInputs = document.querySelectorAll('input[type=password]');
 passwordInputs.forEach(function (password) {
     var passwordShown = false;
 
-    var toggle = document.createElement('button');
+    var toggle = document.createElement('a');
     toggle.innerHTML = 'Show password';
 
     toggle.addEventListener('click', function (event) {
