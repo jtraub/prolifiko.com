@@ -10,7 +10,7 @@ window.limitText = function limitText(textarea) {
         return;
     }
 
-    var submit = textarea.form.querySelector('input[type=submit]');
+    var submit = textarea.form.querySelector('button[type=submit]');
 
     var remaining = document.createElement('span');
     remaining.innerHTML = MAX_WORDS;

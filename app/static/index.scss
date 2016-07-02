@@ -1,10 +1,28 @@
+$primary-font: "Trebuchet MS", Helvetica, sans-serif;
 
+$yellow: #fde700;
 
 body {
-  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  font-family: $primary-font;
   text-align: center;
 }
 
 textarea {
   font-family: "Courier", serif;
+}
+
+button {
+  font-family: $primary-font;
+  font-weight: bold;
+
+  border: 0;
+  padding: 0.5em 4em;
+  text-transform: uppercase;
+  
+  background-color: $yellow;
+}
+
+button:disabled {
+  background-color: #ceced0;
+  color: #838488;
 }
