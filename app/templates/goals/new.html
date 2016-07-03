@@ -3,23 +3,20 @@
 {% block heading %}Get Started{% endblock %}
 
 {% block content %}
-<p>Welcome to the challenge! It’s great to have you on board.</p>
-
-<p>Your first task is to set a writing goal.</p>
-
 <form action="{% url 'app_goals_new' %}" method="post">
-
-<p><strong>What do you want to achieve with your writing in the next 5 days?</strong></p>
-
     {% csrf_token %}
+    <section>
+        <p>Welcome to the challenge! It’s great to have you on board.</p>
+        <p>Your first task is to set a writing goal.</p>
+        <p><strong>What do you want to achieve with your writing in the next 5 days?</strong></p>
+    </section>
 
-    <p>{{ form.non_field_errors }}</p>
-    <p>{{ form.text.errors }}</p>
     <p>{{ form.text }}</p>
 
-    <p>Still struggling? Check out our blog on <a href="http://blog.write-track.co.uk/how-to-set-a-writing-goal/">how to set a goal</a>.</p>
-
-    <p>All done? Great! Next, you need to set a step to help you achieve your goal.</p>
+    <section>
+        <p>Still struggling? Check out our blog on <a href="http://blog.write-track.co.uk/how-to-set-a-writing-goal/">how to set a goal</a>.</p>
+        <p>All done? Great! Next, you need to set a step to help you achieve your goal.</p>
+    </section>
 
     <p><button type="submit" id="next_button" disabled>Next</button></p>
 </form>

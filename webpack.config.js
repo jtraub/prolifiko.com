@@ -6,13 +6,14 @@ module.exports = {
     entry: './app/static/index.js',
 
     output: {
-        path: path.resolve('./dist/'),
+        path: path.resolve('./dist'),
         filename: "bundle.js"
     },
 
     module: {
         loaders: [
-            { test: /\.scss$/, loader: ExtractTextPlugin.extract('style', 'css!sass') }
+            { test: /\.scss$/, loader: ExtractTextPlugin.extract('style', 'css!resolve-url!sass?sourceMap') },
+            { test: /\.png$/, loader: 'url?limit=10000' },
         ]
     },
 

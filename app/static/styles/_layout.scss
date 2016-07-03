@@ -1,0 +1,26 @@
+nav {
+  background: $yellow;
+  padding: 1em;
+
+  .logo-container {
+    position: absolute;
+    top: 1em;
+  }
+
+  .logo {
+    background-image: url('../img/logo.png');
+    background-size: 28px;
+    background-repeat: no-repeat;
+    width: 28px;
+    height: 39px;
+  }
+
+  h1 {
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+  }
+}
+
+.content {
+  padding: 1em;
+}

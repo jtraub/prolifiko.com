@@ -1,0 +1,21 @@
+button {
+  font-weight: bold;
+
+  border: 0;
+  padding: 0.5em 4em;
+  text-transform: uppercase;
+
+  background: $yellow;
+}
+
+button:disabled {
+  background: $gray;
+  color: $gray-light;
+}
+
+textarea {
+  font-family: "Courier", serif;
+  width: 100%;
+  border: 1px solid black;
+  background: $background;
+}

@@ -4,16 +4,18 @@ $primary-font: "Trebuchet MS", Helvetica, sans-serif;
 
 $text-secondary: #11bcf2;
 
-$yellow: #fde700;
-$gray: #838488;
-$gray-light: #ceced0;
+$background: #e6e6e6;
+$yellow: #fee700;
+$gray: #9fa0a3;
+$gray-light: #e8e8e9;
+$gray-lighter: #f1f1f1;
 
 html {
   font-size: 16px;
 }
 
 body {
-  background: #e6e6e6;
+  background: $background;
   font-family: $primary-font;
   text-align: center;
 }
@@ -22,54 +24,15 @@ a {
   color: $text-secondary;
 }
 
-.content {
-  padding: 1em;
+section {
+  background: white;
+  padding: 0.5em;
 }
 
-nav {
-  background: $yellow;
-  padding: 1em;
-
-  .logo-container {
-    position: absolute;
-    top: 1em;
-  }
-
-  .logo {
-    background-image: url('/static/logo.png');
-    background-size: 28px;
-    background-repeat: no-repeat;;
-    width: 28px;
-    height: 39px;
-  }
-
-  h1 {
-    -webkit-margin-before: 0;
-    -webkit-margin-after: 0;
-
-    //float: left;
-  }
-}
-
-textarea {
-  font-family: "Courier", serif;
-  width: 100%;
-  border: 1px solid $gray-light;
-}
-
-button {
-  font-weight: bold;
-
-  border: 0;
-  padding: 0.5em 4em;
-  text-transform: uppercase;
-  
-  background: $yellow;
-}
-
-button:disabled {
-  background: $gray;
-  color: $gray-light;
+p {
+  -webkit-margin-before: 1em;
+  -webkit-margin-after: 1em;
+  margin: 0.5em;
 }
 
 blockquote {
@@ -79,3 +42,6 @@ blockquote {
   border-left: 1px solid $gray-light;
   padding-left: 1em;
 }
+
+@import 'styles/layout';
+@import 'styles/forms';
