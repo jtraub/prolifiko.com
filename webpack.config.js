@@ -1,5 +1,4 @@
 var webpack = require('webpack');
-var BundleTracker = require('webpack-bundle-tracker');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var path = require('path');
 
@@ -7,8 +6,8 @@ module.exports = {
     entry: './app/static/index.js',
 
     output: {
-        path: path.resolve('./static/bundles/'),
-        filename: "[name]-[hash].js"
+        path: path.resolve('./dist/'),
+        filename: "bundle.js"
     },
 
     module: {
@@ -18,7 +17,6 @@ module.exports = {
     },
 
     plugins: [
-        new ExtractTextPlugin('[name]-[hash].css'),
-        new BundleTracker({filename: './webpack-stats.json'})
+        new ExtractTextPlugin('bundle.css'),
     ]
 };

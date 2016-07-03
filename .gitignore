@@ -5,6 +5,6 @@ __pycache__/
 *.sqlite3
 /static/
 /media/
+/dist/
 celerybeat-schedule
 node_modules/
-webpack-stats.json

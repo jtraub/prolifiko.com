@@ -1,21 +1,20 @@
-{% load render_bundle from webpack_loader %}
-
+{% load static from staticfiles %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <title>Prolifiko</title>
 
-    {% render_bundle 'main' 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'bundle.css' %}"/>
 </head>
 <body>
     <nav>
-        <div class="logo-container"><img class="logo"/></div>
+        <div class="logo-container"><div class="logo"></div></div>
         <h1>{% block heading %}{%  endblock %}</h1>
     </nav>
 
     <div class="content">{% block content %}{% endblock %}</div>
 
-    {% render_bundle 'main'  'js' %}
+    <script src="{% static 'bundle.js' %}"></script>
 </body>
 </html>

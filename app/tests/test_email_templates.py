@@ -27,7 +27,10 @@ class EmailTemplatesTest(TestCase):
             print('Testing email ' + name)
 
             try:
-                render_email(name, goal.user, goal)
+                (html, text) = render_email(name, goal.user, goal)
             except Exception as e:
                 print(e)
                 self.fail('Failed to render %s email' % name)
+
+            self.assertTrue('deactivate' in html)
+            self.assertTrue('9141465' in html)

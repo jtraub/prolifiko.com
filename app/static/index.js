@@ -1,7 +1,5 @@
 require('./index.scss');
 
-var $ = require('jquery');
-
 var LimitTextDone = false;
 var MAX_WORDS = 100;
 
@@ -55,6 +53,7 @@ passwordInputs.forEach(function (password) {
     var passwordShown = false;
 
     var toggle = document.createElement('a');
+    toggle.style.cursor = 'pointer';
     toggle.innerHTML = 'Show password';
 
     toggle.addEventListener('click', function (event) {
