@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "heroku-postbuild": "NODE_ENV=production npm run build",
-    "build": "webpack --bail --optimize-minimize"
+    "build": "./node_modules/webpacl/bin/webpack.js --bail --optimize-minimize"
   },
   "engines": {
     "node": "6.x"
