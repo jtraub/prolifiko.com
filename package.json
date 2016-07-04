@@ -4,7 +4,9 @@
   "description": "Use `requirements.common.txt` to install dependencies. This keeps `psycopg2` separate so you don't have to have Postgres installed to work on the project.",
   "main": "webpack.config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "heroku-postinstall": "NODE_ENV=production npm run build",
+    "build": "webpack --bail --optimize-minimize"
   },
   "engines": {
     "node": "6.x"
