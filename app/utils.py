@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.template import loader
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
-from typing import Dict
+from django.shortcuts import redirect
 import keen
 import logging
 from html2text import html2text
@@ -88,3 +88,13 @@ def add_event(collection, body):
     else:
         logger.debug('Recording %s event %s' % (collection, str(body)))
         keen.add_event(collection, body)
+
+
+def is_active(view_func):
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_active:
+            return redirect('app_deactivate', user_id=request.user.id)
+
+        return view_func(request, *args, **kwargs)
+
+    return wrapper

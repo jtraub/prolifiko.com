@@ -7,13 +7,14 @@ from django.conf import settings
 from app.models import Step, Goal
 from app.forms import NewStepForm, TrackStepForm
 from app.signals import new_step, step_complete
-from app.utils import get_logger
+from app.utils import get_logger, is_active
 
 
 logger = get_logger(__name__)
 
 
 @login_required
+@is_active
 def new(request, goal_id):
     try:
         goal = Goal.objects.get(pk=goal_id)
@@ -74,6 +75,7 @@ def load_step(view):
 
 
 @login_required
+@is_active
 @load_step
 def start(request, step):
     return render(request, 'steps/start.html', {
@@ -82,6 +84,7 @@ def start(request, step):
 
 
 @login_required
+@is_active
 @load_step
 def track(request, step):
     form = TrackStepForm()
