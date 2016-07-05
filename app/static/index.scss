@@ -11,7 +11,7 @@ $gray-light: #e8e8e9;
 $gray-lighter: #f1f1f1;
 
 html {
-  font-size: 16px;
+  font-size: 15px;
 }
 
 body {
@@ -30,8 +30,8 @@ section {
 }
 
 p {
-  -webkit-margin-before: 1em;
-  -webkit-margin-after: 1em;
+  -webkit-margin-before: 0;
+  -webkit-margin-after: 0;
   margin: 0.5em;
 }
 
@@ -41,6 +41,18 @@ blockquote {
   text-align: left;
   border-left: 1px solid $gray-light;
   padding-left: 1em;
+}
+
+ol, ul {
+  -webkit-margin-before: 0;
+  -webkit-margin-after: 0;
+  -webkit-padding-start: 0;
+}
+
+.content {
+  ol, ul {
+    margin: 1em;
+  }
 }
 
 @import 'styles/layout';

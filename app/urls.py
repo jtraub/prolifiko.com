@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.contrib.auth import views as django_auth
 
-from .views import index, auth, goals, steps, account, test
+from .views import index, auth, goals, steps, account, test, menu
 
 
 urlpatterns = [
@@ -37,6 +37,11 @@ urlpatterns = [
         steps.track, name='app_steps_track'),
 
     url(r'^$', index, name='app_index'),
+
+    url(r'^about/$', menu.about, name='app_menu_about'),
+    url(r'^terms/$', menu.terms,  name='app_menu_terms'),
+    url(r'^privacy/$', menu.privacy, name='app_menu_privacy'),
+    url(r'^help/$', menu.help, name='app_menu_help'),
 
     url(r'test/render_email/(?P<name>[^/]+)/$', test.render_email)
 ]
