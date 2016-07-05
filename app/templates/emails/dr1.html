@@ -1,53 +1,20 @@
 {% extends 'emails/base.html' %}
 
 {% block content %}
-<p>Thanks for signing up to this 5-day writing challenge!</p>
-
-<p>We noticed that you haven't got started yet. We know that if you take this 5-day writing challenge – your writing practice can be transformed.</p> 
-
-<p>But don't take it from us. Here's what other writers are saying:</p>
-
-<p>
-<blockquote>"I really valued the challenge's structured purposefulness which FINALLY got me off the starting blocks. It gave me a sense of accountability that kept me motivated."</blockquote>  
-<i>- Alison</i> 
-</p>
-
-<p>
-<blockquote>"I've now decided first thing is the best time for me to develop a daily writing routine. I enjoyed the writing challenge and found it useful in kickstarting a daily routine."</blockquote> 
-</p>
-<i>- Kevin</i> 
-
-<p>
-<blockquote>"I finished the goals I set for myself! I completed my pro bono writing project and I hit 30K (30,142, actually) words on my novel rewrite. :). It feels great! Thank you."</blockquote> 
-<i>- Jess</i> 
-</p>
-
-<p>
-<blockquote>"The course gave just the kick I needed. I now have a rough outline for the last three chapters so have a direction to follow and feel this is a huge step forward."</blockquote> 
-<i>- Maggie</i> 
-</p>
-
-<p>
-<blockquote>"Before the challenge writing was a pipe dream. Now, I've established a new writing routine. I'd recommend your programme to anyone – I've benefitted hugely."</blockquote> 
-<i>- Leigh</i> 
-</p>
-
-<p>As you can see – writers have really benefited from sticking with this challenge.</p>
-
-<p>We'd love you to benefit too. If you're struggling to start here are tips that have really helped us in the past:</p> 
-
-<ul>
-  <li><strong>If you're struggling to set a weekly goal – be realistic.</strong> A writing goal can be an amount of words, a length of time or progress on a specific project. Don't be too adventurous but have something to aim at.</li>
-  <li><strong>If you're struggling to set a first step – think tiny!</strong> What's the one small thing you can do to move your writing project forward? It doesn't even need to be writing – thinking about a project or reviewing your notes still counts.</li>
-</ul>
-
-<p>To help you set your goal, check out our free resource: <a href="http://blog.write-track.co.uk/7rulesgoalsetting/">The 7 rules of goal setting that will make you a better writer</a>.</p>
-
-<p>You'll also receive some more top tips on goal setting once you're inside.</p>
-
-<p>We promise that this 5-day challenge will work and can transform your writing practice – but you have to take part.</p> 
-
-<p><a href="{{ BASE_URL }}{% url 'app_goals_new' %}">Click here to get started</a>.</p>
-
-<p>Good luck with your writing! Bec and Chris</p>
+<p>Whoops. It looks like you may have forgotten to start our 5-day writing challenge.</p>
+<p>We know how things get away from you as the week goes on&hellip; but we don&rsquo;t want you to miss out.</p>
+<p>We&rsquo;d really like to share a quick personal story with you about why we developed this challenge &ndash; we&rsquo;ve recorded a short video. [link to video] We hope it inspires your own writing journey.</p>
+<p>So why not set your first goal and step <strong><a href="{{ BASE_URL }}{% url 'app_goals_new' %}">right now.</a></strong></p>
+<p>If you&rsquo;re still not sure, we&rsquo;d like to share a couple of super-quick stories about the writers who have benefitted from this 5-day challenge.</p>
+<p>First, there&rsquo;s Alison. For her, ideas aren&rsquo;t a problem &ndash; her head&rsquo;s brimming with them. She finds knuckling down to write the tough part. But then, she completed our 5-day writing challenge and this is what she said:</p>
+<p><em>&ldquo;I really valued the structured purposefulness of this challenge which <strong>finally</strong> got me off the starting blocks: making those tiny but significant commitments each day forced me to move forward when I&rsquo;ve spent weeks chasing my own tail. It&rsquo;s occurred to me that if isn&rsquo;t the exact right book <strong>it doesn&rsquo;t matter</strong>, I can always write another, the important thing is to start and then allow it to develop as I go. I get my energy from bouncing off others, and this sense of connection and accountability has really helped me stay motivated - when I sit to write on my own I can feel the energy leaching out of me. Thank you.&rdquo;</em></p>
+<p>Weeks of procrastination over and a new sense of direction.</p>
+<p>Wow! Imagine what could you could achieve.</p>
+<p>Next up is Lee. His ambition was to complete his script but he had a busy family life and just could <strong>not</strong> make the time &ndash; however hard he tried. He took the 5-day challenge, completed it and this is what he said:</p>
+<p><em>&ldquo;</em><em>Today I achieved my goal. I wrote 700 words and finished the first draft of my script. Pretty thrilled to be honest. Before the challenge I had a vague idea that completing draft one with the kids off school would be a great thing &ndash; but also a bit of a pipe dream. I feel like I have established a new holiday writing routine &ndash; basically to get up and get straight to work for an hour or so. I would recommend your programme to anyone &ndash; I&rsquo;ve benefitted hugely from the whole thing.&rdquo;</em></p>
+<p>Isn&rsquo;t that amazing? Just think, a whole new writing routine established after just 5 days.</p>
+<p>We want <strong>your</strong> writing success story too.</p>
+<p>All you need to do is <strong><a href="{{ BASE_URL }}{% url 'app_goals_new' %}">check in and set a goal and first step.</a></strong></p>
+<p>Let&rsquo;s do this! We know you can</p>
+<p>Bec and Chris</p>
 {% endblock %}
