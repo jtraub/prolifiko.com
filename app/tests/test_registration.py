@@ -31,12 +31,14 @@ class RegistrationTest(TestCase):
         response = self.client.post(reverse('app_register'), {
             'email': 'new@test.com',
             'password': 'test',
+            'first_name': 'name',
         }, follow=True)
 
         self.assertContains(response, 'check your inbox', status_code=201)
 
         user = User.objects.get(email='new@test.com')
         self.assertEqual('new@test.com', user.email)
+        self.assertEqual('name', user.first_name)
         # We should have generated a username
         self.assertIsNotNone(user.username)
         # User.username.max_length=30
@@ -51,6 +53,7 @@ class RegistrationTest(TestCase):
         response = self.client.post(reverse('app_register'), {
             'email': 'already@test.com',
             'password': 'test',
+            'first_name': 'name',
         }, follow=True)
 
         self.assertEquals(400, response.status_code)

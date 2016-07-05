@@ -200,6 +200,7 @@ class UserJourneyTest(TestCase):
             client.post(reverse('app_register'), {
                 'email': email,
                 'password': 'test',
+                'first_name': 'test',
             })
 
             user = User.objects.get(email=email)

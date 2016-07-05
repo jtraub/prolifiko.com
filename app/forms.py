@@ -13,17 +13,19 @@ def validate_unique_email(value):
 
 
 class RegistrationForm(forms.ModelForm):
+    first_name = forms.CharField(label='First name', required=True)
+
     email = forms.EmailField(required=True, validators=[
         validate_email, validate_unique_email])
 
     password = forms.CharField(
-        label="Password",
+        label='Password',
         strip=False,
         widget=forms.PasswordInput)
 
     class Meta:
         model = User
-        fields = ('email', 'password')
+        fields = ('first_name', 'email', 'password',)
 
     def save(self, commit=True):
         user = super().save(commit=False)

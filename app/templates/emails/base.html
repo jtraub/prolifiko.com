@@ -1,3 +1,5 @@
+<p>Hi {{ user.first_name }},</p>
+
 {% block content %}{% endblock %}
 
 <p style="color: gray">If you no longer wish to receive these emails <a href="{{ BASE_URL }}{% url 'app_deactivate' user_id=user.id %}">click here</a> to deactivate your account.</pm>

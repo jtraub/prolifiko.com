@@ -56,6 +56,9 @@ passwordInputs.forEach(function (password) {
     toggle.style.cursor = 'pointer';
     toggle.innerHTML = 'Show password';
 
+    var wrapper = document.createElement('div');
+    wrapper.appendChild(toggle);
+
     toggle.addEventListener('click', function (event) {
         event.preventDefault();
         return false;
@@ -67,5 +70,5 @@ passwordInputs.forEach(function (password) {
         password.type = passwordShown ? 'text' : 'password';
     });
 
-    password.parentNode.insertBefore(toggle, password.nextSibling);
+    password.parentNode.insertBefore(wrapper, password.nextSibling);
 });
