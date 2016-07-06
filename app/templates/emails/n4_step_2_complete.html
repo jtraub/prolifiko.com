@@ -1,27 +1,17 @@
 {% extends 'emails/base.html' %}
 
 {% block content %}
-<p>Hurrah! You’ve now completed day two of your 5-day writing challenge!</p>
-
-<p>Now, we’d really like to share with you another secret of writing productivity and that’s to… <strong>go public!</strong></p>  
-
-<p>Science shows that you’re far more likely to reach your goal if you share it with other people – and that’s because other people are great at holding us to account. So, why not tell someone else about this 5-day writing challenge? Tell a friend, colleague or family member, share it on Facebook, tweet about it on Twitter! The key thing is that you tell someone.</p> 
-
-<p>If you want to learn more, check out our free resource: <a href="http://blog.write-track.co.uk/6waysaccountable/">6 ways to become more accountable to others (and write more)</a>.</p>
-
-<p>In our next email, you’ll learn why rewarding yourself is key to developing an effective writing practice.</p> 
-
-<p>But now, back to the challenge.</p> 
-
+<p>Hurrah!</p>
+<p>You&rsquo;ve now completed step two of your 5-day writing challenge.</p>
+<p>Now, we&rsquo;d really like to share with you another secret of writing productivity and that&rsquo;s to&hellip;.<strong> go public! </strong></p>
+<p>Science shows that you&rsquo;re far more likely to reach your goal if you share it with other people &ndash; and that&rsquo;s because other people are great at holding us to account. So, why not tell someone else about this 5-day writing challenge? Tell a friend, colleague or family member, share it on Facebook, tweet about it on Twitter! The key thing is that you tell someone.</p>
+<p>If you want to learn more, check out our free resource <a href="http://blog.write-track.co.uk/6waysaccountable/">6 ways to become more accountable to others (and write more)</a><u>.</u></p>
+<p>In our next email, you&rsquo;ll learn why creative power-ups are key to developing an effective writing practice.</p>
+<p>But now, back to the challenge.</p>
 <p>You set yourself a third step to:</p>
-
 <p><pre>{{ goal.current_step.text }}</pre></p>
-
-<p>When you’ve completed this step, <a href="{{ BASE_URL }}{% url 'app_steps_track' goal_id=goal.id step_id=goal.current_step.id %}">click here to track and tell us about your progress</a>.</p>
-
-<p>Remember, if you don’t track within 24 hours – you’ll lose a life. If you’ve used both your lives you’ll be off the challenge.</p> 
-
-<p>You’re nearly halfway there!</p> 
-
+<p>When you&rsquo;ve completed this step, <a href="{{ BASE_URL }}{% url 'app_steps_track' goal_id=goal.id step_id=goal.current_step.id %}">click here</a> to track and tell us about your progress.</p>
+<p>Remember, if you don&rsquo;t track within 24 hours &ndash; you&rsquo;ll lose a life. If you&rsquo;ve used both your lives you&rsquo;ll be off the challenge.</p>
+<p>You&rsquo;re nearly halfway there! Keep going.</p>
 <p>Bec and Chris</p>
 {% endblock %}

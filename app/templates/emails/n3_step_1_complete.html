@@ -1,29 +1,19 @@
 {% extends 'emails/base.html' %}
 
 {% block content %}
-<p>Congratulations! You’ve completed day one of your 5-day writing challenge!</p>
-
-<p>By completing this first step you’re in the 70% of people who go on to finish the whole challenge. That’s amazing!</p>
-
-<p>Okay, we’d love to share with you our first secret of writing productivity and that’s to… <strong>book in the time.</strong></p>
-
-<p>Science tells us that committing time to write is one of the best ways to avoid procrastination. There are lots of different approaches to finding the time to write but essentially it all comes down to scheduling. Take your diary, find time that you can use for writing and make an appointment so you treat it like any other commitment. Start small – it could just be fifteen minutes a day – and build up from there. It’s important to get into the habit of sticking to a schedule.</p>
-
-<p>Want to learn more? Check out our free resource <a href="http://blog.write-track.co.uk/8stepsroutine/">8 steps to finding a writing routine that works for you</a>.</p>
-
-<p>In our next email, you’ll learn why sharing your writing goals with others helps to keep you writing.</p> 
-
-<p>But now, back to the challenge.</p> 
-
+<p>Congratulations!&nbsp;</p>
+<p>You&rsquo;ve completed day one of your Write Track 5-day challenge.</p>
+<p>We hope you feel really proud of yourself &ndash; you should.</p>
+<p>By completing this first step you&rsquo;re now in the 86% of people who go on to finish the whole challenge. That&rsquo;s amazing!</p>
+<p>Okay, we&rsquo;d love to share with you our first secret of writing productivity and that&rsquo;s to&hellip; <strong>book in the time.</strong></p>
+<p>Science tells us that committing time to write is one of the best ways to avoid procrastination. There are lots of different approaches to finding the time to write but essentially&nbsp;it all comes down to scheduling. Take your diary, find time that you can use for writing and make an appointment so you treat it like any other commitment. Start small &ndash; it could be just fifteen minutes a day &ndash; and build up from there. It&rsquo;s important to get into the habit of sticking to a schedule.</p>
+<p>Want to learn more? Check out our free resource <a href="http://blog.write-track.co.uk/8stepsroutine/">8 steps to finding a writing routine that works for you.</a></p>
+<p>In our next email, you&rsquo;ll learn why sharing your writing goals with others helps to keep you writing.</p>
+<p>But now, back to the challenge.</p>
 <p>You set yourself a second step to:</p>
-
 <p><pre>{{ goal.current_step.text }}</pre></p>
-
-<p>When you’ve completed this step, <a href="{{ BASE_URL }}{% url 'app_steps_track' goal_id=goal.id step_id=goal.current_step.id %}">click here to track and tell us about your progress</a>.</p>
-
-<p>Remember, if you don’t track within 24 hours – you’ll lose a life.</p> 
-
-<p>Happy writing!</p>
-
+<p>When you&rsquo;ve completed this step, <a href="{{ BASE_URL }}{% url 'app_steps_track' goal_id=goal.id step_id=goal.current_step.id %}">click here</a> to track and tell us about your progress.</p>
+<p>Remember, if you don&rsquo;t track within your 24 hour deadline &ndash; you&rsquo;ll lose a life.</p>
+<p>Let&rsquo;s do this! We know you can.</p>
 <p>Bec and Chris</p>
 {% endblock %}
