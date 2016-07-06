@@ -4,19 +4,31 @@
 
 {% block content %}
 {% if not in_progress and not goal.complete %}
-<p><a href="{% url 'app_steps_new' goal_id=goal.id %}">Create your next step</a></p>
+<p style="margin-bottom: 1.5em;"><a href="{% url 'app_steps_new' goal_id=goal.id %}"><button>Create your next step</button></a></p>
 {% endif %}
 
-<ol reversed>
+<div class="steps">
+    <div class="step {% if goal.complete %} step--complete{% endif %}">
+        <h3 class="step-heading">My Goal</h3>
+        <p class="step-text">{{ goal.text|safe }}</p>
+    </div>
+
     {% for step in goal.steps.all|dictsortreversed:"start" %}
-        <li>
-            {{ step.text|safe }} -
-            {% if step.complete %}
-                <span>Complete</span>
-            {% else %}
-                <a href="{% url 'app_steps_track' goal_id=step.goal.id step_id=step.id %}">Track</a>
-            {% endif %}
-        </li>
+        <div class="step{% if step.complete %} step--complete{% endif %}">
+            <h3 class="step-heading">Step #{{ step.number }}</h3>
+            <p class="step-text">{{ step.text|safe }}</p>
+
+            <div class="step-status">
+                {% if not step.complete %}
+                    <hr/>
+                    <p class="step-deadline">Your deadline is {{ step.end }}</p>
+                    <a href="{% url 'app_steps_track' goal_id=step.goal.id step_id=step.id %}">Track</a>
+                {% elif step.comments %}
+                    <hr/>
+                    <p class="step-progress">{{ step.comments|safe }}</p>
+                {% endif %}
+            </div>
+        </div>
     {% endfor %}
-</ol>
+</div>
 {% endblock %}

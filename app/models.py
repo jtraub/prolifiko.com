@@ -19,7 +19,7 @@ class Goal(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
 
-    text = models.TextField(max_length=144)
+    text = models.TextField(max_length=1024)
     start = models.DateTimeField(default=timezone.now)
 
     active = models.BooleanField(default=False)
@@ -65,13 +65,13 @@ class Step(models.Model):
     goal = models.ForeignKey(Goal, related_name='steps',
                              on_delete=models.CASCADE)
 
-    text = models.CharField(max_length=144)
+    text = models.CharField(max_length=1024)
     start = models.DateTimeField(default=timezone.now)
     end = models.DateTimeField()
     time_tracked = models.DateTimeField(blank=True, null=True)
 
     complete = models.BooleanField(default=False)
-    comments = models.TextField(max_length=144, blank=True)
+    comments = models.TextField(max_length=1024, blank=True)
 
     class Meta:
         ordering = ('start',)

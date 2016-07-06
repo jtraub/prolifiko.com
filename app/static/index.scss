@@ -1,11 +1,13 @@
 @import url('~normalize.css');
 
 $primary-font: "Trebuchet MS", Helvetica, sans-serif;
+$fixed-width-font: "Courier", serif;
 
 $text-secondary: #11bcf2;
 
 $background: #e6e6e6;
 $yellow: #fee700;
+$gray-dark: #777;
 $gray: #9fa0a3;
 $gray-light: #e8e8e9;
 $gray-lighter: #f1f1f1;
@@ -36,11 +38,14 @@ p {
 }
 
 blockquote {
-  color: $gray;
+  color: $gray-dark;
+  font-family: $fixed-width-font;
   font-style: italic;
   text-align: left;
-  border-left: 1px solid $gray-light;
+  border-left: 1px solid $gray-dark;
   padding-left: 1em;
+  -webkit-margin-start: 1em;
+  -webkit-margin-end: 1em;
 }
 
 ol, ul {
@@ -57,3 +62,4 @@ ol, ul {
 
 @import 'styles/layout';
 @import 'styles/forms';
+@import 'styles/myprogress';

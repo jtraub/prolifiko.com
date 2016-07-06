@@ -14,10 +14,13 @@ button:disabled {
 }
 
 textarea {
-  font-family: "Courier", serif;
+  font-family: $fixed-width-font;
   width: 100%;
   border: 1px solid black;
   background: $background;
+  padding: 0.5em;
+  box-sizing: border-box;
+  text-align: justify;
 }
 
 form li {

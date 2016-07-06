@@ -11,6 +11,6 @@
 
 <form action="{% url 'app_goals_complete' goal_id=goal.id %}" method="post">
     {% csrf_token %}
-    <p><input type="submit" value="Complete"/></p>
+    <p><button type="submit">Complete</button></p>
 </form>
 {% endblock %}
