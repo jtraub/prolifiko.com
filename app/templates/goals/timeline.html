@@ -21,10 +21,10 @@
             <div class="step-status">
                 {% if not step.complete %}
                     <hr/>
-                    <p class="step-deadline">Your deadline is {{ step.end }}</p>
                     <a href="{% url 'app_steps_track' goal_id=step.goal.id step_id=step.id %}">Track</a>
                 {% elif step.comments %}
                     <hr/>
+                    <h4>My Progress</h4>
                     <p class="step-progress">{{ step.comments|safe }}</p>
                 {% endif %}
             </div>
