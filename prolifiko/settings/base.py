@@ -184,43 +184,43 @@ LOGGING = {
 
 EMAIL_META = {
     'n1_registration': {
-        'subject': "Your 5 Day Writing Challenge – Welcome!",
+        'subject': "Your 5 Day writing challenge – welcome!",
     },
     'n2_new_goal': {
-        'subject': "1st Goal Set + Important Information",
+        'subject': "1st goal set + important information",
     },
     'n3_step_1_complete': {
-        'subject': "You’ve Completed the Toughest Step – Well Done!",
+        'subject': "You’ve completed the toughest step – well done!",
     },
     'n4_step_2_complete': {
-        'subject': "Step 2 Done: Set Your Next Step",
+        'subject': "Step 2 done - now set your next step",
     },
     'n5_step_3_complete': {
-        'subject': "Aced the 3rd Step: Only 2 Steps Remain",
+        'subject': "Step 3 done - 2 steps remain",
     },
     'n6_step_4_complete': {
-        'subject': "4th Step Won: Just 1 More To Go!",
+        'subject': "Step 4 done - just 1 step to go",
     },
     'n7_goal_complete': {
-        'subject': "Way to Go! You’ve Finished the Challenge",
+        'subject': "Way to go! You’ve finished the challenge",
     },
     'dr1': {
-        'subject': 'Do You Want to Kickstart Your Writing?',
+        'subject': 'Yikes! Did you forget to start the writing challenge?',
     },
     'dr2': {
-        'subject': 'Writing Challenge: Don’t quit now',
+        'subject': 'Writing challenge - get started now!',
     },
     'dr3': {
-        'subject': 'Writing Challenge: Check in Anytime',
+        'subject': 'Writing challenge - come back anytime',
     },
     'd1': {
-        'subject': 'Writing Challenge: 1st life lost!',
+        'subject': 'You’ve lost your 1st writing life',
     },
     'd2': {
-        'subject': 'Writing Challenge: 2nd life lost!',
+        'subject': '2nd writing life lost - don’t lose another!',
     },
     'd3': {
-        'subject': 'Writing Challenge: Check in Anytime',
+        'subject': 'Writing challenge - try again',
     },
 }
 
