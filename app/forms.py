@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import password_validation
+import django.contrib.auth.forms as auth
 from django.core.validators import validate_email
 from uuid import uuid4
 
@@ -93,3 +94,12 @@ class TrackStepForm(forms.ModelForm):
                 'placeholder': track_step_tip,
                 'onClick': 'limitText(this)'
             })}
+
+
+class SetPasswordForm(auth.SetPasswordForm):
+    new_password2 = None
+
+    def clean_new_password2(self):
+        self.cleaned_data.set('new_password2', 'new_password1')
+
+        return super().clean_new_password2()
