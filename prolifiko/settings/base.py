@@ -182,6 +182,9 @@ LOGGING = {
     }
 }
 
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 EMAIL_META = {
     'n1_registration': {
         'subject': "Your 5 Day writing challenge – welcome!",

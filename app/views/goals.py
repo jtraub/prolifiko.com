@@ -56,7 +56,6 @@ def timeline(request, goal_id):
         return redirect('app_steps_new', goal_id=goal.id)
 
     in_progress = goal.steps.filter(complete=False).count() > 0
-    print(in_progress, goal.complete)
 
     return render(request, 'goals/timeline.html', {
         'goal': goal,
