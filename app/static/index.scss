@@ -40,12 +40,6 @@ p {
 blockquote {
   color: $gray-dark;
   font-family: $fixed-width-font;
-  font-style: italic;
-  text-align: left;
-  border-left: 1px solid $gray-dark;
-  padding-left: 1em;
-  -webkit-margin-start: 1em;
-  -webkit-margin-end: 1em;
 }
 
 ol, ul {
