@@ -185,6 +185,8 @@ LOGGING = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+DEFAULT_FROM_EMAIL = 'Bec and Chris <email@prolifiko.com>'
+
 EMAIL_META = {
     'n1_registration': {
         'subject': "Your 5 Day writing challenge – welcome!",

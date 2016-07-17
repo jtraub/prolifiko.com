@@ -1,6 +1,9 @@
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.core import mail
+from django.core.mail.message import EmailMultiAlternatives
+from django.conf import settings
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -53,12 +56,37 @@ class AccountTest(TestCase):
 
         self.assertFalse(add_event.called)
 
-    def test_reset_password_request(self):
+    def test_password_reset_request(self):
         response = self.client.get(reverse('password_reset'))
 
         self.assertEquals(response.status_code, 200)
 
-    def test_reset_passwort_done(self):
+    @override_settings(
+        EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend')
+    def test_password_reset_email(self):
+        user = User.objects.create(
+            email='password_reset@t.com', username='password_reset')
+        user.set_password('test')
+        user.save()
+        client = Client()
+        client.login(username='password_reset', password='test')
+
+        response = client.post(reverse('password_reset'), {
+            'email': user.email
+        })
+
+        self.assertRedirects(response, reverse('password_reset_done'))
+        self.assertEquals(len(mail.outbox), 1)
+
+        message = mail.outbox[0]
+        self.assertTrue(isinstance(message, EmailMultiAlternatives))
+        self.assertEquals(message.from_email, settings.DEFAULT_FROM_EMAIL)
+        self.assertIsNotNone(message.body)
+        self.assertIsNotNone(message.alternatives)
+        # alternatives is a list of tuples of content and mimetype
+        self.assertEquals(message.alternatives[0][1], 'text/html')
+
+    def test_password_reset_done(self):
         response = self.client.get(reverse('password_reset_done'))
 
         self.assertEquals(response.status_code, 200)

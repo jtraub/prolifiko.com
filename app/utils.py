@@ -62,7 +62,7 @@ def send_email(name: str, user: User, goal: Goal=None):
     msg = EmailMultiAlternatives(
         meta['subject'],
         text,
-        'Bec and Chris <email@prolifiko.com>',
+        settings.DEFAULT_FROM_EMAIL,
         [recipient]
     )
     msg.prolifiko_name = name

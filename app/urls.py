@@ -1,9 +1,14 @@
 from django.conf.urls import url
 from django.contrib.auth import views as django_auth
+from django.conf import settings
 
 from .forms import SetPasswordForm
 from .views import index, auth, goals, steps, account, test, menu
 
+password_reset_kwargs = {
+    'email_template_name': 'registration/password_reset_email.txt',
+    'html_email_template_name': 'registration/password_reset_email.html'
+}
 
 urlpatterns = [
     url(r'login/$', auth.login, name='app_login'),
@@ -13,7 +18,9 @@ urlpatterns = [
         account.deactivate, name='app_deactivate'),
 
     url(r'account/reset_password/$',
-        django_auth.password_reset, name='password_reset'),
+        django_auth.password_reset,
+        name='password_reset',
+        kwargs=password_reset_kwargs),
     url(r'account/reset_password/done/$',
         django_auth.password_reset_done, name='password_reset_done'),
     url(r'^account/reset_password/(?P<uidb64>[0-9A-Za-z_\-]+)/'
