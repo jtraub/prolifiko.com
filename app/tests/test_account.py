@@ -63,7 +63,10 @@ class AccountTest(TestCase):
 
     @override_settings(
         EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend')
-    def test_password_reset_email(self):
+    @patch('django.core.mail.utils.socket')
+    def test_password_reset_email(self, socket):
+        socket.getfqdn = Mock(return_value='test')
+
         user = User.objects.create(
             email='password_reset@t.com', username='password_reset')
         user.set_password('test')

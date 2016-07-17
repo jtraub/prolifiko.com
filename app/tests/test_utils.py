@@ -76,7 +76,7 @@ class UtilsTest(TestCase):
             'collection': collection,
             'body': {
                 'foo': 'bar',
-                'user_id': self.user.id.hex,
+                'user_id': self.user.id,
                 'email': self.user.email
             }
         }
@@ -90,6 +90,12 @@ class UtilsTest(TestCase):
         collection = 'test'
         body = {'foo': 'bar'}
 
-        utils.add_event(collection, body)
+        utils.add_event(collection, self.user, body)
 
-        keen.add_event.assert_called_with(collection, body)
+        expected = {
+            'foo': 'bar',
+            'user_id': self.user.id,
+            'email': self.user.email
+        }
+
+        keen.add_event.assert_called_with(collection, expected)

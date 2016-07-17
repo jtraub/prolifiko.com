@@ -2,8 +2,9 @@ from django.core.exceptions import NON_FIELD_ERRORS
 from django.test import TestCase, Client, override_settings
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from unittest.mock import patch
 
-from app.utils import events
+from app.utils import add_event
 
 
 class LoginTest(TestCase):
@@ -13,7 +14,8 @@ class LoginTest(TestCase):
     def test_auth_redirect(self):
         response = Client().get(reverse('app_index'))
 
-        self.assertRedirects(response, '/app/login/?next=/app/')
+        login_url = reverse('app_login') + '?next=' + reverse('app_index')
+        self.assertRedirects(response, login_url)
 
     def test_login_view(self):
         response = Client().get(reverse('app_login'))
@@ -21,7 +23,8 @@ class LoginTest(TestCase):
         self.assertEqual(200, response.status_code)
 
     @override_settings(DEBUG=True)
-    def test_login(self):
+    @patch('app.views.auth.add_event', spec=add_event)
+    def test_login(self, add_event):
         response = Client().post(reverse('app_login'), {
             'email': 'test@test.com',
             'password': 'test'
@@ -32,13 +35,7 @@ class LoginTest(TestCase):
 
         user = User.objects.get(email='test@test.com')
 
-        self.assertEquals(events.pop(), {
-            'collection': 'login',
-            'body': {
-                'id': user.id,
-                'email': user.email
-            }
-        })
+        add_event.assert_called_with('login', user)
 
     def test_invalid(self):
         response = Client().post(reverse('app_login'), {

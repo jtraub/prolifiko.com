@@ -7,6 +7,7 @@ import keen
 import logging
 from html2text import html2text
 from django_mailgun import MailgunAPIError
+from typing import Dict
 
 from .models import Email, Goal
 
@@ -82,8 +83,11 @@ def send_email(name: str, user: User, goal: Goal=None):
     return Email.objects.create(name=name, recipient=user)
 
 
-def add_event(collection, user, body={}):
-    body['user_id'] = user.id.hex
+def add_event(collection, user: User, body: Dict=None):
+    if body is None:
+        body = {}
+
+    body['user_id'] = user.id
     body['email'] = user.email
 
     if settings.DEBUG:

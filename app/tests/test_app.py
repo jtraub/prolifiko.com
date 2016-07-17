@@ -7,13 +7,6 @@ from app.models import Goal
 class AppTest(TestCase):
     fixtures = ['users', 'goals']
 
-    def test_redirects_to_login_if_not_logged_in(self):
-        client = Client()
-        response = client.get(reverse('app_index'), follow=False)
-
-        login_url = reverse('app_login') + '?next=' + reverse('app_index')
-        self.assertRedirects(response, login_url)
-
     def test_redirects_to_new_goal_if_empty(self):
         client = Client()
         client.login(username='empty', password='test')

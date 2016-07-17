@@ -71,7 +71,6 @@ def receive_new_step(sender, **kwargs):
 
     if step.goal.steps.count() == 1:
         send_email('n2_new_goal', step.goal.user, step.goal)
-        add_event('challenge.start', step.goal.user)
     else:
         # We want the step before this one - that's the one that's been
         # completed. E.g. if we've received step 2 here, we want step_num to be

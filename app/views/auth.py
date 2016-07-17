@@ -48,10 +48,7 @@ def login(request):
 
     do_login(request, user)
 
-    add_event('login', {
-        'id': user.id,
-        'email': user.email
-    })
+    add_event('login', user)
 
     return redirect('app_index')
 
