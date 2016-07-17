@@ -131,3 +131,14 @@ class StepsTest(TestCase):
         self.assertRedirects(response,
                              reverse('app_goals_complete',
                                      kwargs={'goal_id': goal.id}))
+
+    def test_new_to_track_redirect(self):
+        goal = Goal.objects.create(user=self.user, text='test')
+        step = Step.create(goal, 'test')
+
+        response = self.client.get(reverse('app_steps_new',
+                                           kwargs={'goal_id': goal.id}),
+                                   follow=False)
+
+        self.assertRedirects(response, reverse('app_steps_track', kwargs={
+            'goal_id': goal.id, 'step_id': step.id}))

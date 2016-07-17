@@ -24,6 +24,10 @@ def new(request, goal_id):
     form = NewStepForm()
     status = 200
 
+    if goal.current_step and not goal.current_step.complete:
+        return redirect('app_steps_track',
+                        goal_id=goal.id, step_id=goal.current_step.id)
+
     if request.method == 'POST':
         form = NewStepForm(request.POST)
 

@@ -103,6 +103,10 @@ class Step(models.Model):
     def user(self):
         return self.goal.user
 
+    @property
+    def in_progress(self):
+        return self.end is None
+
 
 class Email(models.Model):
     name = models.TextField()
