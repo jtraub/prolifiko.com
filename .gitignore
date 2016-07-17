@@ -8,3 +8,4 @@ __pycache__/
 /dist/
 celerybeat-schedule
 node_modules/
+ssl/

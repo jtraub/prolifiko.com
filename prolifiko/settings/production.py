@@ -6,7 +6,7 @@ from .base import *
 
 DEBUG = False
 
-BASE_URL = 'http://prolifikoapp.herokuapp.com'
+BASE_URL = 'https://app.write-track.co'
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
