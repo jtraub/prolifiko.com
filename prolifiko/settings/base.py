@@ -144,8 +144,8 @@ MEDIA_URL = '/media/'
 
 WAGTAIL_SITE_NAME = "prolifiko"
 
-LOGIN_URL = '/app/login/'
-LOGIN_REDIRECT_URL = '/app/'
+# LOGIN_URL = '/app/login/'
+# LOGIN_REDIRECT_URL = '/app/'
 
 LOGGING = {
     'version': 1,

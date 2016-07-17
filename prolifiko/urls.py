@@ -12,14 +12,14 @@ from search import views as search_views
 urlpatterns = [
     url(r'^django-admin/', include(admin.site.urls)),
 
-    url(r'^admin/', include(wagtailadmin_urls)),
-    url(r'^documents/', include(wagtaildocs_urls)),
+    # url(r'^admin/', include(wagtailadmin_urls)),
+    # url(r'^documents/', include(wagtaildocs_urls)),
+    #
+    # url(r'^search/$', search_views.search, name='search'),
 
-    url(r'^search/$', search_views.search, name='search'),
+    url(r'', include('app.urls')),
 
-    url(r'^app/', include('app.urls')),
-
-    url(r'', include(wagtail_urls)),
+    # url(r'', include(wagtail_urls)),
 ]
 
 
