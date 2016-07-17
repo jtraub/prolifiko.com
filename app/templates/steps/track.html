@@ -31,7 +31,7 @@
 
 <form action="{% url 'app_steps_track' goal_id=step.goal.id step_id=step.id %}" method="post">
     {% csrf_token %}
-    <p>{{ form.comments }}</p>
+    <div>{{ form.comments }}</div>
     <p><button type="submit">Track</button></p>
 </form>
 {% endblock %}

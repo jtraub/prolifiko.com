@@ -26,7 +26,7 @@ window.limitText = function limitText(textarea, requireText) {
         var wordsLeft = MAX_WORDS - words.length;
 
         if (requireText) {
-            submit.disabled = words.length === 0;
+            submit.disabled = words.length === 0 || words.length > MAX_WORDS;
         }
 
         remaining.innerHTML = wordsLeft;
