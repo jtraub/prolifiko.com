@@ -20,10 +20,7 @@ class ReceiversTest(TestCase):
 
         receive_registration(self, user=user)
 
-        add_event.assert_called_with('register', {
-            'id': user.id,
-            'email': user.email
-        })
+        add_event.assert_called_with('register', user)
 
     def test_registration_email(self, add_event, send_email):
         user = User.objects.first()
@@ -37,9 +34,8 @@ class ReceiversTest(TestCase):
 
         receive_new_goal(self, goal=goal)
 
-        add_event.assert_called_with('goals.new', {
-            'id': goal.id.hex,
-            'user_id': goal.user.id,
+        add_event.assert_called_with('goals.new', goal.user, {
+            'goal_id': goal.id.hex
         })
 
     def test_goal_complete_event(self, add_event, send_email):
@@ -47,9 +43,8 @@ class ReceiversTest(TestCase):
 
         receive_goal_complete(self, goal=goal)
 
-        add_event.assert_called_with('goals.complete', {
-            'id': goal.id.hex,
-            'user_id': goal.user.id,
+        add_event.assert_called_with('goals.complete', goal.user, {
+            'goal_id': goal.id.hex
         })
 
         send_email.assert_called_with('n7_goal_complete', goal.user, goal)
@@ -57,10 +52,10 @@ class ReceiversTest(TestCase):
     def test_new_step_event(self, add_event, send_email):
         receive_new_step(self, step=self.step)
 
-        add_event.assert_called_with('steps.new', {
-            'id': self.step.id.hex,
-            'user_id': self.step.goal.user.id,
-            'goal_id': self.step.goal.id.hex
+        add_event.assert_called_with('steps.new', self.step.goal.user, {
+            'goal_id': self.step.goal.id.hex,
+            'step_id': self.step.id.hex,
+            'step_num': self.step.number
         })
 
     def test_new_step_email(self, add_event, send_email):
@@ -71,6 +66,7 @@ class ReceiversTest(TestCase):
         receive_new_step(self, step=step)
 
         send_email.assert_called_with('n2_new_goal', goal.user, goal)
+        add_event.assert_called_with('challenge.start', goal.user)
 
         for i in range(1, 4):
             step = Step.create(goal, 'test')
@@ -83,8 +79,8 @@ class ReceiversTest(TestCase):
     def test_step_complete_event(self, add_event, send_email):
         receive_step_complete(self, step=self.step)
 
-        add_event.assert_called_with('steps.track', {
-            'id': self.step.id.hex,
-            'user_id': self.step.goal.user.id,
-            'goal_id': self.step.goal.id.hex
+        add_event.assert_called_with('steps.track', self.step.goal.user, {
+            'goal_id': self.step.goal.id.hex,
+            'step_id': self.step.id.hex,
+            'step_num': self.step.number
         })

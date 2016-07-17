@@ -70,11 +70,19 @@ class UtilsTest(TestCase):
         collection = 'test'
         body = {'foo': 'bar'}
 
-        utils.add_event(collection, body)
+        utils.add_event(collection, self.user, body)
 
-        self.assertEquals(1, len(utils.events))
-        self.assertEquals({'collection', collection, 'body', body},
-                          utils.events[0])
+        expected = {
+            'collection': collection,
+            'body': {
+                'foo': 'bar',
+                'user_id': self.user.id.hex,
+                'email': self.user.email
+            }
+        }
+
+        self.assertEquals(len(utils.events), 1)
+        self.assertEquals(utils.events[0], expected)
 
     @override_settings(DEBUG=False)
     @patch('app.utils.keen')

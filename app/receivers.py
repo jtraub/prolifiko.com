@@ -31,10 +31,7 @@ def log_signal(func):
 def receive_registration(sender, **kwargs):
     user = kwargs['user']
 
-    add_event('register', {
-        'id': user.id,
-        'email': user.email
-    })
+    add_event('register', user)
 
     send_email('n1_registration', user)
 
@@ -44,9 +41,8 @@ def receive_registration(sender, **kwargs):
 def receive_new_goal(sender, **kwargs):
     goal = kwargs['goal']
 
-    add_event('goals.new', {
-        'id': goal.id.hex,
-        'user_id': goal.user.id
+    add_event('goals.new', goal.user, {
+        'goal_id': goal.id.hex
     })
 
 
@@ -55,9 +51,8 @@ def receive_new_goal(sender, **kwargs):
 def receive_goal_complete(send, **kwargs):
     goal = kwargs['goal']
 
-    add_event('goals.complete', {
-        'id': goal.id.hex,
-        'user_id': goal.user.id
+    add_event('goals.complete', goal.user, {
+        'goal_id': goal.id.hex
     })
 
     send_email('n7_goal_complete', goal.user, goal)
@@ -68,14 +63,15 @@ def receive_goal_complete(send, **kwargs):
 def receive_new_step(sender, **kwargs):
     step = kwargs['step']
 
-    add_event('steps.new', {
-        'id': step.id.hex,
-        'user_id': step.goal.user.id,
-        'goal_id': step.goal.id.hex
+    add_event('steps.new', step.goal.user, {
+        'goal_id': step.goal.id.hex,
+        'step_id': step.id.hex,
+        'step_num': step.number
     })
 
     if step.goal.steps.count() == 1:
         send_email('n2_new_goal', step.goal.user, step.goal)
+        add_event('challenge.start', step.goal.user)
     else:
         # We want the step before this one - that's the one that's been
         # completed. E.g. if we've received step 2 here, we want step_num to be
@@ -91,8 +87,8 @@ def receive_new_step(sender, **kwargs):
 def receive_step_complete(sender, **kwargs):
     step = kwargs['step']
 
-    add_event('steps.track', {
-        'id': step.id.hex,
-        'user_id': step.goal.user.id,
-        'goal_id': step.goal.id.hex
+    add_event('steps.complete', step.goal.user, {
+        'goal_id': step.goal.id.hex,
+        'step_id': step.id.hex,
+        'step_num': step.number
     })

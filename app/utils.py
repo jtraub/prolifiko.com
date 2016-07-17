@@ -82,7 +82,10 @@ def send_email(name: str, user: User, goal: Goal=None):
     return Email.objects.create(name=name, recipient=user)
 
 
-def add_event(collection, body):
+def add_event(collection, user, body={}):
+    body['user_id'] = user.id.hex
+    body['email'] = user.email
+
     if settings.DEBUG:
         events.append({'collection': collection, 'body': body})
     else:
