@@ -3,10 +3,11 @@
 {%  block heading %}Congratulations!{% endblock %}
 
 {% block content %}
-<p>Tracking your final step means you’ve finished this kickstart challenge. Amazing!</p>
+<section>
+    <p>Tracking your final step means you’ve finished this kickstart challenge. Amazing!</p>
 
-<p>Click on the button to complete.</p>
-
+    <p>Click on the button to complete.</p>
+</section>
 <form action="{% url 'app_goals_complete' goal_id=goal.id %}" method="post">
     {% csrf_token %}
     <p><button type="submit">Complete</button></p>

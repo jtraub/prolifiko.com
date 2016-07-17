@@ -1,3 +1,16 @@
+body {
+  margin: 0 auto;
+  @media (min-width: 480px) {
+    width: 75%;
+  }
+  @media (min-width: 768px) {
+    width: 50%;
+  }
+  @media (min-width: 1196px) {
+    width: 33%;
+  }
+}
+
 nav {
   background: $yellow;
   padding: 1em;

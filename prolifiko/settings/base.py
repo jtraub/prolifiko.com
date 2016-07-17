@@ -189,7 +189,7 @@ DEFAULT_FROM_EMAIL = 'Bec and Chris <email@prolifiko.com>'
 
 EMAIL_META = {
     'n1_registration': {
-        'subject': "Your 5 Day writing challenge – welcome!",
+        'subject': "Your 5 day writing challenge – welcome!",
     },
     'n2_new_goal': {
         'subject': "1st goal set + important information",

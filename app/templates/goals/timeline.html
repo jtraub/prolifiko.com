@@ -21,7 +21,7 @@
             <div class="step-status">
                 {% if not step.complete %}
                     <hr/>
-                    <a href="{% url 'app_steps_track' goal_id=step.goal.id step_id=step.id %}">Track</a>
+                    <a href="{% url 'app_steps_track' goal_id=step.goal.id step_id=step.id %}"><button>Track</button></a>
                 {% elif step.comments %}
                     <hr/>
                     <h4>My Progress</h4>

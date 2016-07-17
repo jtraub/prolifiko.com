@@ -5,25 +5,27 @@
 {% endblock %}
 
 {% block content %}
-{% if next_step_num == 1 %}
-    <p>What’s the first step you can take to achieve your 5-day writing goal?</p>
-{% elif next_step_num == 2 %}
-    <p>Way to go! After achieving this first step you’re now 86% more likely to finish the 5-day challenge. That’s amazing!</p>
+<section>
+    {% if next_step_num == 1 %}
+        <p>What’s the first step you can take to achieve your 5-day writing goal?</p>
+    {% elif next_step_num == 2 %}
+        <p>Way to go! After achieving this first step you’re now 86% more likely to finish the 5-day challenge. That’s amazing!</p>
 
-    <p>What’s the next step you can take to achieve your 5-day writing goal? Tell us below.</p>
-{% elif next_step_num == 3 %}
-    <p>Well done!</p>
+        <p>What’s the next step you can take to achieve your 5-day writing goal? Tell us below.</p>
+    {% elif next_step_num == 3 %}
+        <p>Well done!</p>
 
-    <p>What’s the third step you can take to make progress on your goal?</p>
-{% elif next_step_num == 4 %}
-    <p>Amazing! You’ve completed three steps and you’re well over half way. Only two steps remain.</p>
+        <p>What’s the third step you can take to make progress on your goal?</p>
+    {% elif next_step_num == 4 %}
+        <p>Amazing! You’ve completed three steps and you’re well over half way. Only two steps remain.</p>
 
-    <p>What’s the fourth step you can take to move your project forward?</p>
-{% else %}
-    <p>You’ve completed four steps – amazing! Just one final push to complete this challenge.</p>
+        <p>What’s the fourth step you can take to move your project forward?</p>
+    {% else %}
+        <p>You’ve completed four steps – amazing! Just one final push to complete this challenge.</p>
 
-    <p>What’s the final step you can take?</p>
-{% endif %}
+        <p>What’s the final step you can take?</p>
+    {% endif %}
+</section>
 
 <form action="{% url 'app_steps_new' goal_id=goal.id%}" method="post">
 
@@ -33,11 +35,13 @@
     <p>{{ form.text.errors }}</p>
     <p>{{ form.text }}</p>
 
-    {% if next_step_num == 1 %}
-        <p>Still struggling? Check out our blog on <a href="http://blog.write-track.co.uk/how-to-set-your-first-step/">how to set a first step</a>.</p>
-    {% endif %}
+    <section>
+        {% if next_step_num == 1 %}
+            <p>Still struggling? Check out our blog on <a href="http://blog.write-track.co.uk/how-to-set-your-first-step/">how to set a first step</a>.</p>
+        {% endif %}
 
-    <p>Click the button below to submit your step.</p>
+        <p>Click the button below to submit your step.</p>
+    </section>
 
     <p><button type="submit" id="next_button" disabled>Submit</button></p>
 </form>

@@ -3,47 +3,49 @@
 {% block heading %}Check Your Inbox{% endblock %}
 
 {% block content %}
-{% if step.number == 1 %}
-    <p>Now, the clock is ticking.</p>
+<section>
+    {% if step.number == 1 %}
+        <p>Now, the clock is ticking.</p>
 
-    <p>You have 24 hours to work on your first step and track to tell us your progress.</p>
+        <p>You have 24 hours to work on your first step and track to tell us your progress.</p>
 
-    <p>Remember: If you don’t track, you’ll lose a life – you only have two.</p>
+        <p>Remember: If you don’t track, you’ll lose a life – you only have two.</p>
 
-    <p>Now, check your inbox to receive the most important email of this 5-day challenge.</p>
-{% elif step.number == 2 %}
-    <p>Tick tock – another day on the clock!</p>
+        <p>Now, check your inbox to receive the most important email of this 5-day challenge.</p>
+    {% elif step.number == 2 %}
+        <p>Tick tock – another day on the clock!</p>
 
-    <p>You have 24 hours to complete this step and tell us about your progress.</p>
+        <p>You have 24 hours to complete this step and tell us about your progress.</p>
 
-    <p>Remember: If you don’t track, you’ll lose a life – you only have two.</p>
+        <p>Remember: If you don’t track, you’ll lose a life – you only have two.</p>
 
-    <p>Writing secret #1: Check your inbox to find out why scheduling the time to write is the most effective thing you can do to develop a writing practice.</p>
-{% elif step.number == 3 %}
-    <p>Great – only two more steps to set and you’ve completed the challenge!</p>
+        <p>Writing secret #1: Check your inbox to find out why scheduling the time to write is the most effective thing you can do to develop a writing practice.</p>
+    {% elif step.number == 3 %}
+        <p>Great – only two more steps to set and you’ve completed the challenge!</p>
 
-    <p>But now you have 24 hours to complete this step and tell us about your progress.</p>
+        <p>But now you have 24 hours to complete this step and tell us about your progress.</p>
 
-    <p>Remember: If you don’t track, you’ll lose a life.</p>
+        <p>Remember: If you don’t track, you’ll lose a life.</p>
 
-    <p>Writing secret #2: Check your inbox now to find out why going public is vital in helping you stick to your writing goals.</p>
-{% elif step.number == 4 %}
-    <p>The clock’s ticking again!</p>
+        <p>Writing secret #2: Check your inbox now to find out why going public is vital in helping you stick to your writing goals.</p>
+    {% elif step.number == 4 %}
+        <p>The clock’s ticking again!</p>
 
-    <p>You have 24 hours to complete this step and tell us about your progress.</p>
+        <p>You have 24 hours to complete this step and tell us about your progress.</p>
 
-    <p>Remember: If you don’t track, you’ll lose a life – you only have two.</p>
+        <p>Remember: If you don’t track, you’ll lose a life – you only have two.</p>
 
-    <p>Writing secret #3: Check your inbox now to find out why power-ups are vital to keep you writing.</p>
-{% else %}
-    <p>The clock’s ticking – for the last time!</p>
+        <p>Writing secret #3: Check your inbox now to find out why power-ups are vital to keep you writing.</p>
+    {% else %}
+        <p>The clock’s ticking – for the last time!</p>
 
-    <p>You have another 24 hours to complete this step and tell us about your progress.</p>
+        <p>You have another 24 hours to complete this step and tell us about your progress.</p>
 
-    <p>Remember: Don’t lose a life so close to the finishing line – track your writing.</p>
+        <p>Remember: Don’t lose a life so close to the finishing line – track your writing.</p>
 
-    <p>Writing secret #4: Check your inbox now to find out why normalizing your writing habit is key to writing productivity.</p>
-{% endif %}
+        <p>Writing secret #4: Check your inbox now to find out why normalizing your writing habit is key to writing productivity.</p>
+    {% endif %}
+</section>
 
 <p><a href="{% url 'app_goals_timeline' goal_id=step.goal.id %}"><button>Go to my progress</button></a></p>
 {% endblock %}
