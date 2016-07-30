@@ -1,9 +1,9 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.admin.views.decorators import staff_member_required
-from django.conf import settings
 import os
-import json
-from metrics import data
+from metrics import data, reports
+import csv
 
 
 @staff_member_required
@@ -20,3 +20,18 @@ def active_users(request):
     return render(request, 'active_users.html', {
         'active_users': data.active_users()
     })
+
+
+@staff_member_required
+def list_reports(request):
+    return render(request, 'reports.html')
+
+
+@staff_member_required
+def csv_report(request, name):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="%s.csv"' % name
+
+    getattr(reports, name)(csv.writer(response))
+
+    return response

@@ -22,7 +22,7 @@
                         {
                             property_name: 'email',
                             operator: 'in',
-                            property_value: {{ real_users }}
+                            property_value: {{ real_users|safe }}
                         }
                     ]
                 },
