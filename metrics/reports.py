@@ -1,10 +1,11 @@
-from django.utils.timezone import localtime
+from django.utils.timezone import localtime, is_aware
 from app.models import Goal, Email
 from metrics.data import real_users
 
 
 def format_date(date):
-    return localtime(date).strftime('%Y-%m-%d %H:%M:%S')
+    return (localtime(date) if is_aware(date) else date) \
+        .strftime('%Y-%m-%d %H:%M:%S')
 
 
 def events(writer):
@@ -27,7 +28,8 @@ def events(writer):
 
             for step in goal.steps.all():
                 row.append(format_date(step.start))
-                row.append(format_date(step.time_tracked))
+                if step.complete:
+                    row.append(format_date(step.time_tracked))
 
         writer.writerow(row)
 
