@@ -12,29 +12,19 @@
         // requestType: "jsonp"       // String (optional: jsonp, xhr, beacon)
     });
 
-    var emailFilters = {{ test_email_addresses|safe }}.map(function (email) {
-        return {
-            "property_name": "email",
-            "operator": "ne",
-            "property_value": email
-        };
-    }).concat({{ test_email_domains|safe }}.map(function (domain) {
-        return {
-            "property_name": "email",
-            "operator": "not_contains",
-            "property_value": domain
-        };
-    }));
-
-    console.log(emailFilters);
-
     Keen.ready(function(){
         var funnel = new Keen.Query("funnel", {
             steps: [
                 {
                     event_collection: "register",
                     actor_property: "email",
-                    filters: emailFilters
+                    filters: [
+                        {
+                            property_name: 'email',
+                            operator: 'in',
+                            property_value: {{ real_users }}
+                        }
+                    ]
                 },
                 {
                     event_collection: "goals.new",

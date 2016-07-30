@@ -11,8 +11,7 @@ def user_journey(request):
     return render(request, 'user_journey.html', {
         'project_id': os.environ['KEEN_PROJECT_ID'],
         'read_key': os.environ['KEEN_READ_KEY'],
-        'test_email_addresses': json.dumps(settings.TEST_EMAIL_ADDRESSES),
-        'test_email_domains': json.dumps(settings.TEST_EMAIL_DOMAINS),
+        'real_users': [user.email for user in data.real_users()],
     })
 
 
