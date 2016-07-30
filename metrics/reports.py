@@ -1,7 +1,10 @@
-import sys
-import csv
+from django.utils.timezone import localtime
 from app.models import Goal, Email
 from metrics.data import real_users
+
+
+def format_date(date):
+    return localtime(date).strftime('%Y-%m-%d %H:%M:%S')
 
 
 def events(writer):
@@ -14,17 +17,17 @@ def events(writer):
     for user in real_users():
         row = [
             user.email,
-            user.date_joined
+            format_date(user.date_joined)
         ]
 
         goal = Goal.objects.filter(user=user).first()
 
         if goal:
-            row.append(goal.start)
+            row.append(format_date(goal.start))
 
             for step in goal.steps.all():
-                row.append(step.start)
-                row.append(step.time_tracked)
+                row.append(format_date(step.start))
+                row.append(format_date(step.time_tracked))
 
         writer.writerow(row)
 
@@ -68,7 +71,7 @@ def emails(writer):
                 .first()
 
             if email:
-                row.append(email.sent)
+                row.append(format_date(email.sent))
             else:
                 row.append('')
 
