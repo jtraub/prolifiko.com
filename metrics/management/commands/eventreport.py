@@ -6,4 +6,4 @@ class Command(ReportCommand):
     help = 'Shows active users'
 
     def handle(self, *args, **options):
-        reports.user_journey(self.writer)
+        reports.events(self.writer)
