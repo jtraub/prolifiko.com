@@ -1,0 +1,219 @@
+<div id="chart"></div>
+<div id="table"></div>
+<script src="https://d26b395fwzu5fz.cloudfront.net/3.4.1/keen.min.js"></script>
+<script>
+    var client = new Keen({
+        projectId: "56f65f4446f9a7095a7b604b", // String (required always)
+        //writeKey: "YOUR_WRITE_KEY",   // String (required for sending data)
+        readKey: "3247d12685ca63bb6435b834cbc77b327a95ced379fced86e53164a410dac343602bf4d4406fec6d81a3ee1ef5b8e7b54af341f85a045749083803753546b7afe2ea550702dec7cff028a4dda82099b89dae4c28111b2859c92c9049c0be2b86"      // String (required for querying data)
+
+        // protocol: "https",         // String (optional: https | http | auto)
+        // host: "api.keen.io/3.0",   // String (optional)
+        // requestType: "jsonp"       // String (optional: jsonp, xhr, beacon)
+    });
+
+    var emailFilters = [
+        "mike@mbfisher.com",
+        "towritetrack@gmail.com",
+        "beccyevans@yahoo.co.uk",
+        "revans@emeraldinsight.com",
+        "airelembsay@hotmail.co.uk"
+    ].map(function (email) {
+        return {
+            "property_name": "email",
+            "operator": "ne",
+            "property_value": email
+        };
+    }).concat([
+        "@test.com",
+        "@t.com",
+        "@swarmcommunications.co.uk",
+        "@prolifiko.com"
+    ].map(function (domain) {
+        return {
+            "property_name": "email",
+            "operator": "not_contains",
+            "property_value": domain
+        };
+    }));
+
+    console.log(emailFilters);
+
+    Keen.ready(function(){
+        var funnel = new Keen.Query("funnel", {
+            steps: [
+                {
+                    event_collection: "register",
+                    actor_property: "email",
+                    filters: emailFilters
+                },
+                {
+                    event_collection: "goals.new",
+                    actor_property: "email",
+                },
+                {
+                    event_collection: "steps.new",
+                    actor_property: "email",
+                    filters: [
+                        {
+                            "property_name" : "step_num",
+                            "operator" : "eq",
+                            "property_value" : 1
+                        }
+                    ]
+                },
+                {
+                    event_collection: "steps.complete",
+                    actor_property: "email",
+                    filters: [
+                        {
+                            "property_name" : "step_num",
+                            "operator" : "eq",
+                            "property_value" : 1
+                        }
+                    ]
+                },
+                {
+                    event_collection: "steps.new",
+                    actor_property: "email",
+                    filters: [
+                        {
+                            "property_name" : "step_num",
+                            "operator" : "eq",
+                            "property_value" : 2
+                        }
+                    ]
+                },
+                {
+                    event_collection: "steps.complete",
+                    actor_property: "email",
+                    filters: [
+                        {
+                            "property_name" : "step_num",
+                            "operator" : "eq",
+                            "property_value" : 2
+                        }
+                    ]
+                },
+                {
+                    event_collection: "steps.new",
+                    actor_property: "email",
+                    filters: [
+                        {
+                            "property_name" : "step_num",
+                            "operator" : "eq",
+                            "property_value" : 3
+                        }
+                    ]
+                },
+                {
+                    event_collection: "steps.complete",
+                    actor_property: "email",
+                    filters: [
+                        {
+                            "property_name" : "step_num",
+                            "operator" : "eq",
+                            "property_value" : 3
+                        }
+                    ]
+                },
+                {
+                    event_collection: "steps.new",
+                    actor_property: "email",
+                    filters: [
+                        {
+                            "property_name" : "step_num",
+                            "operator" : "eq",
+                            "property_value" : 4
+                        }
+                    ]
+                },
+                {
+                    event_collection: "steps.complete",
+                    actor_property: "email",
+                    filters: [
+                        {
+                            "property_name" : "step_num",
+                            "operator" : "eq",
+                            "property_value" : 4
+                        }
+                    ]
+                },
+                {
+                    event_collection: "steps.new",
+                    actor_property: "email",
+                    filters: [
+                        {
+                            "property_name" : "step_num",
+                            "operator" : "eq",
+                            "property_value" : 5
+                        }
+                    ]
+                },
+                {
+                    event_collection: "steps.complete",
+                    actor_property: "email",
+                    filters: [
+                        {
+                            "property_name" : "step_num",
+                            "operator" : "eq",
+                            "property_value" : 5
+                        }
+                    ]
+                },
+                {
+                    event_collection: "goals.complete",
+                    actor_property: "email"
+                }
+            ],
+            timeframe: "last_10_days" // inherited by all steps
+        });
+
+        client.draw(funnel, document.getElementById("chart"), {
+            library: "google",
+            chartType: "barchart", // or "columnchart"
+            height: 340,
+            title: null,
+            colors: ["#79CDCD"],
+            labels: [
+                'Register',
+                'New Goal',
+                'Step #1',
+                'Track #1',
+                'Step #2',
+                'Track #2',
+                'Step #3',
+                'Track #3',
+                'Step #4',
+                'Track #4',
+                'Step #5',
+                'Track #5',
+                'Goal Complete'
+            ],
+            chartOptions: {
+                chartArea: { height: "85%", top: "5%" },
+                legend: { position: "none" }
+            }
+        });
+
+        client.draw(funnel, document.getElementById("table"), {
+            chartType: "table",
+            title: "Funnel",
+            labels: [
+                'Register',
+                'New Goal',
+                'Step #1',
+                'Track #1',
+                'Step #2',
+                'Track #2',
+                'Step #3',
+                'Track #3',
+                'Step #4',
+                'Track #4',
+                'Step #5',
+                'Track #5',
+                'Goal Complete'
+            ]
+        });
+    });
+</script>
