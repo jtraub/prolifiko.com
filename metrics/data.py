@@ -14,7 +14,8 @@ def real_users():
 
     return User.objects.filter(is_staff=False) \
         .exclude(email__in=settings.TEST_EMAIL_ADDRESSES) \
-        .exclude(email_domains)
+        .exclude(email_domains) \
+        .order_by('email')
 
 
 def active_users(start=date(2016, 7, 17), end=date(2016, 7, 26)):
