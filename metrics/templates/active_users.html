@@ -1,0 +1,7 @@
+<h2>Active Users: {{ active_users|length }}</h2>
+
+<ul>
+    {% for user in active_users %}
+    <li>{{ user.email }}</li>
+    {% endfor %}
+</ul>

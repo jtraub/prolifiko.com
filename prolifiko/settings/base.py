@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'taggit',
 
     'app',
+    'metrics',
     'home',
     'search',
 
@@ -255,3 +256,24 @@ CELERYBEAT_SCHEDULE = {
 
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json']
+
+os.environ.setdefault('KEEN_PROJECT_ID', '56f65f4446f9a7095a7b604b')
+os.environ.setdefault('KEEN_READ_KEY', '3247d12685ca63bb6435b834cbc77b327a95' +
+                      'ced379fced86e53164a410dac343602bf4d4406fec6d81a3ee1ef' +
+                      '5b8e7b54af341f85a045749083803753546b7afe2ea550702dec7' +
+                      'cff028a4dda82099b89dae4c28111b2859c92c9049c0be2b86')
+
+TEST_EMAIL_ADDRESSES = [
+    'mike@mbfisher.com',
+    'towritetrack@gmail.com',
+    'beccyevans@yahoo.co.uk',
+    'revans@emeraldinsight.com',
+    'airelembsay@hotmail.co.uk'
+]
+
+TEST_EMAIL_DOMAINS = [
+    '@test.com',
+    '@t.com',
+    '@swarmcommunications.co.uk',
+    '@prolifiko.com'
+]

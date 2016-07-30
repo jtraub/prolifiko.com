@@ -3,33 +3,22 @@
 <script src="https://d26b395fwzu5fz.cloudfront.net/3.4.1/keen.min.js"></script>
 <script>
     var client = new Keen({
-        projectId: "56f65f4446f9a7095a7b604b", // String (required always)
+        projectId: "{{ project_id }}", // String (required always)
         //writeKey: "YOUR_WRITE_KEY",   // String (required for sending data)
-        readKey: "3247d12685ca63bb6435b834cbc77b327a95ced379fced86e53164a410dac343602bf4d4406fec6d81a3ee1ef5b8e7b54af341f85a045749083803753546b7afe2ea550702dec7cff028a4dda82099b89dae4c28111b2859c92c9049c0be2b86"      // String (required for querying data)
+        readKey: "{{ read_key }}"      // String (required for querying data)
 
         // protocol: "https",         // String (optional: https | http | auto)
         // host: "api.keen.io/3.0",   // String (optional)
         // requestType: "jsonp"       // String (optional: jsonp, xhr, beacon)
     });
 
-    var emailFilters = [
-        "mike@mbfisher.com",
-        "towritetrack@gmail.com",
-        "beccyevans@yahoo.co.uk",
-        "revans@emeraldinsight.com",
-        "airelembsay@hotmail.co.uk"
-    ].map(function (email) {
+    var emailFilters = {{ test_email_addresses|safe }}.map(function (email) {
         return {
             "property_name": "email",
             "operator": "ne",
             "property_value": email
         };
-    }).concat([
-        "@test.com",
-        "@t.com",
-        "@swarmcommunications.co.uk",
-        "@prolifiko.com"
-    ].map(function (domain) {
+    }).concat({{ test_email_domains|safe }}.map(function (domain) {
         return {
             "property_name": "email",
             "operator": "not_contains",
@@ -56,9 +45,9 @@
                     actor_property: "email",
                     filters: [
                         {
-                            "property_name" : "step_num",
-                            "operator" : "eq",
-                            "property_value" : 1
+                            "property_name": "step_num",
+                            "operator": "eq",
+                            "property_value": 1
                         }
                     ]
                 },
@@ -67,9 +56,9 @@
                     actor_property: "email",
                     filters: [
                         {
-                            "property_name" : "step_num",
-                            "operator" : "eq",
-                            "property_value" : 1
+                            "property_name": "step_num",
+                            "operator": "eq",
+                            "property_value": 1
                         }
                     ]
                 },
@@ -78,9 +67,9 @@
                     actor_property: "email",
                     filters: [
                         {
-                            "property_name" : "step_num",
-                            "operator" : "eq",
-                            "property_value" : 2
+                            "property_name": "step_num",
+                            "operator": "eq",
+                            "property_value": 2
                         }
                     ]
                 },
@@ -89,9 +78,9 @@
                     actor_property: "email",
                     filters: [
                         {
-                            "property_name" : "step_num",
-                            "operator" : "eq",
-                            "property_value" : 2
+                            "property_name": "step_num",
+                            "operator": "eq",
+                            "property_value": 2
                         }
                     ]
                 },
@@ -100,9 +89,9 @@
                     actor_property: "email",
                     filters: [
                         {
-                            "property_name" : "step_num",
-                            "operator" : "eq",
-                            "property_value" : 3
+                            "property_name": "step_num",
+                            "operator": "eq",
+                            "property_value": 3
                         }
                     ]
                 },
@@ -111,9 +100,9 @@
                     actor_property: "email",
                     filters: [
                         {
-                            "property_name" : "step_num",
-                            "operator" : "eq",
-                            "property_value" : 3
+                            "property_name": "step_num",
+                            "operator": "eq",
+                            "property_value": 3
                         }
                     ]
                 },
@@ -122,9 +111,9 @@
                     actor_property: "email",
                     filters: [
                         {
-                            "property_name" : "step_num",
-                            "operator" : "eq",
-                            "property_value" : 4
+                            "property_name": "step_num",
+                            "operator": "eq",
+                            "property_value": 4
                         }
                     ]
                 },
@@ -133,9 +122,9 @@
                     actor_property: "email",
                     filters: [
                         {
-                            "property_name" : "step_num",
-                            "operator" : "eq",
-                            "property_value" : 4
+                            "property_name": "step_num",
+                            "operator": "eq",
+                            "property_value": 4
                         }
                     ]
                 },
@@ -144,9 +133,9 @@
                     actor_property: "email",
                     filters: [
                         {
-                            "property_name" : "step_num",
-                            "operator" : "eq",
-                            "property_value" : 5
+                            "property_name": "step_num",
+                            "operator": "eq",
+                            "property_value": 5
                         }
                     ]
                 },
@@ -155,9 +144,9 @@
                     actor_property: "email",
                     filters: [
                         {
-                            "property_name" : "step_num",
-                            "operator" : "eq",
-                            "property_value" : 5
+                            "property_name": "step_num",
+                            "operator": "eq",
+                            "property_value": 5
                         }
                     ]
                 },
@@ -166,7 +155,10 @@
                     actor_property: "email"
                 }
             ],
-            timeframe: "last_10_days" // inherited by all steps
+            timeframe: { // inherited by all steps
+                start: "2016-07-17T00:00:00.000Z",
+                end: "2016-07-26T00:00:00.000Z",
+            }
         });
 
         client.draw(funnel, document.getElementById("chart"), {
