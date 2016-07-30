@@ -7,16 +7,21 @@ from app.models import Email
 from datetime import date
 
 
-def active_users(start=date(2016, 7, 17), end=date(2016, 7, 26)):
-    email_domains = reduce(operator.and_, (
+def real_users():
+    email_domains = reduce(operator.or_, (
         Q(email__endswith=domain)
         for domain in settings.TEST_EMAIL_DOMAINS))
 
-    test_users = User.objects.filter(is_active=True, is_staff=False) \
-        .filter(date_joined__gte=start) \
-        .filter(date_joined__lte=end) \
+    return User.objects.filter(is_staff=False) \
         .exclude(email__in=settings.TEST_EMAIL_ADDRESSES) \
         .exclude(email_domains)
+
+
+def active_users(start=date(2016, 7, 17), end=date(2016, 7, 26)):
+    test_users = real_users() \
+        .filter(is_active=True) \
+        .filter(date_joined__gte=start) \
+        .filter(date_joined__lte=end)
 
     return [
         user for user in test_users if
