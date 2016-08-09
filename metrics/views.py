@@ -38,10 +38,13 @@ def user_history(request):
 
     history.append(('Registered', user.date_joined))
 
-    for email in Email.objects.filter(recipient=user):
-        history.append(('Sent %s email' % email.name, email.sent))
-
     goal = Goal.objects.filter(user=user).first()
+
+    for email in Email.objects.filter(recipient=user):
+        if goal and email.step and email.step.goal.id != goal.id:
+            continue
+
+        history.append(('Sent %s email' % email.name, email.sent))
 
     if goal:
         history.append(('Goal started', goal.start))

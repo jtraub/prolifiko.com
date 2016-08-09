@@ -12,6 +12,11 @@
         // requestType: "jsonp"       // String (optional: jsonp, xhr, beacon)
     });
 
+    var exclude_goals = [
+        '0e5116dc-c193-4e2c-b585-73188b78073d', //trinagarnett@gmail.com
+        '1a35c42a-1c0f-48a9-ad59-edfd24691a48', //trinagarnett@gmail.com
+    ];
+
     Keen.ready(function(){
         var funnel = new Keen.Query("funnel", {
             steps: [
@@ -29,6 +34,13 @@
                 {
                     event_collection: "goals.new",
                     actor_property: "email",
+                    filters: exclude_goals.map(function (id) {
+                        return {
+                            property_name: 'goal_id',
+                            operator: 'ne',
+                            property_value: id
+                        };
+                    })
                 },
                 {
                     event_collection: "steps.new",

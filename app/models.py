@@ -26,6 +26,9 @@ class Goal(models.Model):
     lives = models.IntegerField(default=3)
     complete = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ('-start',)
+
     def __str__(self):
         return '%s (%s)' % (self.id, self.user.email)
 
