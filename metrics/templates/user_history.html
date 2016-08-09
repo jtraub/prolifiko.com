@@ -1,0 +1,15 @@
+<form>
+    <input type="email" name="email"/>
+    <button type="submit">Go</button>
+
+    {% if goal %}<p>User: {{ user.email }} ({{ user.id }}) (active={{ user.is_active }})</p>{% endif %}
+    {% if goal %}<p>Goal: {{ goal.id }}</p>{% endif %}
+
+    {% if history|length %}
+    <table>
+        {% for label, time in history %}
+        <tr><td>{{ time|date:'D d H:i' }}</td><td>{{ label }}</td></tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</form>

@@ -268,12 +268,13 @@ TEST_EMAIL_ADDRESSES = [
     'towritetrack@gmail.com',
     'beccyevans@yahoo.co.uk',
     'revans@emeraldinsight.com',
-    'airelembsay@hotmail.co.uk'
+    'airelembsay@hotmail.co.uk',
+    'sally.jenkinson@gmail.com',
 ]
 
 TEST_EMAIL_DOMAINS = [
     '@test.com',
     '@t.com',
     '@swarmcommunications.co.uk',
-    '@prolifiko.com'
+    '@prolifiko.com',
 ]

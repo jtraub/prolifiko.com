@@ -1,9 +1,12 @@
+from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.admin.views.decorators import staff_member_required
 import os
+from app.models import Goal, Email
 from metrics import data, reports
 import csv
+from django.utils.timezone import localtime
 
 
 @staff_member_required
@@ -19,6 +22,46 @@ def user_journey(request):
 def active_users(request):
     return render(request, 'active_users.html', {
         'active_users': data.active_users()
+    })
+
+
+@staff_member_required
+def user_history(request):
+    if 'email' not in request.GET:
+        return render(request, 'user_history.html')
+
+    email = request.GET['email']
+
+    history = []
+
+    user = User.objects.get(email=email)
+
+    history.append(('Registered', user.date_joined))
+
+    for email in Email.objects.filter(recipient=user):
+        history.append(('Sent %s email' % email.name, email.sent))
+
+    goal = Goal.objects.filter(user=user).first()
+
+    if goal:
+        history.append(('Goal started', goal.start))
+
+        for step in goal.steps.all():
+            start_time = localtime(step.end).strftime('%a %d %H:%M')
+            started_label = 'Step #%d started (due %s) (%s)' % (
+                step.number, start_time, step.id)
+            history.append((started_label, step.start))
+
+            if step.complete:
+                history.append(('Step #%d tracked' % step.number,
+                                step.time_tracked))
+
+    history.sort(key=lambda e: e[1])
+
+    return render(request, 'user_history.html', {
+        'history': history,
+        'goal': goal,
+        'user': user
     })
 
 

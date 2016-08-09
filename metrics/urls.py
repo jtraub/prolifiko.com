@@ -6,4 +6,5 @@ urlpatterns = [
     url(r'reports/(?P<name>.+)/$', views.csv_report),
     url(r'user_journey/$', views.user_journey),
     url(r'active_users/$', views.active_users),
+    url(r'user_history/$', views.user_history),
 ]
