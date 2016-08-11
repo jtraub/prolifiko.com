@@ -27,7 +27,7 @@ def conversion(request):
         'project_id': os.environ['KEEN_PROJECT_ID'],
         'read_key': os.environ['KEEN_READ_KEY'],
         'real_users': [user.email for user in users],
-        'excluded_goals': [goal.id for goal in data.excluded_goals()],
+        'excluded_goals': [goal.id.hex for goal in data.excluded_goals()],
         'conversion': {
             'registered': registered,
             'n7': n7,
