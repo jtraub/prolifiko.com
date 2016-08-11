@@ -1,10 +1,11 @@
 from django.conf.urls import url
-from . import views
+from .views import metrics, reports, debug
+
 
 urlpatterns = [
-    url(r'reports/$', views.list_reports),
-    url(r'reports/(?P<name>.+)/$', views.csv_report),
-    url(r'user_journey/$', views.user_journey),
-    url(r'active_users/$', views.active_users),
-    url(r'user_history/$', views.user_history),
+    url(r'conversion/$', metrics.conversion),
+    url(r'reports/(?P<name>.+)/$', reports.csv_report),
+    url(r'debug/active_users/$', debug.active_users),
+    url(r'debug/user_history/$', debug.user_history),
+    url(r'$', metrics.dashboard),
 ]

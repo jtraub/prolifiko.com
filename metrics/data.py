@@ -38,3 +38,7 @@ def active_users():
         Email.objects.filter(recipient=user)
                      .filter(Q(name='dr3') | Q(name='d3'))
                      .count() == 0]
+
+
+def excluded_goals():
+    return Goal.objects.filter(deleted=True)

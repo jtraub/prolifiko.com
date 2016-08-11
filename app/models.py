@@ -26,6 +26,8 @@ class Goal(models.Model):
     lives = models.IntegerField(default=3)
     complete = models.BooleanField(default=False)
 
+    deleted = models.BooleanField(default=False)
+
     class Meta:
         ordering = ('-start',)
 

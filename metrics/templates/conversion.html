@@ -1,5 +1,15 @@
 <div id="chart"></div>
-<div id="table"></div>
+<div id="table">
+    <table></table>
+</div>
+<div>
+    <p>Registered: {{ conversion.registered }}</p>
+    <p>N7: {{ conversion.n7 }}</p>
+    <p>DR3: {{ conversion.dr3 }}</p>
+    <p>D3: {{ conversion.d3 }}</p>
+    <p>N7 + DR3 + D3: {{ conversion.sum }}</p>
+    <p>Completion: {{ conversion.completion }}%</p>
+</div>
 <script src="https://d26b395fwzu5fz.cloudfront.net/3.4.1/keen.min.js"></script>
 <script>
     var client = new Keen({
@@ -11,11 +21,6 @@
         // host: "api.keen.io/3.0",   // String (optional)
         // requestType: "jsonp"       // String (optional: jsonp, xhr, beacon)
     });
-
-    var exclude_goals = [
-        '0e5116dc-c193-4e2c-b585-73188b78073d', //trinagarnett@gmail.com
-        '1a35c42a-1c0f-48a9-ad59-edfd24691a48', //trinagarnett@gmail.com
-    ];
 
     Keen.ready(function(){
         var funnel = new Keen.Query("funnel", {
@@ -34,7 +39,7 @@
                 {
                     event_collection: "goals.new",
                     actor_property: "email",
-                    filters: exclude_goals.map(function (id) {
+                    filters: {{ excluded_goals|safe }}.map(function (id) {
                         return {
                             property_name: 'goal_id',
                             operator: 'ne',
@@ -163,51 +168,73 @@
             }
         });
 
+        var labels = [
+            'Register',
+            'New Goal',
+            'Step #1',
+            'Track #1',
+            'Step #2',
+            'Track #2',
+            'Step #3',
+            'Track #3',
+            'Step #4',
+            'Track #4',
+            'Step #5',
+            'Track #5',
+            'Goal Complete'
+        ];
+
         client.draw(funnel, document.getElementById("chart"), {
             library: "google",
             chartType: "barchart", // or "columnchart"
             height: 340,
             title: null,
             colors: ["#79CDCD"],
-            labels: [
-                'Register',
-                'New Goal',
-                'Step #1',
-                'Track #1',
-                'Step #2',
-                'Track #2',
-                'Step #3',
-                'Track #3',
-                'Step #4',
-                'Track #4',
-                'Step #5',
-                'Track #5',
-                'Goal Complete'
-            ],
+            labels: labels,
             chartOptions: {
                 chartArea: { height: "85%", top: "5%" },
                 legend: { position: "none" }
             }
         });
 
-        client.draw(funnel, document.getElementById("table"), {
-            chartType: "table",
-            title: "Funnel",
-            labels: [
-                'Register',
-                'New Goal',
-                'Step #1',
-                'Track #1',
-                'Step #2',
-                'Track #2',
-                'Step #3',
-                'Track #3',
-                'Step #4',
-                'Track #4',
-                'Step #5',
-                'Track #5',
-                'Goal Complete'
-            ]
+        client.run(funnel, function (err, res) {
+            var registered = res.result[0];
+            var table = document.querySelector('#table table');
+
+            res.result.forEach(function (count, i) {
+                var row = document.createElement('tr');
+                var labelCell = document.createElement('td');
+                labelCell.innerHTML = labels[i];
+                var countCell = document.createElement('td');
+                countCell.innerHTML = count;
+                var conversionCell = document.createElement('td');
+                conversionCell.innerHTML = Math.round(((count / registered) * 100)) + '%';
+
+                row.appendChild(labelCell);
+                row.appendChild(countCell);
+                row.appendChild(conversionCell);
+                table.appendChild(row);
+            });
         });
+
+{#        client.draw(funnel, document.getElementById("table"), {#}
+{#            chartType: "table",#}
+{#            title: "Funnel",#}
+{#            labels: [#}
+{#                'Register',#}
+{#                'New Goal',#}
+{#                'Step #1',#}
+{#                'Track #1',#}
+{#                'Step #2',#}
+{#                'Track #2',#}
+{#                'Step #3',#}
+{#                'Track #3',#}
+{#                'Step #4',#}
+{#                'Track #4',#}
+{#                'Step #5',#}
+{#                'Track #5',#}
+{#                'Goal Complete'#}
+{#            ]#}
+{#        });#}
     });
 </script>
