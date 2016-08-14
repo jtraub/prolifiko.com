@@ -37,7 +37,8 @@ os.environ.setdefault('KEEN_WRITE_KEY', '6d909c8dcad7466b173eb1e1114333455ba' +
                       '09be2ae982abfcc33aa7523bfb3a3f4943db07b701580e933052d' +
                       '9408a1268842b95379fcc0c851bd67552ec74e0e1b3ab55c1a8')
 
-try:
-    from .local import *
-except ImportError:
-    pass
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}

@@ -1,240 +1,54 @@
-<div id="chart"></div>
-<div id="table">
-    <table></table>
+<style>
+    table {
+        border-collapse: collapse;
+    }
+
+    table {
+        border: 1px solid #ccc;
+    }
+
+    th, td {
+        border-bottom: 1px solid #eee;
+    }
+
+    th, td {
+        padding: 15px;
+    }
+
+    tr:nth-child(odd) {
+        background-color: #eee;
+    }
+
+    .funnel {
+        float: left;
+        margin: 15px;
+    }
+</style>
+
+<div class="funnel">
+    <h2>Happy Path</h2>
+    <table>
+        <tr><th>Event</th><th>Count</th><th>Conversion Rate</th></tr>
+        {% for row in happy_path %}
+            <tr><td>{{ row.0 }}</td><td>{{ row.1 }}</td><td>{{ row.2 }}</td></tr>
+        {% endfor %}
+    </table>
 </div>
-<div>
-    <p>Registered: {{ conversion.registered }}</p>
-    <p>N7: {{ conversion.n7 }}</p>
-    <p>DR3: {{ conversion.dr3 }}</p>
-    <p>D3: {{ conversion.d3 }}</p>
-    <p>N7 + DR3 + D3: {{ conversion.sum }}</p>
-    <p>Completion: {{ conversion.completion }}%</p>
+<div class="funnel">
+    <h2>DR Path</h2>
+    <table>
+        <tr><th>Event</th><th>Count</th><th>Conversion Rate</th></tr>
+        {% for row in dr_path %}
+            <tr><td>{{ row.0 }}</td><td>{{ row.1 }}</td><td>{{ row.2 }}</td></tr>
+        {% endfor %}
+    </table>
 </div>
-<script src="https://d26b395fwzu5fz.cloudfront.net/3.4.1/keen.min.js"></script>
-<script>
-    var client = new Keen({
-        projectId: "{{ project_id }}", // String (required always)
-        //writeKey: "YOUR_WRITE_KEY",   // String (required for sending data)
-        readKey: "{{ read_key }}"      // String (required for querying data)
-
-        // protocol: "https",         // String (optional: https | http | auto)
-        // host: "api.keen.io/3.0",   // String (optional)
-        // requestType: "jsonp"       // String (optional: jsonp, xhr, beacon)
-    });
-
-    Keen.ready(function(){
-        var funnel = new Keen.Query("funnel", {
-            steps: [
-                {
-                    event_collection: "register",
-                    actor_property: "email",
-                    filters: [
-                        {
-                            property_name: 'email',
-                            operator: 'in',
-                            property_value: {{ real_users|safe }}
-                        }
-                    ]
-                },
-                {
-                    event_collection: "goals.new",
-                    actor_property: "email",
-                    filters: {{ excluded_goals|safe }}.map(function (id) {
-                        return {
-                            property_name: 'goal_id',
-                            operator: 'ne',
-                            property_value: id
-                        };
-                    })
-                },
-                {
-                    event_collection: "steps.new",
-                    actor_property: "email",
-                    filters: [
-                        {
-                            "property_name": "step_num",
-                            "operator": "eq",
-                            "property_value": 1
-                        }
-                    ]
-                },
-                {
-                    event_collection: "steps.complete",
-                    actor_property: "email",
-                    filters: [
-                        {
-                            "property_name": "step_num",
-                            "operator": "eq",
-                            "property_value": 1
-                        }
-                    ]
-                },
-                {
-                    event_collection: "steps.new",
-                    actor_property: "email",
-                    filters: [
-                        {
-                            "property_name": "step_num",
-                            "operator": "eq",
-                            "property_value": 2
-                        }
-                    ]
-                },
-                {
-                    event_collection: "steps.complete",
-                    actor_property: "email",
-                    filters: [
-                        {
-                            "property_name": "step_num",
-                            "operator": "eq",
-                            "property_value": 2
-                        }
-                    ]
-                },
-                {
-                    event_collection: "steps.new",
-                    actor_property: "email",
-                    filters: [
-                        {
-                            "property_name": "step_num",
-                            "operator": "eq",
-                            "property_value": 3
-                        }
-                    ]
-                },
-                {
-                    event_collection: "steps.complete",
-                    actor_property: "email",
-                    filters: [
-                        {
-                            "property_name": "step_num",
-                            "operator": "eq",
-                            "property_value": 3
-                        }
-                    ]
-                },
-                {
-                    event_collection: "steps.new",
-                    actor_property: "email",
-                    filters: [
-                        {
-                            "property_name": "step_num",
-                            "operator": "eq",
-                            "property_value": 4
-                        }
-                    ]
-                },
-                {
-                    event_collection: "steps.complete",
-                    actor_property: "email",
-                    filters: [
-                        {
-                            "property_name": "step_num",
-                            "operator": "eq",
-                            "property_value": 4
-                        }
-                    ]
-                },
-                {
-                    event_collection: "steps.new",
-                    actor_property: "email",
-                    filters: [
-                        {
-                            "property_name": "step_num",
-                            "operator": "eq",
-                            "property_value": 5
-                        }
-                    ]
-                },
-                {
-                    event_collection: "steps.complete",
-                    actor_property: "email",
-                    filters: [
-                        {
-                            "property_name": "step_num",
-                            "operator": "eq",
-                            "property_value": 5
-                        }
-                    ]
-                },
-                {
-                    event_collection: "goals.complete",
-                    actor_property: "email"
-                }
-            ],
-            timeframe: { // inherited by all steps
-                start: "2016-07-17T00:00:00.000Z",
-                end: "2016-08-07T00:00:00.000Z",
-            }
-        });
-
-        var labels = [
-            'Register',
-            'New Goal',
-            'Step #1',
-            'Track #1',
-            'Step #2',
-            'Track #2',
-            'Step #3',
-            'Track #3',
-            'Step #4',
-            'Track #4',
-            'Step #5',
-            'Track #5',
-            'Goal Complete'
-        ];
-
-        client.draw(funnel, document.getElementById("chart"), {
-            library: "google",
-            chartType: "barchart", // or "columnchart"
-            height: 340,
-            title: null,
-            colors: ["#79CDCD"],
-            labels: labels,
-            chartOptions: {
-                chartArea: { height: "85%", top: "5%" },
-                legend: { position: "none" }
-            }
-        });
-
-        client.run(funnel, function (err, res) {
-            var registered = res.result[0];
-            var table = document.querySelector('#table table');
-
-            res.result.forEach(function (count, i) {
-                var row = document.createElement('tr');
-                var labelCell = document.createElement('td');
-                labelCell.innerHTML = labels[i];
-                var countCell = document.createElement('td');
-                countCell.innerHTML = count;
-                var conversionCell = document.createElement('td');
-                conversionCell.innerHTML = Math.round(((count / registered) * 100)) + '%';
-
-                row.appendChild(labelCell);
-                row.appendChild(countCell);
-                row.appendChild(conversionCell);
-                table.appendChild(row);
-            });
-        });
-
-{#        client.draw(funnel, document.getElementById("table"), {#}
-{#            chartType: "table",#}
-{#            title: "Funnel",#}
-{#            labels: [#}
-{#                'Register',#}
-{#                'New Goal',#}
-{#                'Step #1',#}
-{#                'Track #1',#}
-{#                'Step #2',#}
-{#                'Track #2',#}
-{#                'Step #3',#}
-{#                'Track #3',#}
-{#                'Step #4',#}
-{#                'Track #4',#}
-{#                'Step #5',#}
-{#                'Track #5',#}
-{#                'Goal Complete'#}
-{#            ]#}
-{#        });#}
-    });
-</script>
+<div class="funnel">
+    <h2>D Path</h2>
+    <table>
+        <tr><th>Event</th><th>Count</th><th>Conversion Rate</th></tr>
+        {% for row in d_path %}
+            <tr><td>{{ row.0 }}</td><td>{{ row.1 }}</td><td>{{ row.2 }}</td></tr>
+        {% endfor %}
+    </table>
+</div>

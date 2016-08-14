@@ -2,4 +2,4 @@
 
 export $(heroku config -s | xargs)
 
-gunicorn prolifiko.wsgi --log-file=-
+DISABLE_NEWRELIC=yes foreman start
