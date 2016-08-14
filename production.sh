@@ -2,4 +2,4 @@
 
 export $(heroku config -s | xargs)
 
-foreman start
+gunicorn prolifiko.wsgi --log-file=-

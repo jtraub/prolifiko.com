@@ -57,8 +57,8 @@ def send_d_emails():
 
     for step in Step.objects.filter(
             complete=False, goal__lives__gt=0, goal__user__is_active=True):
-        logger.debug('> Step num=%d user=%s end=%s' % (
-            step.number, step.user.email, step.end
+        logger.debug('> Step user=%s num=%d end=%s' % (
+            step.user.email, step.number, step.end
         ))
 
     late_steps = Step.objects \
@@ -94,6 +94,10 @@ def send_d_emails():
     email_progression = ('d1', 'd2', 'd3')
 
     for step in list(late_steps) + inactive_goals:
+        logger.debug('Checking step user=%s step=%s overdue=%s end=%s' % (
+            step.user.email, step.number, now - step.end, step.end
+        ))
+
         goal = step.goal
         user = goal.user
 
@@ -108,14 +112,14 @@ def send_d_emails():
             email.step = step
             email.save()
 
-            break
+            continue
 
         logger.debug('Already sent %s emails to %s' % (
             [email.name for email in sent_emails], user.email))
 
         if len(sent_emails) >= 3:
             logger.debug('All D emails sent to %s; stopping' % user.email)
-            break
+            continue
 
         previous_email = sent_emails[-1] if len(sent_emails) > 1 \
             else sent_emails[0]
@@ -128,6 +132,9 @@ def send_d_emails():
             goal.lose_life()
 
             next_email = email_progression[len(sent_emails)]
+
+            logger.debug('Sending %s to %s; goal now has %d lives' %
+                         (next_email, goal.user, goal.lives))
 
             email = send_email(next_email, user, goal)
             email.step = step

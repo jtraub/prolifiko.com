@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render
 from django.contrib.admin.views.decorators import staff_member_required
 import os
@@ -13,6 +14,7 @@ def dashboard(request):
 @staff_member_required
 def conversion(request):
     users = data.real_users()
+
     emails = [user.email for user in users]
 
     registered = users.count()

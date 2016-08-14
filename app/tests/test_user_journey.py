@@ -86,6 +86,16 @@ class UserJourneyTest(TestCase):
                 108: [Email('d2')],
             },
 
+            'drd2': {
+                0: [CreateGoal()],
+                24: [Email('dr1')],
+                30: [CreateStep()],
+                48: [TrackStep(), CreateStep()],
+                72: [Email('d1')],
+                96: [Email('d2')],
+                120: [Email('d3')],
+            },
+
             'h': {
                 0: [CreateGoal(), CreateStep()],
                 6: [TrackStep(), CreateStep()],

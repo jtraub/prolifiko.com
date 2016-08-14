@@ -7,7 +7,7 @@ from app.models import Email, Goal
 from datetime import date
 
 
-def real_users(start=date(2016, 7, 17), end=date(2016, 7, 26)):
+def real_users(start=date(2016, 7, 17), end=date(2016, 8, 7)):
     email_domains = reduce(operator.or_, (
         Q(email__endswith=domain)
         for domain in settings.TEST_EMAIL_DOMAINS))
