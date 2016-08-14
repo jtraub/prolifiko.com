@@ -55,12 +55,6 @@ def send_d_emails():
     logger.debug('Looking for incomplete steps with an end time before %s'
                  % now)
 
-    for step in Step.objects.filter(
-            complete=False, goal__lives__gt=0, goal__user__is_active=True):
-        logger.debug('> Step user=%s num=%d end=%s' % (
-            step.user.email, step.number, step.end
-        ))
-
     late_steps = Step.objects \
         .filter(goal__lives__gt=0, goal__user__is_active=True) \
         .filter(complete=False, end__lte=now,)
@@ -79,12 +73,6 @@ def send_d_emails():
             .annotate(step_count=Count('steps')) \
             .filter(user__is_active=True) \
             .filter(active=False, complete=False, step_count__gt=0):
-
-        logger.debug('> Goal user=%s last_track=%s delta=%s' % (
-            goal.user.email,
-            goal.current_step.time_tracked,
-            now - goal.current_step.time_tracked
-        ))
 
         if goal.current_step.time_tracked < now - settings.INACTIVE_DELTA:
             logger.debug('Found inactive goal user=%s' % goal.user.email)

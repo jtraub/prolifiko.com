@@ -59,8 +59,9 @@ class UserJourneyTest(TestCase):
                 return 'n7_goal_complete'
 
         class Email(object):
-            def __init__(self, name):
+            def __init__(self, name, lives=3):
                 self.name = name
+                self.lives = lives
 
         spec = {
             'dr': {
@@ -81,9 +82,9 @@ class UserJourneyTest(TestCase):
                 24: [Email('dr1')],
                 30: [CreateStep()],
                 48: [TrackStep(), CreateStep()],
-                72: [Email('d1')],
+                72: [Email('d1', 2)],
                 84: [TrackStep(), CreateStep()],
-                108: [Email('d2')],
+                108: [Email('d2', 1)],
             },
 
             'drd2': {
@@ -91,9 +92,9 @@ class UserJourneyTest(TestCase):
                 24: [Email('dr1')],
                 30: [CreateStep()],
                 48: [TrackStep(), CreateStep()],
-                72: [Email('d1')],
-                96: [Email('d2')],
-                120: [Email('d3')],
+                72: [Email('d1', 2)],
+                96: [Email('d2', 1)],
+                120: [Email('d3', 0)],
             },
 
             'h': {
@@ -109,26 +110,26 @@ class UserJourneyTest(TestCase):
                 0: [CreateGoal(), CreateStep()],
                 18: [TrackStep(), CreateStep()],
                 42: [TrackStep(), CreateStep()],
-                66: [Email('d1')],
-                90: [Email('d2')],
-                114: [Email('d3')],
+                66: [Email('d1', 2)],
+                90: [Email('d2', 1)],
+                114: [Email('d3', 0)],
             },
 
             'hdh': {
                 0: [CreateGoal()],
                 12: [CreateStep()],
                 30: [TrackStep(), CreateStep()],
-                54: [Email('d1')],
+                54: [Email('d1', 2)],
                 60: [TrackStep(), CreateStep()],
                 78: [TrackStep(), CreateStep()],
-                102: [Email('d2')],
+                102: [Email('d2', 1)],
                 108: [TrackStep(), CreateStep()],
             },
 
             'hdh2': {
                 0: [CreateGoal(), CreateStep()],
                 18: [TrackStep()],
-                42: [Email('d1')],
+                42: [Email('d1', 2)],
                 48: [CreateStep()],
                 66: [TrackStep(), CreateStep()],
                 84: [TrackStep(), CreateStep()],
@@ -173,8 +174,17 @@ class UserJourneyTest(TestCase):
 
                 user = users[name]
 
-                emails += [(email.name, user.email) for email in timeline[time]
-                           if isinstance(email, Email)]
+                for email in [e for e in timeline[time]
+                              if isinstance(e, Email)]:
+                    if user.goal:
+                        user.goal.refresh_from_db()
+
+                        msg = '%s should have %d lives after %s but has %d'\
+                              % (user.email, email.lives, email.name,
+                                 user.goal.lives)
+                        self.assertEquals(email.lives, user.goal.lives, msg)
+
+                    emails.append((email.name, user.email))
 
             self.assertInbox(emails)
 
