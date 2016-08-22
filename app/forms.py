@@ -92,7 +92,7 @@ class TrackStepForm(forms.ModelForm):
         widgets = {
             'comments': forms.Textarea(attrs={
                 'placeholder': track_step_tip,
-                'onClick': 'limitText(this)'
+                'onClick': 'limitText(this, true)'
             })}
 
 
