@@ -14,13 +14,28 @@ from app.views import goals as views
 
 
 class GoalsTest(TestCase):
-    fixtures = ['goals']
-
     def setUp(self):
         self.client = Client()
         self.client.login(username="test", password="test")
 
         self.user = User.objects.get(username="test")
+
+    def tearDown(self):
+        Goal.objects.filter(user=self.user).delete()
+
+    def test_new_form(self):
+        response = self.client.get(reverse('app_goals_new'))
+
+        self.assertEquals(200, response.status_code)
+
+    def test_new_form_redirects_to_existing_goal(self):
+        goal = Goal.objects.create(user=self.user, text='test')
+
+        response = self.client.get(reverse('app_goals_new'), follow=True)
+
+        timeline_url = reverse('app_goals_timeline',
+                               kwargs={'goal_id': goal.id})
+        self.assertEquals(response.redirect_chain[0], (timeline_url, 302))
 
     def test_new_no_text(self):
         response = self.client.post(reverse('app_goals_new'))
@@ -48,7 +63,7 @@ class GoalsTest(TestCase):
 
     @patch('app.views.goals.goal_complete', spec=Signal)
     def test_complete(self, goal_complete):
-        goal = Goal.objects.filter(user=self.user).first()
+        goal = Goal.objects.create(user=self.user, text='test')
 
         response = self.client.post(reverse('app_goals_complete',
                                             kwargs={'goal_id': goal.id}))
@@ -61,11 +76,6 @@ class GoalsTest(TestCase):
 
         goal_complete.send.assert_called_with(
             'app.views.goals.complete', goal=goal)
-
-    def test_new_form(self):
-        response = self.client.get(reverse('app_goals_new'))
-
-        self.assertEquals(200, response.status_code)
 
 
 @override_settings(DEBUG=True)

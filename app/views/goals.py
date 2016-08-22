@@ -15,6 +15,11 @@ logger = get_logger(__name__)
 @login_required
 @is_active
 def new(request):
+    current_goal = Goal.objects.filter(user=request.user).first()
+
+    if current_goal:
+        return redirect('app_goals_timeline', goal_id=current_goal.id)
+
     form = GoalForm()
     status = 200
 
