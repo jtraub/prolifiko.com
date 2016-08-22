@@ -55,7 +55,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'djcelery',
-    'kombu.transport.django',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -239,8 +238,7 @@ EMAIL_SEND_PERIOD_UNIT = os.environ.setdefault(
     'PF_EMAIL_SEND_PERIOD_UNIT', 'hours')
 EMAIL_SEND_SCHEDULE = timedelta(**{EMAIL_SEND_PERIOD_UNIT: EMAIL_SEND_PERIOD})
 
-BROKER_URL = 'django://'
-CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+BROKER_URL = os.environ.setdefault('BROKER_URL', 'memory')
 
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 CELERYBEAT_SCHEDULE = {

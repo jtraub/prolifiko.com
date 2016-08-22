@@ -1,2 +1,2 @@
-web: ./web.sh 
-worker: ./manage.py celery worker -B
+web: gunicorn prolifiko.wsgi --log-file=- --timeout 120
+worker: celery -A prolifiko worker -l info -B
