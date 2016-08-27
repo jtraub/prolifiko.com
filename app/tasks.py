@@ -1,9 +1,11 @@
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.db.models import Count, Q
 from django.utils import timezone
 from django.conf import settings
 from datetime import timedelta
 from celery import shared_task
+import pytz
 
 from .utils import send_email
 from .models import Email, Step, Goal
@@ -24,10 +26,9 @@ def send_dr_emails():
 
         return User.objects \
             .annotate(goal_count=Count('goal')) \
-            .annotate(step_count=Count('goal__steps')) \
             .filter(is_active=True) \
             .filter(date_joined__lt=before, date_joined__gt=after) \
-            .filter(Q(goal_count=0) | Q(step_count=0))
+            .filter(goal_count=0)
 
     for name, multiplier in (('dr1', 1), ('dr2', 2), ('dr3', 3)):
         delta = timedelta(**{
@@ -45,6 +46,41 @@ def send_dr_emails():
                 logger.debug(msg % (user.email, delta, sent_emails, name))
 
                 send_email(name, user)
+
+
+@shared_task
+def send_d_emails_at_midnight(now=None):
+    if now is None:
+        now = timezone.now()
+
+    emails_sent = []
+
+    late_steps = Step.objects.filter(goal__user__is_active=True,
+                                     goal__deleted=False,
+                                     goal__lives__gt=0,
+                                     goal__complete=False,
+                                     complete=False,
+                                     end__lte=now)
+
+    for step in late_steps:
+        goal = step.goal
+        user = goal.user
+
+        # 3 lives = d1
+        # 2 lives = d2
+        # 1 life = d3
+        email_to_send = 'd%d' % (4 - goal.lives)
+
+        with transaction.atomic():
+            step.lose_life(now)
+
+            email = send_email(email_to_send, user, goal)
+            email.step = step
+            email.save()
+
+        emails_sent.append(email)
+
+    return emails_sent
 
 
 @shared_task

@@ -1,9 +1,11 @@
 from django.db import models
-from django.utils import timezone
 from django.conf import settings
-from django import forms
 import uuid
 from itertools import chain
+from django.utils import timezone as dj_timezone
+import pytz
+from datetime import datetime, date, time, timedelta
+from django.utils import timezone
 
 nth = {
     1: 'first',
@@ -18,9 +20,10 @@ class Goal(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    timezone = models.TextField()
 
     text = models.TextField(max_length=1024)
-    start = models.DateTimeField(default=timezone.now)
+    start = models.DateTimeField()
 
     active = models.BooleanField(default=False)
     lives = models.IntegerField(default=3)
@@ -33,6 +36,26 @@ class Goal(models.Model):
 
     def __str__(self):
         return '%s (%s)' % (self.id, self.user.email)
+
+    def create_step(self, text, start=None, commit=False):
+        if start is not None and dj_timezone.is_naive(start):
+            raise ValueError()
+
+        if start is None:
+            start = timezone.now()
+
+        step = Step(goal=self, text=text, start=start)
+        step.update_end()
+
+        if commit:
+            step.save()
+
+            self.active = True
+            self.save()
+
+            self.refresh_from_db()
+
+        return step
 
     def lose_life(self, commit=True):
         self.lives -= 1
@@ -71,7 +94,7 @@ class Step(models.Model):
                              on_delete=models.CASCADE)
 
     text = models.CharField(max_length=1024)
-    start = models.DateTimeField(default=timezone.now)
+    start = models.DateTimeField()  # UTC
     end = models.DateTimeField()
     time_tracked = models.DateTimeField(blank=True, null=True)
 
@@ -84,14 +107,46 @@ class Step(models.Model):
     @staticmethod
     def create(goal: Goal, text: str):
         start = timezone.now()
-        end = start + settings.INACTIVE_DELTA
 
         return Step.objects.create(
             goal=goal,
             text=text,
             start=start,
-            end=end
+            end=Step.deadline(start, goal.timezone)
         )
+
+    @staticmethod
+    def deadline(start, tz):
+        if dj_timezone.is_naive(start):
+            raise ValueError()
+
+        if isinstance(tz, str):
+            tz = pytz.timezone(tz)
+
+        # - Convert UTC start time to goal timezone
+        # - Update date and time to local midnight after next
+        # - Convert back to UTC
+        return (start.astimezone(tz) + timedelta(days=2)) \
+            .replace(hour=0, minute=0, second=0, microsecond=0) \
+            .astimezone(pytz.utc)
+
+    def update_end(self):
+        self.end = Step.deadline(self.start, self.goal.timezone)
+
+    def lose_life(self, now=None, commit=True):
+        if now is None:
+            now = timezone.now()
+
+        tz = pytz.timezone(self.goal.timezone)
+
+        self.goal.lives -= 1
+        self.end = (now.astimezone(tz) + timedelta(days=1)) \
+            .replace(hour=0, minute=0, second=0, microsecond=0) \
+            .astimezone(pytz.utc)
+
+        if commit:
+            self.goal.save()
+            self.save()
 
     @property
     def number(self):

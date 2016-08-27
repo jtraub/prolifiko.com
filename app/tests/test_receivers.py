@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 from unittest.mock import patch
+from django.utils import timezone
 
 from app.models import Step, Goal
 from app.receivers import *
@@ -59,7 +60,9 @@ class ReceiversTest(TestCase):
         })
 
     def test_new_step_email(self, add_event, send_email):
-        goal = Goal.objects.create(user=self.user, text='test')
+        goal = Goal.objects.create(user=self.user, text='test',
+                                   timezone='Europe/London',
+                                   start=timezone.now())
 
         step = Step.create(goal, 'test')
 

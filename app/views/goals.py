@@ -1,12 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.http import Http404
-from django.utils.timezone import now
-from dateutil.relativedelta import relativedelta
+from django.http import Http404, HttpResponseBadRequest, HttpResponseNotAllowed
+from django.db import transaction
+from django.utils import timezone
+import pytz
 
-from app.models import Goal
-from app.forms import GoalForm
-from app.signals import new_goal, goal_complete
+from app.models import Goal, Step
+from app.signals import new_goal, goal_complete, new_step
 from app.utils import get_logger, is_active
 
 logger = get_logger(__name__)
@@ -20,33 +20,46 @@ def new(request):
     if current_goal:
         return redirect('app_goals_timeline', goal_id=current_goal.id)
 
-    form = GoalForm()
-    status = 200
+    if request.method == 'GET':
+        return render(request, 'goals/new.html', {
+            'timezones': pytz.common_timezones
+        })
 
-    if request.method == 'POST':
-        form = GoalForm(request.POST)
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['GET', 'POST'])
 
-        if form.is_valid():
-            goal = form.save(commit=False)
+    is_valid = 'text' in request.POST and \
+               'first_step' in request.POST and \
+               'timezone' in request.POST
 
-            goal.user = request.user
+    if not is_valid:
+        return HttpResponseBadRequest()
 
-            days_since_start = relativedelta(now(), goal.user.date_joined).days
-            goal.lives = 3 - days_since_start
+    start = timezone.now()
 
-            logger.debug('Creating goal user=%s' % goal.user.email)
+    goal = Goal(
+        user=request.user,
+        timezone=request.POST['timezone'],
+        text=request.POST['text'],
+        start=start
+    )
 
-            goal.save()
+    with transaction.atomic():
+        logger.info('Creating goal user=%s' % goal.user.email)
 
-            new_goal.send('app.views.goals.new', goal=goal)
+        goal.save()
 
-            return redirect('app_steps_new', goal_id=goal.id)
-        else:
-            status = 400
+        logger.info('Creating first step goal=%s user=%s' % (
+            goal.id, request.user.email))
 
-    return render(request, 'goals/new.html', {
-        'form': form,
-    }, status=status)
+        first_step = goal.create_step(request.POST['first_step'],
+                                      goal.start,
+                                      commit=True)
+
+    new_goal.send('app.views.goals.new', goal=goal)
+    new_step.send('app.views.goals.new', step=first_step)
+
+    return redirect('app_steps_start', goal_id=goal.id, step_id=first_step.id)
 
 
 @login_required

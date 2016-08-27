@@ -4,12 +4,12 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from uuid import uuid1
 
-from django.utils.timezone import now
-from datetime import timedelta
+from django.utils.timezone import now, pytz
+from datetime import timedelta, datetime, time
 from unittest.mock import patch
 from django.dispatch import Signal
 
-from app.models import Goal
+from app.models import Goal, Step
 from app.views import goals as views
 
 
@@ -20,16 +20,16 @@ class GoalsTest(TestCase):
 
         self.user = User.objects.get(username="test")
 
-    def tearDown(self):
-        Goal.objects.filter(user=self.user).delete()
-
     def test_new_form(self):
         response = self.client.get(reverse('app_goals_new'))
 
         self.assertEquals(200, response.status_code)
+        self.assertTrue('timezones' in response.context)
 
     def test_new_form_redirects_to_existing_goal(self):
-        goal = Goal.objects.create(user=self.user, text='test')
+        goal = Goal.objects.create(user=self.user, text='test',
+                                   timezone='Europe/London',
+                                   start=timezone.now())
 
         response = self.client.get(reverse('app_goals_new'), follow=True)
 
@@ -38,32 +38,75 @@ class GoalsTest(TestCase):
         self.assertEquals(response.redirect_chain[0], (timeline_url, 302))
 
     def test_new_no_text(self):
-        response = self.client.post(reverse('app_goals_new'))
+        response = self.client.post(reverse('app_goals_new'), data={
+            'first_step': 'step text',
+            'timezone': 'Europe/London'
+        })
+
+        self.assertEquals(400, response.status_code)
+
+    def test_new_no_first_step(self):
+        response = self.client.post(reverse('app_goals_new'), data={
+            'text': 'goal text',
+            'timezone': 'Europe/London'
+        })
+
+        self.assertEquals(400, response.status_code)
+
+    def test_new_no_timezone(self):
+        response = self.client.post(reverse('app_goals_new'), data={
+            'text': 'goal text',
+            'first_step': 'step text'
+        })
 
         self.assertEquals(400, response.status_code)
 
     @patch('app.views.goals.new_goal', spec=Signal)
-    def test_new(self, new_goal):
+    @patch('app.views.goals.new_step', spec=Signal)
+    def test_new(self, new_step, new_goal):
         text = uuid1()
         response = self.client.post(reverse('app_goals_new'), data={
-            'text': text
+            'text': text,
+            'first_step': 'step text',
+            'timezone': 'Europe/London'
         }, follow=False)
 
         goal = Goal.objects.get(text=text)
+        tz = pytz.timezone('Europe/London')
 
-        self.assertRedirects(response, reverse('app_steps_new',
-                                               kwargs={'goal_id': goal.id}))
+        self.assertEquals(len(goal.steps.all()), 1)
+
+        self.assertRedirects(response, reverse('app_steps_start', kwargs={
+            'goal_id': goal.id, 'step_id': goal.steps.first().id}))
 
         self.assertIsNotNone(goal)
+        self.assertEquals(goal.lives, 3)
         self.assertEquals(self.user.id, goal.user.id)
-        self.assertAlmostEquals(timezone.now(), goal.start,
-                                delta=timedelta(seconds=3))
+        self.assertEquals(goal.timezone, 'Europe/London')
+        self.assertAlmostEquals(goal.start, timezone.now(),
+                                delta=timedelta(seconds=1))
 
-        new_goal.send.assert_called_with('app.views.goals.new', goal=goal)
+        first_step = goal.steps.first()
+        self.assertEquals(first_step.text, 'step text')
+        self.assertEquals(first_step.start, goal.start)
+
+        local_start = first_step.start.astimezone(tz)
+        local_end = first_step.end.astimezone(tz)
+        self.assertEquals(first_step.end, Step.deadline(first_step.start, tz))
+        self.assertEquals((local_start + timedelta(days=2)).date(),
+                          local_end.date())
+        self.assertEquals(local_end.time(), time())
+
+        new_goal.send.assert_called_with('app.views.goals.new',
+                                         goal=goal)
+        new_step.send.assert_called_with('app.views.goals.new',
+                                         step=first_step)
 
     @patch('app.views.goals.goal_complete', spec=Signal)
     def test_complete(self, goal_complete):
-        goal = Goal.objects.create(user=self.user, text='test')
+        goal = Goal.objects.create(user=self.user, text='test',
+                                   timezone='Europe/London',
+                                   start=timezone.now())
 
         response = self.client.post(reverse('app_goals_complete',
                                             kwargs={'goal_id': goal.id}))
@@ -76,45 +119,3 @@ class GoalsTest(TestCase):
 
         goal_complete.send.assert_called_with(
             'app.views.goals.complete', goal=goal)
-
-
-@override_settings(DEBUG=True)
-class LivesTest(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-
-    def test_0_lives_lost(self):
-        user = User.objects.create(username='lives0', password='test')
-        request = self.factory.post(reverse('app_goals_new'),
-                                    data={'text': 'test'})
-        request.user = user
-
-        views.new(request)
-
-        goal = Goal.objects.filter(user=user).first()
-        self.assertEquals(3, goal.lives)
-
-    def test_1_life_lost(self):
-        user = User.objects.create(username='lives1', password='test',
-                                   date_joined=now() - timedelta(hours=24))
-        request = self.factory.post(reverse('app_goals_new'),
-                                    data={'text': 'test'})
-        request.user = user
-
-        views.new(request)
-
-        goal = Goal.objects.filter(user=user).first()
-        self.assertEquals(2, goal.lives)
-
-    def test_2_lives_lost(self):
-        user = User.objects.create(username='lives1', password='test',
-                                   date_joined=now() - timedelta(hours=48))
-
-        request = self.factory.post(reverse('app_goals_new'),
-                                    data={'text': 'test'})
-        request.user = user
-
-        views.new(request)
-
-        goal = Goal.objects.filter(user=user).first()
-        self.assertEquals(1, goal.lives)

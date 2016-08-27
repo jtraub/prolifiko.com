@@ -6,6 +6,10 @@ button {
   text-transform: uppercase;
 
   background: $yellow;
+
+  &.gutter {
+    margin: 0.5em;
+  }
 }
 
 button:disabled {

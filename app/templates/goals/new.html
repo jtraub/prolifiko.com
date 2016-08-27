@@ -1,23 +1,12 @@
 {% extends "base.html" %}
+{% load static from staticfiles %}
 
 {% block heading %}Get Started{% endblock %}
 
 {% block content %}
-<form action="{% url 'app_goals_new' %}" method="post">
-    {% csrf_token %}
-    <section>
-        <p>Welcome to the challenge! It’s great to have you on board.</p>
-        <p>Your first task is to set a writing goal.</p>
-        <p><strong>What do you want to achieve with your writing in the next 5 days?</strong></p>
-    </section>
-
-    <div>{{ form.text }}</div>
-
-    <section>
-        <p>Still struggling? Check out our blog on <a href="http://blog.write-track.co.uk/how-to-set-a-writing-goal/">how to set a goal</a>.</p>
-        <p>All done? Great! Next, you need to set a step to help you achieve your goal.</p>
-    </section>
-
-    <p><button type="submit" id="next_button" disabled>Next</button></p>
-</form>
+    <div id="new-goal"></div>
+    <script src="{% static 'moment.min.js' %}"></script>
+    <script src="{% static 'moment-timezone.min.js' %}"></script>
+    <script>window.TIMEZONES={{ timezones|safe }}</script>
+    <script src="{% static 'new-goal.js' %}"></script>
 {% endblock %}

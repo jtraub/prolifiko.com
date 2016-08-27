@@ -3,9 +3,11 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.utils import timezone
 from uuid import uuid4
-from datetime import timedelta
+from datetime import timedelta, datetime
 from unittest.mock import patch
 from django.dispatch import Signal
+import pytz
+from datetime import time
 
 from app.models import Goal, Step
 from app.views import steps as views
@@ -20,6 +22,7 @@ class StepsTest(TestCase):
 
         self.user = User.objects.get(username="test")
         self.goal = Goal.objects.filter(user=self.user).first()
+        self.tz = pytz.timezone(self.goal.timezone)
 
     def test_new_bad_goal(self):
         response = self.client.post(reverse('app_steps_new',
@@ -50,9 +53,16 @@ class StepsTest(TestCase):
 
         self.assertIsNotNone(step)
         self.assertEquals(self.goal.id, step.goal.id)
-        self.assertAlmostEquals(timezone.now(), step.start,
-                                delta=timedelta(seconds=3))
-        self.assertEquals(step.start + timedelta(days=1), step.end)
+
+        self.assertAlmostEquals(step.start, timezone.now(),
+                                delta=timedelta(seconds=2))
+
+        local_start = step.start.astimezone(self.tz)
+        local_end = step.end.astimezone(self.tz)
+        self.assertEquals(step.end, Step.deadline(step.start, self.tz))
+        self.assertEquals((local_start + timedelta(days=2)).date(),
+                          local_end.date())
+        self.assertEquals(local_end.time(), time())
 
         new_step_signal.send.assert_called_with(
             'app.views.steps.new', step=step)
@@ -118,7 +128,9 @@ class StepsTest(TestCase):
 
     @patch('app.views.steps.step_complete', spec=Signal)
     def test_track_last_step_redirects_to_complete(self, step_complete_signal):
-        goal = Goal.objects.create(user=self.user, text='test')
+        goal = Goal.objects.create(user=self.user, text='test',
+                                   timezone='Europe/London',
+                                   start=timezone.now())
 
         for i in range(5):
             Step.create(goal, 'test')
@@ -133,7 +145,9 @@ class StepsTest(TestCase):
                                      kwargs={'goal_id': goal.id}))
 
     def test_new_to_track_redirect(self):
-        goal = Goal.objects.create(user=self.user, text='test')
+        goal = Goal.objects.create(user=self.user, text='test',
+                                   timezone='Europe/London',
+                                   start=timezone.now())
         step = Step.create(goal, 'test')
 
         response = self.client.get(reverse('app_steps_new',
@@ -150,7 +164,9 @@ class StepsTest(TestCase):
         self.assertEquals(404, response.status_code)
 
     def test_latest_redirects_to_new_step(self):
-        goal = Goal.objects.create(user=self.user, text='test')
+        goal = Goal.objects.create(user=self.user, text='test',
+                                   timezone='Europe/London',
+                                   start=timezone.now())
 
         response = self.client.get(reverse('app_steps_latest',
                                            kwargs={'goal_id': goal.id}))
@@ -159,7 +175,9 @@ class StepsTest(TestCase):
                                                kwargs={'goal_id': goal.id}))
 
     def test_latest_redirects_to_last_step(self):
-        goal = Goal.objects.create(user=self.user, text='test')
+        goal = Goal.objects.create(user=self.user, text='test',
+                                   timezone='Europe/London',
+                                   start=timezone.now())
 
         step1 = Step.create(goal, 'test')
 

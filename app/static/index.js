@@ -1,10 +1,10 @@
 require('./index.scss');
 
-var LimitTextDone = false;
+var LimitTextDone = [];
 var MAX_WORDS = 100;
 
-window.limitText = function limitText(textarea, requireText) {
-    if (LimitTextDone) {
+window.limitText = function limitText(textarea, requireText=true) {
+    if (LimitTextDone.indexOf(textarea) > -1) {
         return;
     }
 
@@ -33,18 +33,7 @@ window.limitText = function limitText(textarea, requireText) {
         wrapper.style.color = wordsLeft >= 0 ? 'black' : 'red';
     });
 
-    textarea.form.addEventListener('submit', function(event) {
-
-        if (textarea.value.split(' ').length > MAX_WORDS) {
-            alert('Too many words!');
-            event.preventDefault();
-            return false;
-        }
-
-        return true;
-    });
-
-    LimitTextDone = true;
+    LimitTextDone.push(textarea);
 };
 
 var passwordInputs = document.querySelectorAll('input[type=password]');

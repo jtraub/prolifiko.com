@@ -49,22 +49,6 @@ class LoginForm(forms.Form):
     password = forms.CharField(strip=False, widget=forms.PasswordInput)
 
 
-new_goal_tip = 'Tip: What you write is up to you but try to be specific, eg ' \
-               'you might want to write for an amount of time or to a word ' \
-               'count, or on a specific project.'
-
-
-class GoalForm(forms.ModelForm):
-    class Meta:
-        model = Goal
-        fields = ['text']
-        widgets = {
-            'text': forms.Textarea(attrs={
-                'placeholder': new_goal_tip,
-                'onClick': 'limitText(this, true)'
-            })}
-
-
 new_step_tip = 'Tip: Don’t think about the project as a whole. Just think ' \
                'about the one thing you can do next to progress your writing.'
 

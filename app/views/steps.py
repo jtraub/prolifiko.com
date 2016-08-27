@@ -1,8 +1,10 @@
+from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import Http404, HttpResponse
 from django.utils import timezone
 from django.conf import settings
+import pytz
 
 from app.models import Step, Goal
 from app.forms import NewStepForm, TrackStepForm
@@ -32,21 +34,10 @@ def new(request, goal_id):
         form = NewStepForm(request.POST)
 
         if form.is_valid():
-            step = form.save(commit=False)
-
-            step.goal = goal
-            step.start = timezone.now()
-            step.end = step.start + settings.INACTIVE_DELTA
-
             logger.debug('Creating step goal=%s user=%s' % (
                 goal.id, request.user.email))
 
-            step.save()
-
-            step.goal.active = True
-            step.goal.save()
-
-            goal.refresh_from_db()
+            step = goal.create_step(form.cleaned_data['text'], commit=True)
 
             new_step.send('app.views.steps.new', step=step)
 

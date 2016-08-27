@@ -4,17 +4,17 @@ from django.core import mail
 from django.contrib.auth.models import User
 from time import sleep
 from unittest.mock import patch, Mock
-from unittest import skipIf
+from unittest import skip
 from logging import getLogger
 from datetime import timedelta
-import os
 
 from app.models import Goal, Step
 
 logger = getLogger('prolifiko.app.test_user_journey')
 
 
-@skipIf('QUICK' in os.environ, reason='Quick run')
+@skip
+# @skipIf('QUICK' in os.environ, reason='Quick run')
 class UserJourneyTest(TestCase):
     @override_settings(DEBUG=True,
                        INACTIVE_TIME=24,
@@ -64,80 +64,71 @@ class UserJourneyTest(TestCase):
                 self.lives = lives
 
         spec = {
-            'dr': {
-                24: [Email('dr1')],
-                48: [Email('dr2')],
-                72: [Email('dr3')],
-            },
+            'dr': (0, {
+                '02 00': [Email('dr1')],
+                '03 00': [Email('dr2')],
+                '04 00': [Email('dr3')],
+            }),
 
-            'dr2': {
-                0: [CreateGoal()],
-                24: [Email('dr1')],
-                48: [Email('dr2')],
-                72: [Email('dr3')],
-            },
+            'drd': (0, {
+                '02 00': [Email('dr1'), CreateGoal()],
+                '02 18': [TrackStep(), CreateStep()],
+                '04 00': [Email('d1', 2)],
+                '04 12': [TrackStep(), CreateStep()],
+                '06 00': [Email('d2', 1)],
+            }),
 
-            'drd': {
-                0: [CreateGoal()],
-                24: [Email('dr1')],
-                30: [CreateStep()],
-                48: [TrackStep(), CreateStep()],
-                72: [Email('d1', 2)],
-                84: [TrackStep(), CreateStep()],
-                108: [Email('d2', 1)],
-            },
+            'drd2': (0, {
+                '01 00': [CreateGoal()],
+                '03 00': [Email('dr1'), CreateStep()],
+                '03 18': [TrackStep(), CreateStep()],
+                '05 00': [Email('d1', 2)],
+                '06 00': [Email('d2', 1)],
+                '07 00': [Email('d3', 0)],
+            }),
 
-            'drd2': {
-                0: [CreateGoal()],
-                24: [Email('dr1')],
-                30: [CreateStep()],
-                48: [TrackStep(), CreateStep()],
-                72: [Email('d1', 2)],
-                96: [Email('d2', 1)],
-                120: [Email('d3', 0)],
-            },
-
-            'h': {
-                0: [CreateGoal(), CreateStep()],
-                6: [TrackStep(), CreateStep()],
-                18: [TrackStep(), CreateStep()],
-                30: [TrackStep(), CreateStep()],
-                42: [TrackStep(), CreateStep()],
-                54: [TrackStep(), Complete()],
-            },
-
-            'hd': {
-                0: [CreateGoal(), CreateStep()],
-                18: [TrackStep(), CreateStep()],
-                42: [TrackStep(), CreateStep()],
-                66: [Email('d1', 2)],
-                90: [Email('d2', 1)],
-                114: [Email('d3', 0)],
-            },
-
-            'hdh': {
-                0: [CreateGoal()],
-                12: [CreateStep()],
-                30: [TrackStep(), CreateStep()],
-                54: [Email('d1', 2)],
-                60: [TrackStep(), CreateStep()],
-                78: [TrackStep(), CreateStep()],
-                102: [Email('d2', 1)],
-                108: [TrackStep(), CreateStep()],
-            },
-
-            'hdh2': {
-                0: [CreateGoal(), CreateStep()],
-                18: [TrackStep()],
-                42: [Email('d1', 2)],
-                48: [CreateStep()],
-                66: [TrackStep(), CreateStep()],
-                84: [TrackStep(), CreateStep()],
-                102: [TrackStep(), CreateStep()],
-            }
+            # 'h': (0, {
+            #     '01 00': [CreateGoal(), CreateStep()],
+            #     '01 06': [TrackStep(), CreateStep()],
+            #     '01 18': [TrackStep(), CreateStep()],
+            #     '02 06': [TrackStep(), CreateStep()],
+            #     '02 18': [TrackStep(), CreateStep()],
+            #     '03 06': [TrackStep(), Complete()],
+            # }),
+            #
+            # 'hd': (0, {
+            #     '01 00': [CreateGoal(), CreateStep()],
+            #     '01 18': [TrackStep(), CreateStep()],
+            #     '02 18': [TrackStep(), CreateStep()],
+            #     '03 18': [Email('d1', 2)],
+            #     '04 18': [Email('d2', 1)],
+            #     '05 18': [Email('d3', 0)],
+            # }),
+            #
+            # 'hdh': (0, {
+            #     '01 00': [CreateGoal()],
+            #     '01 12': [CreateStep()],
+            #     '02 06': [TrackStep(), CreateStep()],
+            #     '03 06': [Email('d1', 2)],
+            #     '03 12': [TrackStep(), CreateStep()],
+            #     '04 06': [TrackStep(), CreateStep()],
+            #     '05 06': [Email('d2', 1)],
+            #     '05 12': [TrackStep(), CreateStep()],
+            # }),
+            #
+            # 'hdh2': (0, {
+            #     '01 00': [CreateGoal(), CreateStep()],
+            #     '01 18': [TrackStep()],
+            #     '02 18': [Email('d1', 2)],
+            #     '03 00': [CreateStep()],
+            #     '03 18': [TrackStep(), CreateStep()],
+            #     '04 12': [TrackStep(), CreateStep()],
+            #     '05 06': [TrackStep(), CreateStep()],
+            # })
         }
 
-        time = 0
+        hours = 0
+        current_time = '01 00'
 
         users = {name: UserJourneyTest.User.register(name + '@t.com')
                  for name in spec.keys()}
@@ -145,18 +136,24 @@ class UserJourneyTest(TestCase):
         self.assertInbox([('n1_registration', user.email)
                           for name, user in users.items()])
 
-        while time <= 120:
-            print('============ time=%d ============' % time)
+        while hours <= 144:
+            decimal_time = hours / 24
+            quotient = decimal_time - math.floor(decimal_time)
+            current_time = '0%d %02d' % \
+                           (math.floor(decimal_time) + 1, quotient * 24)
+
+            print('============ time=%s (%dh) ============' %
+                  (current_time, hours))
 
             emails = []
 
-            for name, timeline in spec.items():
-                if time not in timeline:
+            for name, (tz_offset, timeline) in spec.items():
+                if current_time not in timeline:
                     continue
 
                 user = users[name]
 
-                actions = [event for event in timeline[time]
+                actions = [event for event in timeline[current_time]
                            if isinstance(event, Action)]
 
                 for action in actions:
@@ -168,13 +165,13 @@ class UserJourneyTest(TestCase):
             self.send_dr_emails()
             self.send_d_emails()
 
-            for name, timeline in spec.items():
-                if time not in timeline:
+            for name, (tz_offset, timeline) in spec.items():
+                if current_time not in timeline:
                     continue
 
                 user = users[name]
 
-                for email in [e for e in timeline[time]
+                for email in [e for e in timeline[current_time]
                               if isinstance(e, Email)]:
                     if user.goal:
                         user.goal.refresh_from_db()
@@ -188,7 +185,7 @@ class UserJourneyTest(TestCase):
 
             self.assertInbox(emails)
 
-            time += 6
+            hours += 6
             sleep(6)
 
     def assertInbox(self, emails):
@@ -238,6 +235,8 @@ class UserJourneyTest(TestCase):
 
             self.client.post(reverse('app_goals_new'), data={
                 'text': 'test goal',
+                'first_step': 'test_step',
+                'tz_offset': 0,
             })
 
             self.goal = Goal.objects.filter(user=self.user).first()

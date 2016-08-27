@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.utils import timezone
 from app.models import Goal, Step
 
 
@@ -13,7 +14,9 @@ class IsActiveTest(TestCase):
         self.user.set_password('test')
         self.user.save()
 
-        self.goal = Goal.objects.create(text='test', user=self.user)
+        self.goal = Goal.objects.create(user=self.user, text='test',
+                                        timezone='Europe/London',
+                                        start=timezone.now())
         self.step = Step.create(self.goal, 'text')
 
         self.client = Client()
