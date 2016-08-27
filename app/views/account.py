@@ -15,10 +15,7 @@ def deactivate(request, user_id):
     if user.is_active:
         logger.info('Deactivating user ' + user.email)
 
-        add_event('deactivate', {
-            'id': user.id,
-            'email': user.email
-        })
+        add_event('deactivate', user)
 
         user.is_active = False
         user.save()

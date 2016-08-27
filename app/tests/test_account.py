@@ -38,10 +38,7 @@ class AccountTest(TestCase):
         user.refresh_from_db()
         self.assertFalse(user.is_active)
 
-        add_event.assert_called_with('deactivate', {
-            'id': user.id,
-            'email': user.email
-        })
+        add_event.assert_called_with('deactivate', user)
 
     @patch('app.views.account.add_event')
     def test_user_is_not_deactivated_if_already_inactive(self, add_event):
