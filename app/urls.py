@@ -40,6 +40,8 @@ urlpatterns = [
 
     url(r'goals/(?P<goal_id>[^/]+)/steps/new/$',
         steps.new, name='app_steps_new'),
+    url(r'goals/(?P<goal_id>[^/]+)/steps/latest/$',
+        steps.latest, name='app_steps_latest'),
     url(r'goals/(?P<goal_id>[^/]+)/steps/(?P<step_id>[^/]+)/start/$',
         steps.start, name='app_steps_start'),
     url(r'goals/(?P<goal_id>[^/]+)/steps/(?P<step_id>[^/]+)/track/$',

@@ -63,6 +63,21 @@ def new(request, goal_id):
     }, status=status)
 
 
+def latest(request, goal_id):
+    try:
+        goal = Goal.objects.get(pk=goal_id)
+    except Goal.DoesNotExist:
+        raise Http404("Goal does not exist")
+
+    if goal.steps.count() == 0:
+        return redirect('app_steps_new', goal_id=goal.id)
+
+    latest_step = goal.steps.last()
+
+    return redirect('app_steps_track',
+                    goal_id=goal_id, step_id=latest_step.id)
+
+
 def load_step(view):
     def wrapper(request, goal_id, step_id):
         try:
