@@ -84,6 +84,10 @@ def send_email(name: str, user: User, goal: Goal=None):
 
 
 def add_event(collection, user: User, body: Dict=None):
+    if user.is_staff:
+        logger.debug('Skipping staff user event')
+        return
+
     if body is None:
         body = {}
 

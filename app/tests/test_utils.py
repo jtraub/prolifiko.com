@@ -66,7 +66,8 @@ class UtilsTest(TestCase):
             utils.send_email('test', user)
 
     @override_settings(DEBUG=True)
-    def test_add_event_debug(self):
+    @patch('app.utils.keen')
+    def test_add_event_debug(self, keen):
         collection = 'test'
         body = {'foo': 'bar'}
 
@@ -81,12 +82,13 @@ class UtilsTest(TestCase):
             }
         }
 
+        self.assertFalse(keen.add_event.called)
         self.assertEquals(len(utils.events), 1)
         self.assertEquals(utils.events[0], expected)
 
     @override_settings(DEBUG=False)
     @patch('app.utils.keen')
-    def test_add_event_debug(self, keen):
+    def test_add_event(self, keen):
         collection = 'test'
         body = {'foo': 'bar'}
 
@@ -99,3 +101,15 @@ class UtilsTest(TestCase):
         }
 
         keen.add_event.assert_called_with(collection, expected)
+
+    @override_settings(DEBUG=False)
+    @patch('app.utils.keen')
+    def test_add_event_staff(self, keen):
+        user = Mock(User)
+        user.is_staff = Mock(return_value=True)
+
+        collection = 'test'
+        body = {'foo': 'bar'}
+        utils.add_event(collection, user, body)
+
+        self.assertFalse(keen.add_event.called)
