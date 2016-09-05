@@ -88,6 +88,15 @@ def add_event(collection, user: User, body: Dict=None):
         logger.debug('Skipping staff user event')
         return
 
+    if user.email in settings.TEST_EMAIL_ADDRESSES:
+        logger.debug('Skipping test user event')
+        return
+
+    for domain in settings.TEST_EMAIL_DOMAINS:
+        if user.email.endswith(domain):
+            logger.debug('Skipping test user event')
+            return
+
     if body is None:
         body = {}
 
