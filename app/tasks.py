@@ -71,6 +71,8 @@ def send_d_emails_at_midnight(now=None):
         # 1 life = d3
         email_to_send = 'd%d' % (4 - goal.lives)
 
+        logger.info('Sending %s to %s step=%s goal=%s' % (
+            email_to_send, user.email, step.id, goal.id))
         with transaction.atomic():
             step.lose_life(now)
 
@@ -81,88 +83,3 @@ def send_d_emails_at_midnight(now=None):
         emails_sent.append(email)
 
     return emails_sent
-
-
-@shared_task
-def send_d_emails():
-    logger.info('Sending D emails')
-
-    now = timezone.now()
-
-    logger.debug('Looking for incomplete steps with an end time before %s'
-                 % now)
-
-    late_steps = Step.objects \
-        .filter(goal__lives__gt=0, goal__user__is_active=True) \
-        .filter(complete=False, end__lte=now,)
-
-    for step in late_steps:
-        logger.debug('Found late step user=%s step=%s overdue=%s end=%s' % (
-            step.user.email, step.number, now - step.end, step.end
-        ))
-
-    logger.debug('Looking for inactive goals where ' +
-                 'latest step tracked before %s' %
-                 (now - settings.INACTIVE_DELTA))
-    inactive_goals = []
-
-    for goal in Goal.objects \
-            .annotate(step_count=Count('steps')) \
-            .filter(user__is_active=True) \
-            .filter(active=False, complete=False, step_count__gt=0):
-
-        if goal.current_step.time_tracked < now - settings.INACTIVE_DELTA:
-            logger.debug('Found inactive goal user=%s' % goal.user.email)
-
-            inactive_goals.append(goal.current_step)
-
-    email_progression = ('d1', 'd2', 'd3')
-
-    for step in list(late_steps) + inactive_goals:
-        logger.debug('Checking step user=%s step=%s overdue=%s end=%s' % (
-            step.user.email, step.number, now - step.end, step.end
-        ))
-
-        goal = step.goal
-        user = goal.user
-
-        sent_emails = list(email for email in
-                           Email.objects.filter(recipient=user).all()
-                           if email.type == Email.TYPE_D)
-
-        if len(sent_emails) == 0:
-            logger.debug('No emails sent to %s; sending D1' % user.email)
-            goal.lose_life()
-            email = send_email('d1', user, goal)
-            email.step = step
-            email.save()
-
-            continue
-
-        logger.debug('Already sent %s emails to %s' % (
-            [email.name for email in sent_emails], user.email))
-
-        if len(sent_emails) >= 3:
-            logger.debug('All D emails sent to %s; stopping' % user.email)
-            continue
-
-        previous_email = sent_emails[-1] if len(sent_emails) > 1 \
-            else sent_emails[0]
-
-        logger.debug('Last email sent to %s was %s at %s' % (
-            user.email, previous_email.name, previous_email.sent
-        ))
-
-        if previous_email.sent + settings.INACTIVE_DELTA < now:
-            goal.lose_life()
-
-            next_email = email_progression[len(sent_emails)]
-
-            logger.debug('Sending %s to %s; goal now has %d lives' %
-                         (next_email, goal.user, goal.lives))
-
-            email = send_email(next_email, user, goal)
-            email.step = step
-            email.save()
-        else:
-            logger.debug('%s not ready for next email; stopping' % user.email)

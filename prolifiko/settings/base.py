@@ -233,9 +233,9 @@ INACTIVE_TIME = int(os.environ.setdefault('PF_INACTIVE_TIME', '24'))
 INACTIVE_TIME_UNIT = os.environ.setdefault('PF_INACTIVE_TIME_UNIT', 'hours')
 INACTIVE_DELTA = timedelta(**{INACTIVE_TIME_UNIT: INACTIVE_TIME})
 
-EMAIL_SEND_PERIOD = int(os.environ.setdefault('PF_EMAIL_SEND_PERIOD', '1'))
+EMAIL_SEND_PERIOD = int(os.environ.setdefault('PF_EMAIL_SEND_PERIOD', '15'))
 EMAIL_SEND_PERIOD_UNIT = os.environ.setdefault(
-    'PF_EMAIL_SEND_PERIOD_UNIT', 'hours')
+    'PF_EMAIL_SEND_PERIOD_UNIT', 'minutes')
 EMAIL_SEND_SCHEDULE = timedelta(**{EMAIL_SEND_PERIOD_UNIT: EMAIL_SEND_PERIOD})
 
 BROKER_URL = os.environ.setdefault('BROKER_URL', 'memory')
@@ -247,7 +247,7 @@ CELERYBEAT_SCHEDULE = {
         'schedule': EMAIL_SEND_SCHEDULE,
     },
     'send-d-emails': {
-        'task': 'app.tasks.send_d_emails',
+        'task': 'app.tasks.send_d_emails_at_midnight',
         'schedule': EMAIL_SEND_SCHEDULE,
     },
 }
