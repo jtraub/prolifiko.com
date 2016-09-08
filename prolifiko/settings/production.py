@@ -6,8 +6,6 @@ from .base import *
 
 DEBUG = False
 
-BASE_URL = 'https://app.write-track.co'
-
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 ALLOWED_HOSTS = [urlparse(BASE_URL).hostname]

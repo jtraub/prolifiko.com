@@ -65,8 +65,8 @@ class NewStepForm(forms.ModelForm):
 
 
 track_step_tip = 'Tip: Tell us any progress you made. Number of words, ' \
-                 'length of time etc. If you struggled with this step, be ' \
-                 'nice to yourself, set a smaller step next time!'
+                 'length of time etc. It\'s really important to keep a ' \
+                 'record of your progress.'
 
 
 class TrackStepForm(forms.ModelForm):

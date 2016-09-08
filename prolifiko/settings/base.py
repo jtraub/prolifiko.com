@@ -17,7 +17,7 @@ from datetime import timedelta
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
 
-BASE_URL = 'https://prolifiko.com'
+BASE_URL = 'https://app.write-track.co'
 
 DEBUG = False
 
@@ -228,10 +228,6 @@ EMAIL_META = {
         'subject': 'Writing challenge - try again',
     },
 }
-
-INACTIVE_TIME = int(os.environ.setdefault('PF_INACTIVE_TIME', '24'))
-INACTIVE_TIME_UNIT = os.environ.setdefault('PF_INACTIVE_TIME_UNIT', 'hours')
-INACTIVE_DELTA = timedelta(**{INACTIVE_TIME_UNIT: INACTIVE_TIME})
 
 EMAIL_SEND_PERIOD = int(os.environ.setdefault('PF_EMAIL_SEND_PERIOD', '15'))
 EMAIL_SEND_PERIOD_UNIT = os.environ.setdefault(

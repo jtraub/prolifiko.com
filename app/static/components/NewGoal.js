@@ -140,12 +140,14 @@ class Timezone extends React.Component {
 
         return (
             <div>
-                <p>One last thing - we need to know where which timezone you're in.
-                    We've made our best guess, but if it's not right, please select the correct one:</p>
+                <p>One last thing - to make sure we set you the right deadline we need to know your timezone.
+                    We've made our best guess, but if it's not right please select the correct one from this list:</p>
 
                 <select defaultValue={this.state.value} onChange={this.onChange.bind(this)} ref={input => this._input = input}>
                     {this.props.options.map(option => <option key={option} value={option}>{option}</option>)}
                 </select>
+
+                <p>All done? Let's get going.</p>
 
                 <p>
                     <button className="gutter" onClick={this.prev.bind(this)}>&laquo; Previous</button>
