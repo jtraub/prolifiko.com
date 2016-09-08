@@ -7,9 +7,7 @@ button {
 
   background: $yellow;
 
-  &.gutter {
-    margin: 0.5em;
-  }
+  margin: .5em;
 }
 
 button:disabled {
@@ -25,8 +23,28 @@ textarea {
   padding: 0.5em;
   box-sizing: border-box;
   text-align: justify;
+  border-radius: .25rem;
 }
 
 form li {
   list-style: none;
+}
+
+form.inline {
+  padding: 0 10%;
+
+  label {
+    display: inline-block;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 0.5em;
+  }
+
+  input {
+    width: 100%;
+    padding: .5rem;
+    display: block;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: .25rem;
+  }
 }

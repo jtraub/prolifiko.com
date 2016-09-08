@@ -3,10 +3,10 @@
 {% block heading %}Register{% endblock %}
 
 {% block content %}
-<form action="{% url 'app_register' %}" method="post">
+<form action="{% url 'app_register' %}" method="post" class="inline">
     {% csrf_token %}
     {{ form.as_p }}
-    <p><button type="submit">Register</button></p>
+    <div><button type="submit">Register</button></div>
 </form>
 
 <p>Already registered? <a href="{% url 'app_login' %}">Click here</a> to log in.</p>
