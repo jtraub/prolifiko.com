@@ -121,17 +121,17 @@ class Timezone extends React.Component {
         this.setState({ value: guess });
     }
 
-    onChange() {
-        this.setState({ timezone: this._input.value });
+    onChange(event) {
+        this.setState({ timezone: event.target.value });
     }
 
     prev(event) {
-        this.props.prev({ timezone: this.state.value });
+        this.props.prev({ timezone: this.state.timezone });
         event.preventDefault();
     }
 
     submit(event) {
-        this.props.submit({ timezone: this.state.value });
+        this.props.submit({ timezone: this.state.timezone });
         event.preventDefault();
     }
 
@@ -143,7 +143,7 @@ class Timezone extends React.Component {
                 <p>One last thing - to make sure we set you the right deadline we need to know your timezone.
                     We've made our best guess, but if it's not right please select the correct one from this list:</p>
 
-                <select defaultValue={this.state.value} onChange={this.onChange.bind(this)} ref={input => this._input = input}>
+                <select defaultValue={this.state.value} onChange={this.onChange.bind(this)}>
                     {this.props.options.map(option => <option key={option} value={option}>{option}</option>)}
                 </select>
 
@@ -168,7 +168,7 @@ export default class NewGoal extends React.Component {
         page: 1,
         text: '',
         firstStep: '',
-        timezone: 'Europe/London',
+        timezone: '',
     };
 
     constructor() {
@@ -194,6 +194,8 @@ export default class NewGoal extends React.Component {
     submit(newState) {
         this.setState(newState);
 
+        // TODO - VOM
+        this._form[3].value = newState.timezone;
         this._form.submit();
     }
 

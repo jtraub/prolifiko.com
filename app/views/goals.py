@@ -45,7 +45,8 @@ def new(request):
     )
 
     with transaction.atomic():
-        logger.info('Creating goal user=%s' % goal.user.email)
+        logger.info('Creating goal user=%s tz=%s' %
+                    (goal.user.email, goal.timezone))
 
         goal.save()
 
