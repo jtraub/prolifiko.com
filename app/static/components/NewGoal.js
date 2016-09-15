@@ -112,13 +112,12 @@ class Timezone extends React.Component {
     };
 
     state = {
-        value: 0,
+        timezone: null,
     };
 
     componentWillMount() {
         const guess = moment.tz.guess();
-        console.log(guess);
-        this.setState({ value: guess });
+        this.setState({ timezone: guess });
     }
 
     onChange(event) {
@@ -136,14 +135,12 @@ class Timezone extends React.Component {
     }
 
     render() {
-        const { value } = this.state;
-
         return (
             <div>
                 <p>One last thing - to make sure we set you the right deadline we need to know your timezone.
                     We've made our best guess, but if it's not right please select the correct one from this list:</p>
 
-                <select defaultValue={this.state.value} onChange={this.onChange.bind(this)}>
+                <select value={this.state.timezone} onChange={this.onChange.bind(this)}>
                     {this.props.options.map(option => <option key={option} value={option}>{option}</option>)}
                 </select>
 
@@ -181,22 +178,18 @@ export default class NewGoal extends React.Component {
 
     next(newState) {
         newState.page = this.state.page + 1;
-        console.log('next', newState);
         this.setState(newState);
     }
 
     prev(newState) {
         newState.page = this.state.page - 1;
-        console.log('prev', newState);
         this.setState(newState);
     }
 
     submit(newState) {
-        this.setState(newState);
-
-        // TODO - VOM
-        this._form[3].value = newState.timezone;
-        this._form.submit();
+        this.setState(newState, () => {
+            this._form.submit()
+        });
     }
 
     shouldComponentUpdate(nextState) {
@@ -204,8 +197,6 @@ export default class NewGoal extends React.Component {
     }
 
     render() {
-        console.log('render', this.state, this.props);
-
         const { page } = this.state;
 
         let content;
