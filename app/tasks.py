@@ -5,7 +5,6 @@ from django.utils import timezone
 from django.conf import settings
 from datetime import timedelta
 from celery import shared_task
-import pytz
 
 from .utils import send_email
 from .models import Email, Step, Goal
@@ -15,14 +14,20 @@ logger = get_task_logger(__name__)
 
 
 @shared_task
-def send_dr_emails():
+def send_dr_emails(now=None, inactive=None):
+    if now is None:
+        now = timezone.now()
+
+    if inactive is None:
+        inactive = timedelta(hours=24)
+
     logger.info('Sending DR emails')
 
     now = timezone.now()
 
-    def dr_users(_delta):
-        before = now - _delta
-        after = before - settings.INACTIVE_DELTA
+    def dr_users(delta):
+        before = now - delta
+        after = before - inactive
 
         return User.objects \
             .annotate(goal_count=Count('goal')) \
@@ -31,11 +36,7 @@ def send_dr_emails():
             .filter(goal_count=0)
 
     for name, multiplier in (('dr1', 1), ('dr2', 2), ('dr3', 3)):
-        delta = timedelta(**{
-            settings.INACTIVE_TIME_UNIT: settings.INACTIVE_TIME * multiplier
-        })
-
-        for user in dr_users(delta):
+        for user in dr_users(inactive):
             sent_emails = [email.name for email in
                            Email.objects.filter(recipient=user).all()
                            if email.type == Email.TYPE_DR]
@@ -43,7 +44,7 @@ def send_dr_emails():
             if name not in sent_emails:
                 msg = 'Found user %s who registered more than %s ago ' + \
                       'and has received %s emails; sending %s'
-                logger.debug(msg % (user.email, delta, sent_emails, name))
+                logger.debug(msg % (user.email, inactive, sent_emails, name))
 
                 send_email(name, user)
 
