@@ -185,7 +185,7 @@ LOGGING = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-DEFAULT_FROM_EMAIL = 'Bec and Chris <email@prolifiko.com>'
+DEFAULT_FROM_EMAIL = 'Bec and Chris <towritetrack@gmail.com>'
 
 EMAIL_META = {
     'n1_registration': {
