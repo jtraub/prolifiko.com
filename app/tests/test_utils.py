@@ -43,7 +43,7 @@ class UtilsTest(TestCase):
         message = mail.outbox[0]
 
         self.assertEquals('Test Subject', message.subject)
-        self.assertEquals('Bec and Chris <email@prolifiko.com>',
+        self.assertEquals('Bec and Chris <towritetrack@gmail.com>',
                           message.from_email)
         self.assertEquals([self.user.email], message.to)
 
