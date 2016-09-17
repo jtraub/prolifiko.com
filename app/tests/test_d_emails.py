@@ -29,19 +29,19 @@ class DEmailTest(TestCase):
         deadline_cali = cali_tz.localize(datetime(2000, 1, 3, 0))
         deadline_nyc = nyc_tz.localize(datetime(2000, 1, 3, 0))
 
-        uk_user = User.objects.create(email='uk@t.com', username='uk')
+        uk_user = User.objects.create(email='uk@d.com', username='uk_d')
         uk_goal = Goal.objects.create(user=uk_user, text='test',
                                       timezone='Europe/London',
                                       start=start_uk)
         uk_goal.create_step('text', start_uk, commit=True)
 
-        cali_user = User.objects.create(email='cali@t.com', username='cali')
+        cali_user = User.objects.create(email='cali@d.com', username='cali_d')
         cali_goal = Goal.objects.create(user=cali_user, text='test',
                                         timezone='US/Pacific',
                                         start=start_cali)
         cali_goal.create_step('text', start_cali, commit=True)
 
-        nyc_user = User.objects.create(email='nyc@t.com', username='nyc')
+        nyc_user = User.objects.create(email='nyc@d.com', username='nyc_d')
         nyc_goal = Goal.objects.create(user=nyc_user, text='test',
                                        timezone='US/Eastern',
                                        start=start_nyc)

@@ -3,8 +3,9 @@ from django.db import transaction
 from django.db.models import Count, Q
 from django.utils import timezone
 from django.conf import settings
-from datetime import timedelta
+from datetime import timedelta, datetime
 from celery import shared_task
+import pytz
 
 from .utils import send_email
 from .models import Email, Step, Goal
@@ -14,39 +15,54 @@ logger = get_task_logger(__name__)
 
 
 @shared_task
-def send_dr_emails(now=None, inactive=None):
+def send_dr_emails(now=None):
     if now is None:
         now = timezone.now()
 
-    if inactive is None:
-        inactive = timedelta(hours=24)
-
     logger.info('Sending DR emails')
 
-    now = timezone.now()
+    emails_sent = []
 
-    def dr_users(delta):
-        before = now - delta
-        after = before - inactive
+    def dr_users(more_than, less_than=None):
+        before = now - more_than
+
+        if less_than is not None:
+            after = now - less_than
+        else:
+            after = datetime(1970, 1, 1).replace(tzinfo=pytz.utc)
+
+        logger.debug('Looking for users where %s >= date joined > %s' %
+                     (before, after))
 
         return User.objects \
             .annotate(goal_count=Count('goal')) \
             .filter(is_active=True) \
-            .filter(date_joined__lt=before, date_joined__gt=after) \
+            .filter(date_joined__lte=before, date_joined__gt=after) \
             .filter(goal_count=0)
 
-    for name, multiplier in (('dr1', 1), ('dr2', 2), ('dr3', 3)):
-        for user in dr_users(inactive):
-            sent_emails = [email.name for email in
-                           Email.objects.filter(recipient=user).all()
-                           if email.type == Email.TYPE_DR]
+    def send_dr_email(recipient, name):
+        dr_emails_sent = [email.name for email in
+                          Email.objects.filter(recipient=recipient).all()
+                          if email.type == Email.TYPE_DR]
 
-            if name not in sent_emails:
-                msg = 'Found user %s who registered more than %s ago ' + \
-                      'and has received %s emails; sending %s'
-                logger.debug(msg % (user.email, inactive, sent_emails, name))
+        if name not in dr_emails_sent:
+            msg = 'Found user %s who registered more than %s ago ' + \
+                  'and has received %s emails; sending %s'
+            logger.info(msg % (recipient.email, now - recipient.date_joined,
+                               dr_emails_sent, name))
 
-                send_email(name, user)
+            emails_sent.append(send_email(name, recipient))
+
+    for user in dr_users(timedelta(hours=24), timedelta(hours=48)):
+        send_dr_email(user, 'dr1')
+
+    for user in dr_users(timedelta(hours=48), timedelta(hours=72)):
+        send_dr_email(user, 'dr2')
+
+    for user in dr_users(timedelta(hours=72)):
+        send_dr_email(user, 'dr3')
+
+    return emails_sent
 
 
 @shared_task

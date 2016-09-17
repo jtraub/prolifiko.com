@@ -177,8 +177,11 @@ LOGGING = {
         'prolifiko': {
             'handlers': ['console'],
             'level': 'DEBUG',
-            # 'level': 'DEBUG' if DEBUG else 'INFO'
-        }
+        },
+        # 'celery.task': {
+        #     'handlers': ['console'],
+        #     'level': 'DEBUG',
+        # }
     }
 }
 
