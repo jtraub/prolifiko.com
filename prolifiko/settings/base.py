@@ -261,6 +261,7 @@ TEST_EMAIL_ADDRESSES = [
     'revans@emeraldinsight.com',
     'airelembsay@hotmail.co.uk',
     'sally.jenkinson@gmail.com',
+    'beprolifiko@gmail.com',
 ]
 
 TEST_EMAIL_DOMAINS = [

@@ -23,32 +23,59 @@
         float: left;
         margin: 15px;
     }
-</style>
 
-<div class="funnel">
-    <h2>Happy Path</h2>
-    <table>
-        <tr><th>Event</th><th>Count</th><th>Conversion Rate</th></tr>
-        {% for row in happy_path %}
-            <tr><td>{{ row.0 }}</td><td>{{ row.1 }}</td><td>{{ row.2 }}</td></tr>
-        {% endfor %}
-    </table>
+    #updating {
+        display: none;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.4.0/css/pikaday.min.css" />
+
+<form name="dates">
+    <p><label>Start: </label><input name="start" type="text" id="start" value="{{ start|date:"D d b Y" }}"/></p>
+    <p><label>End: </label><input name="end" type="text" id="end" value="{{ end|date:"D d b Y" }}"/></p>
+{#    <p><label>Exclude active: </label><input name="exclude_active" type="checkbox"{% if exclude_active %} checked{% endif %}/></p>#}
+    <p><input type="submit" value="Update"/></p>
+</form>
+
+<div id="result">
+    <div class="funnel">
+        <h2>Happy Path</h2>
+        <table>
+            <tr><th>Event</th><th>Count</th><th>Conversion Rate</th></tr>
+            {% for row in happy_path %}
+                <tr><td>{{ row.0 }}</td><td>{{ row.1 }}</td><td>{{ row.2 }}</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="funnel">
+        <h2>DR Path</h2>
+        <table>
+            <tr><th>Event</th><th>Count</th><th>Conversion Rate</th></tr>
+            {% for row in dr_path %}
+                <tr><td>{{ row.0 }}</td><td>{{ row.1 }}</td><td>{{ row.2 }}</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="funnel">
+        <h2>D Path</h2>
+        <table>
+            <tr><th>Event</th><th>Count</th><th>Conversion Rate</th></tr>
+            {% for row in d_path %}
+                <tr><td>{{ row.0 }}</td><td>{{ row.1 }}</td><td>{{ row.2 }}</td></tr>
+            {% endfor %}
+        </table>
+    </div>
 </div>
-<div class="funnel">
-    <h2>DR Path</h2>
-    <table>
-        <tr><th>Event</th><th>Count</th><th>Conversion Rate</th></tr>
-        {% for row in dr_path %}
-            <tr><td>{{ row.0 }}</td><td>{{ row.1 }}</td><td>{{ row.2 }}</td></tr>
-        {% endfor %}
-    </table>
-</div>
-<div class="funnel">
-    <h2>D Path</h2>
-    <table>
-        <tr><th>Event</th><th>Count</th><th>Conversion Rate</th></tr>
-        {% for row in d_path %}
-            <tr><td>{{ row.0 }}</td><td>{{ row.1 }}</td><td>{{ row.2 }}</td></tr>
-        {% endfor %}
-    </table>
-</div>
+
+<div id="updating">Updating...</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.4.0/pikaday.min.js"></script>
+<script>
+    var start = new Pikaday({ field: document.getElementById('start') });
+    var end = new Pikaday({ field: document.getElementById('end') });
+
+    document.forms.dates.addEventListener('submit', function () {
+        document.querySelector('#result').style.display = 'none';
+        document.querySelector('#updating').style.display = 'block';
+    });
+</script>
