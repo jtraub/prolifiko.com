@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import CreateFiveDayChallenge from './components/CreateFiveDayChallenge';
+import CreateGoal from './components/CreateGoal';
 import Cookies from 'cookies-js';
 
-render(<CreateFiveDayChallenge csrfToken={Cookies.get('csrftoken')} timezones={window.TIMEZONES}/>, document.getElementById("new-goal"));
+render(<CreateGoal csrfToken={Cookies.get('csrftoken')}/>, document.getElementById("new-goal"));

@@ -18,7 +18,7 @@ export default class Textarea extends React.Component {
     };
 
     componentWillMount() {
-        this.setState({ wordsLeft: this.props.wordLimit });
+        this.setState({wordsLeft: this.props.wordLimit});
     }
 
     getValue() {
@@ -27,26 +27,25 @@ export default class Textarea extends React.Component {
 
     onChange(event) {
         const value = event.target.value;
-        console.log('Textarea.onChange "%s"', value);
         this.setState({value});
 
-        const { wordLimit } = this.props;
+        const {wordLimit} = this.props;
         const words = value.split(' ').filter(function (word) {
             return word.length > 0;
         });
 
         const wordsLeft = wordLimit - words.length;
-        this.setState({ wordsLeft });
+        this.setState({wordsLeft});
 
         const nextValid = words.length > 0 && words.length <= wordLimit;
         const isValid = this.state.isValid;
 
         if (nextValid !== isValid) {
-            this.setState({ isValid: nextValid });
+            this.setState({isValid: nextValid});
+        }
 
-            if (this.props.onChange) {
-                this.props.onChange(nextValid);
-            }
+        if (this.props.onChange) {
+            this.props.onChange(value, nextValid);
         }
     }
 
@@ -59,6 +58,7 @@ export default class Textarea extends React.Component {
                     placeholder={this.props.placeholder}
                     className="manualLimit"
                     onChange={this.onChange.bind(this)}
+                    value={this.props.value}
                 />
                 <p>{this.state.wordsLeft} words remaining</p>
             </div>

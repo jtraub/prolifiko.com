@@ -4,23 +4,35 @@ import Textarea from './Textarea';
 export default class GoalDetails extends React.Component {
     static propTypes = {
         onChange: React.PropTypes.func.isRequired,
+        data: React.PropTypes.object.isRequired,
     };
 
     static defaultProps = {
-        data: {}
+        data: {
+            goalName: '',
+            goalDescription: '',
+        }
     };
 
     state = {
         isValid: false,
     };
 
-    next(event) {
-        event.preventDefault();
+    onTextFieldChange(goalDescription, isValid) {
+        this.setState({ goalDescription, isValid }, () => {
+            this.props.onChange({
+                goalDescription,
+            }, isValid);
+        });
+    }
 
-        this.props.next({
-            goalName: this._name.value,
-            goalDescription: this._textarea.getValue(),
-        }, this.state.isValid);
+    onNameChange(event) {
+        const goalName = event.target.value;
+        this.setState({ goalName }, () => {
+            this.props.onChange({
+                goalName,
+            }, this.state.isValid);
+        });
     }
 
     render() {
@@ -28,7 +40,8 @@ export default class GoalDetails extends React.Component {
             'you might want to write for an amount of time or to a word ' +
             'count, or on a specific project.';
 
-        const { goalName, goalDescription } = this.props.data;
+        const goalName = this.state.goalName || this.props.data.goalName;
+        const goalDescription = this.state.goalDescription || this.props.data.goalDescription;
 
         return (
             <div className="page">
@@ -42,11 +55,17 @@ export default class GoalDetails extends React.Component {
                         the next 5 days?</strong></p>
                 </section>
 
-                Goal Name: <input ref={input => this._name = input} type="text" defaultValue={goalName} />
+                Goal Name:
+                <input
+                    onChange={this.onNameChange.bind(this)}
+                    type="text"
+                    value={goalName || ''}
+                />
                 <Textarea
-                    ref={input => this._textarea = input}
-                    onChange={isValid => this.setState({ isValid })}
-                    placeholder={placeholder} />
+                    onChange={this.onTextFieldChange.bind(this)}
+                    placeholder={placeholder}
+                    value={goalDescription || ''}
+                />
 
                 <section>
                     <p>Still struggling? Check out our blog on <a
