@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.template import loader
 from django.core.mail import EmailMultiAlternatives
@@ -118,3 +119,7 @@ def is_active(view_func):
         return view_func(request, *args, **kwargs)
 
     return wrapper
+
+
+def parse_date(string):
+    return datetime.strptime(string, '%Y-%m-%d').date()

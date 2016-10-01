@@ -50,7 +50,7 @@ def login(request):
 
     add_event('login', user)
 
-    return redirect('app_index')
+    return redirect('index')
 
 
 def register(request):

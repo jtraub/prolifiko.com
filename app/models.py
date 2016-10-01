@@ -20,10 +20,16 @@ class Goal(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    timezone = models.TextField()
+    type = models.CharField(max_length=256, choices=((name, name) for name in (
+        'FIVE_DAY_CHALLENGE',
+        'CUSTOM',
+    )))
 
-    text = models.TextField(max_length=1024)
+    name = models.TextField(max_length=256)
+    description = models.TextField(max_length=1024)
+
     start = models.DateTimeField()
+    target = models.DateField()
 
     active = models.BooleanField(default=False)
     lives = models.IntegerField(default=3)
@@ -37,15 +43,18 @@ class Goal(models.Model):
     def __str__(self):
         return '%s (%s)' % (self.id, self.user.email)
 
-    def create_step(self, text, start=None, commit=False):
+    def create_step(self, name, description,
+                    start, deadline,
+                    commit=False):
         if start is not None and dj_timezone.is_naive(start):
             raise ValueError()
 
         if start is None:
             start = timezone.now()
 
-        step = Step(goal=self, text=text, start=start)
-        step.update_end()
+        step = Step(goal=self,
+                    name=name, description=description,
+                    start=start, deadline=deadline)
 
         if commit:
             step.save()
@@ -93,9 +102,12 @@ class Step(models.Model):
     goal = models.ForeignKey(Goal, related_name='steps',
                              on_delete=models.CASCADE)
 
-    text = models.CharField(max_length=1024)
-    start = models.DateTimeField()  # UTC
-    end = models.DateTimeField()
+    name = models.TextField(max_length=256)
+    description = models.TextField(max_length=1024)
+
+    start = models.DateTimeField()
+    deadline = models.DateTimeField()
+
     time_tracked = models.DateTimeField(blank=True, null=True)
 
     complete = models.BooleanField(default=False)
@@ -112,11 +124,11 @@ class Step(models.Model):
             goal=goal,
             text=text,
             start=start,
-            end=Step.deadline(start, goal.timezone)
+            end=Step.midnight_deadline(start, goal.timezone)
         )
 
     @staticmethod
-    def deadline(start, tz):
+    def midnight_deadline(start, tz):
         if dj_timezone.is_naive(start):
             raise ValueError()
 
@@ -130,8 +142,8 @@ class Step(models.Model):
             .replace(hour=0, minute=0, second=0, microsecond=0) \
             .astimezone(pytz.utc)
 
-    def update_end(self):
-        self.end = Step.deadline(self.start, self.goal.timezone)
+    def update_deadline(self):
+        self.deadline = Step.midnight_deadline(self.start, self.goal.timezone)
 
     def lose_life(self, now=None, commit=True):
         if now is None:
@@ -140,7 +152,7 @@ class Step(models.Model):
         tz = pytz.timezone(self.goal.timezone)
 
         self.goal.lives -= 1
-        self.end = (now.astimezone(tz) + timedelta(days=1)) \
+        self.deadline = (now.astimezone(tz) + timedelta(days=1)) \
             .replace(hour=0, minute=0, second=0, microsecond=0) \
             .astimezone(pytz.utc)
 

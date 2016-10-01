@@ -12,7 +12,7 @@
 </head>
 <body>
     <nav>
-        <div class="logo-container"><a href="{% url 'app_index' %}"><div class="logo"></div></a></div>
+        <div class="logo-container"><a href="{% url 'index' %}"><div class="logo"></div></a></div>
         <h1>{% block heading %}{%  endblock %}</h1>
     </nav>
 
@@ -20,10 +20,10 @@
 
     <footer>
         <ul>
-            <li><a href="{%  url 'app_menu_about' %}">About</a></li>
-            <li><a href="{%  url 'app_menu_terms' %}">Terms & Conditions</a></li>
-            <li><a href="{%  url 'app_menu_privacy' %}">Privacy</a></li>
-            <li><a href="{%  url 'app_menu_help' %}">Help</a></li>
+            <li><a href="{%  url 'menu_about' %}">About</a></li>
+            <li><a href="{%  url 'menu_terms' %}">Terms & Conditions</a></li>
+            <li><a href="{%  url 'menu_privacy' %}">Privacy</a></li>
+            <li><a href="{%  url 'menu_help' %}">Help</a></li>
         </ul>
     </footer>
 

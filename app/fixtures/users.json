@@ -1,4 +1,4 @@
-[
+    [
     {
         "model": "auth.user",
         "pk": 1,
@@ -17,7 +17,7 @@
             "user_permissions": []
         }
     },
-        {
+    {
         "model": "auth.user",
         "pk": 2,
         "fields": {
@@ -87,6 +87,14 @@
             "date_joined": "2016-03-24T10:49:27.370Z",
             "groups": [],
             "user_permissions": []
+        }
+    },
+    {
+        "model": "app.timezone",
+        "pk": 1,
+        "fields": {
+            "user": 5,
+            "name": "Europe/London"
         }
     },
     {

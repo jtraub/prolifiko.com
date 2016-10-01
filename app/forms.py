@@ -67,7 +67,7 @@ new_step_tip = 'Tip: Don’t think about the project as a whole. Just think ' \
 class NewStepForm(forms.ModelForm):
     class Meta:
         model = Step
-        fields = ['text']
+        fields = ['name', 'description']
         widgets = {
             'text': forms.Textarea(attrs={
                 'placeholder': new_step_tip,

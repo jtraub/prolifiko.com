@@ -20,7 +20,7 @@ def unload_fixture(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0005_email'),
+        ('app', '0001_initial'),
     ]
 
     operations = [
