@@ -9,3 +9,4 @@ __pycache__/
 celerybeat-schedule
 node_modules/
 ssl/
+.python-version
