@@ -1,7 +1,7 @@
 import React from 'react'
 import Textarea from './Textarea';
 
-class SetGoal extends React.Component {
+export class SetGoal extends React.Component {
     static propTypes = {
         next: React.PropTypes.func.isRequired,
     };
@@ -50,14 +50,14 @@ class SetGoal extends React.Component {
                 </section>
 
                 <p>
-                    <button className="gutter" disabled={!this.state.isValid} onClick={this.next.bind(this)}>Next &raquo;</button>
+                    <button id="next" className="gutter" disabled={!this.state.isValid} onClick={this.next.bind(this)}>Next &raquo;</button>
                 </p>
             </div>
         );
     }
 }
 
-class FirstStep extends React.Component {
+export class FirstStep extends React.Component {
     static propTypes = {
         next: React.PropTypes.func.isRequired,
         prev: React.PropTypes.func.isRequired,
@@ -105,7 +105,7 @@ class FirstStep extends React.Component {
     }
 }
 
-class Timezone extends React.Component {
+export class Timezone extends React.Component {
     static propTypes = {
         prev: React.PropTypes.func.isRequired,
         submit: React.PropTypes.func.isRequired,
@@ -158,7 +158,7 @@ class Timezone extends React.Component {
 export default class NewGoal extends React.Component {
     static propTypes = {
         csrfToken: React.PropTypes.string.isRequired,
-        timezones: React.PropTypes.array.isRequired,
+        timezones: React.PropTypes.array,
     };
 
     state = {
@@ -177,6 +177,7 @@ export default class NewGoal extends React.Component {
     }
 
     next(newState) {
+        console.log('next', newState);
         newState.page = this.state.page + 1;
         this.setState(newState);
     }

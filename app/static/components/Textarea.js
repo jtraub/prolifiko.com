@@ -22,12 +22,16 @@ export default class Textarea extends React.Component {
     }
 
     getValue() {
-        return this._input.value.trim();
+        return this.state.value;
     }
 
-    onChange() {
+    onChange(event) {
+        const value = event.target.value;
+        console.log('Textarea.onChange "%s"', value);
+        this.setState({value});
+
         const { wordLimit } = this.props;
-        const words = this.getValue().split(' ').filter(function (word) {
+        const words = value.split(' ').filter(function (word) {
             return word.length > 0;
         });
 
@@ -54,7 +58,6 @@ export default class Textarea extends React.Component {
                     rows={10}
                     placeholder={this.props.placeholder}
                     className="manualLimit"
-                    ref={input => this._input = input}
                     onChange={this.onChange.bind(this)}
                 />
                 <p>{this.state.wordsLeft} words remaining</p>

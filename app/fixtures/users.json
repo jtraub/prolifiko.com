@@ -96,7 +96,7 @@
             "password": "pbkdf2_sha256$24000$v9wgNeLq50xT$jtyYLbOmtgL6hN/9xmWOLVwYhL8hdmPyc2oSgSlezPs=",
             "last_login": "2016-01-01T00:00:00.000Z",
             "is_superuser": true,
-            "username": "5997a35eb70b44fa914267feffb809",
+            "username": "dan",
             "first_name": "Dan",
             "last_name": "",
             "email": "jonesd9@me.com",
