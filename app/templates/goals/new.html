@@ -5,6 +5,9 @@
 
 {% block content %}
     <div id="new-goal"></div>
-    <script>window.TIMEZONES={{ timezones|safe }}</script>
-    <script src="{% static 'new-goal.js' %}"></script>
+    {% user_is_subscribed %}
+        <script src="{% static 'new-goal.js' %}"></script>
+    {% else %}
+        <script src="{% static 'new-five-day.js' %}"></script>
+    {% else %}
 {% endblock %}

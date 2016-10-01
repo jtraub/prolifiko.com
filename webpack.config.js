@@ -7,6 +7,7 @@ module.exports = {
     entry: {
         bundle: './app/static/index.js',
         'new-goal': './app/static/new-goal.js',
+        'new-five-day-challenge': './app/static/new-five-day-challenge.js',
     },
 
     output: {

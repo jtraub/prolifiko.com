@@ -1,6 +1,6 @@
 import React from 'react';
 import CreateFiveDayChallenge from '../CreateFiveDayChallenge';
-import CreateStep from '../CreateStep';
+import CreateStep from '../StepDetails';
 import CreateGoal from '../GoalDetails';
 import Textarea from '../Textarea';
 import {mount} from 'enzyme';
