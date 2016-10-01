@@ -1,3 +1,4 @@
+import pytz
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import password_validation
@@ -5,7 +6,9 @@ import django.contrib.auth.forms as auth
 from django.core.validators import validate_email
 from uuid import uuid4
 
-from .models import Goal, Step
+from django.db import transaction
+
+from .models import Goal, Step, Timezone
 
 
 def validate_unique_email(value):
@@ -24,6 +27,10 @@ class RegistrationForm(forms.ModelForm):
         strip=False,
         widget=forms.PasswordInput)
 
+    timezone = forms.ChoiceField(label='Timezone', required=True,
+                                 choices=[(tz, tz) for tz in
+                                          pytz.common_timezones])
+
     class Meta:
         model = User
         fields = ('first_name', 'email', 'password',)
@@ -39,7 +46,11 @@ class RegistrationForm(forms.ModelForm):
         user.set_password(self.cleaned_data.get('password'))
 
         if commit:
-            user.save()
+            with transaction.atomic():
+                user.save()
+
+                Timezone.objects.create(user=user,
+                                        name=self.cleaned_data['timezone'])
 
         return user
 

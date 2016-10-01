@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.dispatch import Signal
 from unittest.mock import patch
 
+from app.models import Timezone
 from app.views import auth as views
 
 
@@ -25,6 +26,17 @@ class RegistrationTest(TestCase):
         self.assertEqual(0, len(response.redirect_chain))
         self.assertTrue(response.context['form'].has_error('email'))
 
+    def test_no_timezone(self):
+        response = self.client.post(reverse('app_register'), {
+            'first_name': 'Test',
+            'email': 'test@test.com',
+            'password': 'test',
+        }, follow=True)
+
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(0, len(response.redirect_chain))
+        self.assertTrue(response.context['form'].has_error('timezone'))
+
     @override_settings(DEBUG=True)
     @patch('app.views.auth.registration', spec=Signal)
     def test_register(self, registration_signal):
@@ -32,6 +44,7 @@ class RegistrationTest(TestCase):
             'email': 'new@test.com',
             'password': 'test',
             'first_name': 'name',
+            'timezone': 'Europe/London',
         }, follow=True)
 
         self.assertContains(response, 'check your inbox', status_code=201)
@@ -43,6 +56,10 @@ class RegistrationTest(TestCase):
         self.assertIsNotNone(user.username)
         # User.username.max_length=30
         self.assertTrue(len(user.username) <= 30)
+
+        timezone = Timezone.objects.filter(user=user).first()
+        self.assertIsNotNone(timezone)
+        self.assertEquals('Europe/London', timezone.name)
 
         registration_signal.send.assert_called_with(
             'app.views.auth.register', user=user)

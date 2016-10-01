@@ -5,8 +5,6 @@
 
 {% block content %}
     <div id="new-goal"></div>
-    <script src="{% static 'moment.min.js' %}"></script>
-    <script src="{% static 'moment-timezone.min.js' %}"></script>
     <script>window.TIMEZONES={{ timezones|safe }}</script>
     <script src="{% static 'new-goal.js' %}"></script>
 {% endblock %}

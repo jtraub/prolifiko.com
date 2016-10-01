@@ -24,6 +24,7 @@ pep8==1.7.0
 Pillow==3.2.0
 profilehooks==1.8.1
 pycrypto==2.6.1
+pytest-django===3.0.0
 python-dateutil==2.5.3
 pytz==2016.6.1
 PyYAML==3.11

@@ -61,3 +61,11 @@ passwordInputs.forEach(function (password) {
 
     password.parentNode.insertBefore(wrapper, password.nextSibling);
 });
+
+var timezoneInput = document.querySelector('select[name=timezone]');
+
+if (timezoneInput) {
+    var guess = moment.tz.guess();
+    console.log('Guessing timezone as', guess);
+    timezoneInput.value = guess;
+}

@@ -196,3 +196,12 @@ class Email(models.Model):
             return Email.TYPE_N
 
         return Email.TYPE_D
+
+
+class Timezone(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL)
+
+    name = models.TextField()
+
+    def __str__(self):
+        return '%s (%s)' % (self.user.email, self.name)
