@@ -14,6 +14,10 @@ module.exports = {
         filename: '[name].js'
     },
 
+    //externals: {
+    //    "moment": "moment",
+    //},
+
     module: {
         loaders: [
             { test: /\.js$/, loader: 'babel' },

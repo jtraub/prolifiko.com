@@ -2,62 +2,61 @@ import React from 'react';
 import Textarea from './Textarea';
 
 export default class GoalDetails extends React.Component {
-  static propTypes = {
-    next: React.PropTypes.func.isRequired,
-  };
+    static propTypes = {
+        onChange: React.PropTypes.func.isRequired,
+    };
 
-  state = {
-    isValid: false,
-  };
+    static defaultProps = {
+        data: {}
+    };
 
-  next(event) {
-    this.props.next({
-      name: this._name.value,
-      text: this._textarea.getValue(),
-    });
-    event.preventDefault();
-  }
+    state = {
+        isValid: false,
+    };
 
-  render() {
-    const placeholder = 'Tip: What you write is up to you but try to be specific, eg ' +
-        'you might want to write for an amount of time or to a word ' +
-        'count, or on a specific project.';
+    next(event) {
+        event.preventDefault();
 
-    return (
-        <div className="page">
-          <section>
-            <p>Welcome to the challenge! It’s great to have you on
-              board.</p>
+        this.props.next({
+            goalName: this._name.value,
+            goalDescription: this._textarea.getValue(),
+        }, this.state.isValid);
+    }
 
-            <p>Your first task is to set a writing goal.</p>
+    render() {
+        const placeholder = 'Tip: What you write is up to you but try to be specific, eg ' +
+            'you might want to write for an amount of time or to a word ' +
+            'count, or on a specific project.';
 
-            <p><strong>What do you want to achieve with your writing in
-              the next 5 days?</strong></p>
-          </section>
+        const { goalName, goalDescription } = this.props.data;
 
-          <div>
-            Goal Name: <input
-                ref={input => this._name = input}
-                type="text" />
-            <Textarea
-                ref={input => this._textarea = input}
-                onChange={isValid => this.setState({ isValid })}
-                placeholder={placeholder} />
-          </div>
+        return (
+            <div className="page">
+                <section>
+                    <p>Welcome to the challenge! It’s great to have you on
+                        board.</p>
 
-          <section>
-            <p>Still struggling? Check out our blog on <a
-                href="http://blog.write-track.co.uk/how-to-set-a-writing-goal/">how
-              to set a goal</a>.</p>
+                    <p>Your first task is to set a writing goal.</p>
 
-            <p>All done? Great! Next, you need to set a step to help
-              you achieve your goal.</p>
-          </section>
+                    <p><strong>What do you want to achieve with your writing in
+                        the next 5 days?</strong></p>
+                </section>
 
-          <p>
-            <button id="next" className="gutter" disabled={!this.state.isValid} onClick={this.next.bind(this)}>Next &raquo;</button>
-          </p>
-        </div>
-    );
-  }
+                Goal Name: <input ref={input => this._name = input} type="text" defaultValue={goalName} />
+                <Textarea
+                    ref={input => this._textarea = input}
+                    onChange={isValid => this.setState({ isValid })}
+                    placeholder={placeholder} />
+
+                <section>
+                    <p>Still struggling? Check out our blog on <a
+                        href="http://blog.write-track.co.uk/how-to-set-a-writing-goal/">how
+                        to set a goal</a>.</p>
+
+                    <p>All done? Great! Next, you need to set a step to help
+                        you achieve your goal.</p>
+                </section>
+            </div>
+        );
+    }
 }

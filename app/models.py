@@ -205,3 +205,12 @@ class Timezone(models.Model):
 
     def __str__(self):
         return '%s (%s)' % (self.user.email, self.name)
+
+
+class Subscription(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL)
+
+    name = models.TextField()
+
+    def __str__(self):
+        return '%s (%s)' % (self.user.email, self.name)

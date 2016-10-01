@@ -15,6 +15,9 @@ logger = get_logger(__name__)
 @login_required
 @is_active
 def new(request):
+    user = request.user
+    subscription = Subscription.objects.find(user=user)
+
     current_goal = Goal.objects.filter(user=request.user).first()
 
     if current_goal:
