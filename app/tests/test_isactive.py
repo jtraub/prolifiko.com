@@ -30,7 +30,7 @@ class IsActiveTest(TestCase):
     def test_views(self):
         urls = [
             reverse('new_goal'),
-            reverse('app_goals_timeline', kwargs={'goal_id': self.goal.id}),
+            reverse('myprogress', kwargs={'goal_id': self.goal.id}),
             reverse('complete_goal', kwargs={'goal_id': self.goal.id}),
             reverse('new_step', kwargs={'goal_id': self.goal.id}),
             reverse('start_step',

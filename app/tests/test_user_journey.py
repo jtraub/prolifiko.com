@@ -214,7 +214,7 @@ class UserJourneyTest(TestCase):
 
             client = Client()
 
-            client.post(reverse('app_register'), {
+            client.post(reverse('register'), {
                 'email': email,
                 'password': 'test',
                 'first_name': 'test',

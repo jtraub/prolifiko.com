@@ -19,10 +19,7 @@ class AppTest(TestCase):
         client.login(username='test', password='test')
         response = client.get(reverse('index'), follow=True)
 
-        goal = Goal.objects.filter(user__username='test').first()
-
-        myprogress_url = reverse('app_goals_timeline',
-                                 kwargs={'goal_id': goal.id})
+        myprogress_url = reverse('myprogress')
 
         self.assertEquals(response.redirect_chain[0],
                           (myprogress_url, 302))

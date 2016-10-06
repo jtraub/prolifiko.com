@@ -5,16 +5,16 @@ from django.utils import timezone
 
 from app.models import Step, Goal
 from app.receivers import *
+from app import fixtures
 
 
 @patch('app.receivers.send_email', spec=send_email)
 @patch('app.receivers.add_event', spec=add_event)
 class ReceiversTest(TestCase):
-    fixtures = ['goals', 'steps']
-
     def setUp(self):
         self.user = User.objects.get(username='test')
-        self.step = Step.objects.first()
+        self.goal = fixtures.goal(self.user)
+        self.step = fixtures.step(self.goal)
 
     def test_registration_event(self, add_event, send_email):
         user = User.objects.first()
@@ -31,24 +31,22 @@ class ReceiversTest(TestCase):
         send_email.assert_called_with('n1_registration', user)
 
     def test_new_goal_event(self, add_event, send_email):
-        goal = Goal.objects.first()
+        receive_new_goal(self, goal=self.goal)
 
-        receive_new_goal(self, goal=goal)
-
-        add_event.assert_called_with('goals.new', goal.user, {
-            'goal_id': goal.id.hex
+        add_event.assert_called_with('goals.new', self.goal.user, {
+            'goal_id': self.goal.id.hex
         })
 
     def test_goal_complete_event(self, add_event, send_email):
-        goal = Goal.objects.first()
+        receive_goal_complete(self, goal=self.goal)
 
-        receive_goal_complete(self, goal=goal)
-
-        add_event.assert_called_with('goals.complete', goal.user, {
-            'goal_id': goal.id.hex
+        add_event.assert_called_with('goals.complete', self.goal.user, {
+            'goal_id': self.goal.id.hex
         })
 
-        send_email.assert_called_with('n7_goal_complete', goal.user, goal)
+        send_email.assert_called_with('n7_goal_complete',
+                                      self.goal.user,
+                                      self.goal)
 
     def test_new_step_event(self, add_event, send_email):
         receive_new_step(self, step=self.step)
@@ -60,18 +58,15 @@ class ReceiversTest(TestCase):
         })
 
     def test_new_step_email(self, add_event, send_email):
-        goal = Goal.objects.create(user=self.user, text='test',
-                                   timezone='Europe/London',
-                                   start=timezone.now())
-
-        step = Step.create(goal, 'test')
+        goal = fixtures.goal(self.user)
+        step = fixtures.step(goal)
 
         receive_new_step(self, step=step)
 
         send_email.assert_called_with('n2_new_goal', goal.user, goal)
 
         for i in range(1, 4):
-            step = Step.create(goal, 'test')
+            step = step = fixtures.step(goal)
 
             receive_new_step(self, step=step)
 

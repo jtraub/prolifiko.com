@@ -116,16 +116,19 @@ class Step(models.Model):
     class Meta:
         ordering = ('start',)
 
-    @staticmethod
-    def create(goal: Goal, text: str):
-        start = timezone.now()
-
-        return Step.objects.create(
-            goal=goal,
-            text=text,
-            start=start,
-            end=Step.midnight_deadline(start, goal.timezone)
-        )
+    # @staticmethod
+    # def create(goal: Goal, name: str, description: str):
+    #     start = timezone.now()
+    #
+    #     tz = Timezone.objects.get(user=goal.user)
+    #
+    #     return Step.objects.create(
+    #         goal=goal,
+    #         name=name,
+    #         description=description,
+    #         start=start,
+    #         deadline=Step.midnight_deadline(start, tz.name)
+    #     )
 
     @staticmethod
     def midnight_deadline(start, tz):

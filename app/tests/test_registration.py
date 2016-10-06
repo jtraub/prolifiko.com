@@ -13,12 +13,12 @@ class RegistrationTest(TestCase):
         self.client = Client()
 
     def test_registration_view(self):
-        response = self.client.get(reverse('app_register'))
+        response = self.client.get(reverse('register'))
 
         self.assertEqual(200, response.status_code)
 
     def test_no_email(self):
-        response = self.client.post(reverse('app_register'), {
+        response = self.client.post(reverse('register'), {
             'password': 'test',
         }, follow=True)
 
@@ -27,7 +27,7 @@ class RegistrationTest(TestCase):
         self.assertTrue(response.context['form'].has_error('email'))
 
     def test_no_timezone(self):
-        response = self.client.post(reverse('app_register'), {
+        response = self.client.post(reverse('register'), {
             'first_name': 'Test',
             'email': 'test@test.com',
             'password': 'test',
@@ -40,7 +40,7 @@ class RegistrationTest(TestCase):
     @override_settings(DEBUG=True)
     @patch('app.views.auth.registration', spec=Signal)
     def test_register(self, registration_signal):
-        response = self.client.post(reverse('app_register'), {
+        response = self.client.post(reverse('register'), {
             'email': 'new@test.com',
             'password': 'test',
             'first_name': 'name',
@@ -67,7 +67,7 @@ class RegistrationTest(TestCase):
     def test_register_existing_email(self):
         User.objects.create(email='already@test.com')
 
-        response = self.client.post(reverse('app_register'), {
+        response = self.client.post(reverse('register'), {
             'email': 'already@test.com',
             'password': 'test',
             'first_name': 'name',

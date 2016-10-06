@@ -11,7 +11,7 @@ def index(request):
 
     goal = user_goals.order_by('-start').first()
 
-    return redirect('app_goals_timeline', goal_id=goal.id)
+    return redirect('myprogress', goal_id=goal.id)
 
 
 def maintenance(request):
