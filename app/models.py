@@ -17,6 +17,9 @@ nth = {
 
 
 class Goal(models.Model):
+    TYPE_FIVE_DAY = 'FIVE_DAY_CHALLENGE'
+    TYPE_CUSTOM = 'CUSTOM'
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -152,7 +155,7 @@ class Step(models.Model):
         if now is None:
             now = timezone.now()
 
-        tz = pytz.timezone(self.goal.timezone)
+        tz = pytz.timezone(Timezone.objects.get(user=self.goal.user).name)
 
         self.goal.lives -= 1
         self.deadline = (now.astimezone(tz) + timedelta(days=1)) \

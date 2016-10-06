@@ -50,7 +50,7 @@ def login(request):
 
     add_event('login', user)
 
-    return redirect('index')
+    return redirect('myprogress')
 
 
 def register(request):

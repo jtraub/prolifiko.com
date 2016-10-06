@@ -1,25 +1,13 @@
 from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
+from app import fixtures
 
 from app.models import Goal
 
 
 class AppTest(TestCase):
-    fixtures = ['users', 'goals']
-
     def test_redirects_to_new_goal_if_empty(self):
-        client = Client()
-        client.login(username='empty', password='test')
-        response = client.get(reverse('index'), follow=False)
+        client = fixtures.client()
+        response = client.get(reverse('myprogress'), follow=False)
 
         self.assertRedirects(response, reverse('new_goal'))
-
-    def test_redirects_to_my_progress(self):
-        client = Client()
-        client.login(username='test', password='test')
-        response = client.get(reverse('index'), follow=True)
-
-        myprogress_url = reverse('myprogress')
-
-        self.assertEquals(response.redirect_chain[0],
-                          (myprogress_url, 302))

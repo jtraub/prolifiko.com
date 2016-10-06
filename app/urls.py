@@ -30,7 +30,6 @@ urlpatterns = [
     url(r'^reset/done/$',
         django_auth.password_reset_complete, name='password_reset_complete'),
 
-    url(r'^$', index, name='index'),
     url(r'^$', index, name='myprogress'),
 
     url(r'goals/new/$', goals.new, name='new_goal'),

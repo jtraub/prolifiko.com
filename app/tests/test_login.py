@@ -13,9 +13,9 @@ class LoginTest(TestCase):
         self.client = Client()
 
     def test_auth_redirect(self):
-        response = Client().get(reverse('index'))
+        response = Client().get(reverse('myprogress'))
 
-        login_url = reverse('login') + '?next=' + reverse('index')
+        login_url = reverse('login') + '?next=' + reverse('myprogress')
         self.assertRedirects(response, login_url)
 
     def test_login_view(self):
@@ -31,8 +31,8 @@ class LoginTest(TestCase):
             'password': 'test'
         }, follow=True)
 
-        redirect_to_index = (reverse('index'), 302)
-        self.assertEquals(redirect_to_index, response.redirect_chain[0])
+        redirect_to_myprogress = (reverse('myprogress'), 302)
+        self.assertEquals(redirect_to_myprogress, response.redirect_chain[0])
 
         user = User.objects.get(email='test@test.com')
 

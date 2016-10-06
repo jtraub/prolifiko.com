@@ -25,7 +25,7 @@ def new_five_day_challenge(user, params, start, timezone):
 
     goal = Goal(
         user=user,
-        type='FIVE_DAY_CHALLENGE',
+        type=Goal.TYPE_FIVE_DAY,
         name=params['goal_name'],
         description=params['goal_description'],
         start=start,
@@ -62,7 +62,7 @@ def new_custom_goal(user, params, start, timezone):
 
     goal = Goal(
         user=user,
-        type='CUSTOM',
+        type=Goal.TYPE_CUSTOM,
         name=params['goal_name'],
         description=params['goal_description'],
         start=start,
@@ -99,13 +99,13 @@ def new(request):
 
     if not user_is_subscribed:
         current_goal = Goal.objects \
-            .filter(user=request.user, type='FIVE_DAY_CHALLENGE') \
+            .filter(user=request.user, type=Goal.TYPE_FIVE_DAY) \
             .first()
 
         if current_goal:
             logger.debug('Redirecting free user to existing goal goal=%s' %
                          current_goal.id)
-            return redirect('goal_progress', id=current_goal.id)
+            return redirect('goal_progress', goal_id=current_goal.id)
 
     if request.method == 'GET':
         logger.debug('Rendering new goal form is_subscribed=%s' %
@@ -126,7 +126,7 @@ def new(request):
     start = timezone.now()
 
     try:
-        if request.POST['type'] == 'FIVE_DAY_CHALLENGE':
+        if request.POST['type'] == Goal.TYPE_FIVE_DAY:
             goal = new_five_day_challenge(request.user,
                                           request.POST,
                                           start,

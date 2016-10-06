@@ -9,9 +9,7 @@ def index(request):
     if len(user_goals) == 0:
         return redirect('new_goal')
 
-    goal = user_goals.order_by('-start').first()
-
-    return redirect('myprogress', goal_id=goal.id)
+    return render(request, 'myprogress.html')
 
 
 def maintenance(request):

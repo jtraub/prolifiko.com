@@ -14,25 +14,30 @@ from app import fixtures
 
 
 class GoalsTest(fixtures.TestCase):
+    def setUp(self):
+        self.user = fixtures.user()
+        self.client = fixtures.client(self.user)
+
     def test_new_form(self):
         response = self.client.get(reverse('new_goal'))
 
         self.assertEquals(200, response.status_code, response)
 
     def test_new_form_redirects_to_existing_five_day_challenge(self):
-        goal = fixtures.five_day_challenge(self.user)
+        user = fixtures.user(subscribed=False)
+        fixtures.five_day_challenge(user)
 
-        response = self.client.get(reverse('new_goal'), follow=True)
+        response = fixtures.client(user).get(reverse('new_goal'), follow=True)
 
-        goal_progress_url = reverse('goal_progress',
-                                    kwargs={'id': goal.id})
-        self.assertEquals(response.redirect_chain[0], (goal_progress_url, 302))
+        goal = Goal.objects.get(user=user)
+        myprogress_url = reverse('goal_progress', kwargs={'goal_id': goal.id})
+        self.assertEquals(response.redirect_chain[0], (myprogress_url, 302))
 
     @patch('app.views.goals.new_goal', spec=Signal)
     @patch('app.views.goals.new_step', spec=Signal)
     def test_new_five_day_challenge(self, new_step, new_goal):
         response = self.client.post(reverse('new_goal'), data={
-            'type': 'FIVE_DAY_CHALLENGE',
+            'type': Goal.TYPE_FIVE_DAY,
             'goal_name': 'goal name',
             'goal_description': 'goal description',
             'first_step_name': 'step name',
@@ -76,7 +81,7 @@ class GoalsTest(fixtures.TestCase):
     @patch('app.views.goals.new_step', spec=Signal)
     def test_new_custom_goal(self, new_step, new_goal):
         response = self.client.post(reverse('new_goal'), data={
-            'type': 'CUSTOM',
+            'type': Goal.TYPE_CUSTOM,
             'goal_name': 'goal name',
             'goal_description': 'goal description',
             'goal_target': '2016-01-07',
@@ -120,9 +125,7 @@ class GoalsTest(fixtures.TestCase):
 
     @patch('app.views.goals.goal_complete', spec=Signal)
     def test_complete(self, goal_complete):
-        goal = Goal.objects.create(user=self.user, text='test',
-                                   timezone='Europe/London',
-                                   start=timezone.now())
+        goal = fixtures.goal(self.user)
 
         response = self.client.post(reverse('complete_goal',
                                             kwargs={'goal_id': goal.id}))

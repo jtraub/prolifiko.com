@@ -77,7 +77,7 @@ def send_d_emails_at_midnight(now=None):
                                      goal__lives__gt=0,
                                      goal__complete=False,
                                      complete=False,
-                                     end__lte=now)
+                                     deadline__lte=now)
 
     for step in late_steps:
         goal = step.goal

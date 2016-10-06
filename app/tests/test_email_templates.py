@@ -2,17 +2,16 @@ from django.test import TestCase
 from django.conf import settings
 from os import listdir
 from os.path import isfile, join
+from app import fixtures
 
 from app.utils import render_email
 from app.models import Goal, Step
 
 
 class EmailTemplatesTest(TestCase):
-    fixtures = ['users', 'goals']
-
     def test_templates(self):
-        goal = Goal.objects.first()
-        Step.create(goal, 'test')
+        step = fixtures.step()
+        goal = step.goal
 
         template_dir = join(settings.BASE_DIR, 'app/templates/emails')
         files = [f for f in listdir(template_dir)
