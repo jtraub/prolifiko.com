@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'djcelery',
+    # 'djcelery',
 ]
 
 MIDDLEWARE = [
@@ -238,7 +238,6 @@ EMAIL_SEND_SCHEDULE = timedelta(**{EMAIL_SEND_PERIOD_UNIT: EMAIL_SEND_PERIOD})
 
 BROKER_URL = os.environ.setdefault('BROKER_URL', 'memory')
 
-CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 CELERYBEAT_SCHEDULE = {
     'send-dr-emails': {
         'task': 'app.tasks.send_dr_emails',
