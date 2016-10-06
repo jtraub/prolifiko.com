@@ -2,6 +2,6 @@
 
 {% block content %}{% endblock %}
 
-<p style="color: gray">If you no longer wish to receive these emails click here to <a href="{{ BASE_URL }}{% url 'app_deactivate' user_id=user.id %}">deactivate your account.</a></p>
+<p style="color: gray">If you no longer wish to receive these emails click here to <a href="{{ BASE_URL }}{% url 'deactivate' user_id=user.id %}">deactivate your account.</a></p>
 
 <p style="color: gray">Write Track Ltd Registered Office: 11 Royd Villas, Hangingroyd Lane, Hebden Bridge, HX7 7BX. Registered in England and Wales no. 9141465</p>

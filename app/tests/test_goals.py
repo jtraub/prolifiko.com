@@ -124,7 +124,7 @@ class GoalsTest(fixtures.TestCase):
                                    timezone='Europe/London',
                                    start=timezone.now())
 
-        response = self.client.post(reverse('app_goals_complete',
+        response = self.client.post(reverse('complete_goal',
                                             kwargs={'goal_id': goal.id}))
 
         self.assertContains(response, 'feedback')

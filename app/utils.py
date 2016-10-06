@@ -7,7 +7,6 @@ from django.shortcuts import redirect
 import keen
 import logging
 from html2text import html2text
-from django_mailgun import MailgunAPIError
 from typing import Dict
 
 from .models import Email, Goal
@@ -70,16 +69,7 @@ def send_email(name: str, user: User, goal: Goal=None):
     msg.prolifiko_name = name
     msg.attach_alternative(html, 'text/html')
 
-    try:
-        msg.send()
-    except MailgunAPIError as e:
-        response = e.args[0]
-
-        msg = 'MailgunAPIError sending %s email to %s ' + \
-              'status_code=%d content=%s'
-
-        raise MailgunAPIError(msg % (
-                name, user.email, response.status_code, response.text))
+    msg.send()
 
     return Email.objects.create(name=name, recipient=user)
 
@@ -114,7 +104,7 @@ def add_event(collection, user: User, body: Dict=None):
 def is_active(view_func):
     def wrapper(request, *args, **kwargs):
         if not request.user.is_active:
-            return redirect('app_deactivate', user_id=request.user.id)
+            return redirect('deactivate', user_id=request.user.id)
 
         return view_func(request, *args, **kwargs)
 

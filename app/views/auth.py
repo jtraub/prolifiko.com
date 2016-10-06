@@ -44,7 +44,7 @@ def login(request):
         return do_error('bad_password')
 
     if not user.is_active:
-        return redirect('app_deactivate', user_id=user.id)
+        return redirect('deactivate', user_id=user.id)
 
     do_login(request, user)
 

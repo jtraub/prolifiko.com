@@ -156,7 +156,7 @@ def timeline(request, goal_id):
         raise Http404('Goal does not exist')
 
     if goal.steps.count() == 0:
-        return redirect('app_steps_new', goal_id=goal.id)
+        return redirect('new_step', goal_id=goal.id)
 
     in_progress = goal.steps.filter(complete=False).count() > 0
 

@@ -2,7 +2,7 @@ from django.conf.urls import url
 from django.contrib.auth import views as django_auth
 
 from .forms import SetPasswordForm
-from .views import index, auth, goals, steps, account, test, menu
+from .views import index, auth, goals, steps, account, test, menu, maintenance
 
 password_reset_kwargs = {
     'email_template_name': 'registration/password_reset_email.txt',
@@ -54,5 +54,7 @@ urlpatterns = [
     url(r'^privacy/$', menu.privacy, name='menu_privacy'),
     url(r'^help/$', menu.help, name='menu_help'),
 
-    url(r'test/render_email/(?P<name>[^/]+)/$', test.render_email)
+    url(r'test/render_email/(?P<name>[^/]+)/$', test.render_email),
+
+    url(r'maintenance/$', maintenance, name='maintenance'),
 ]

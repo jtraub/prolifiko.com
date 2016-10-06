@@ -25,13 +25,13 @@ class StepsTest(TestCase):
         self.tz = pytz.timezone(self.goal.timezone)
 
     def test_new_bad_goal(self):
-        response = self.client.post(reverse('app_steps_new',
+        response = self.client.post(reverse('new_step',
                                             kwargs={'goal_id': uuid4()}))
 
         self.assertEquals(404, response.status_code)
 
     def test_new_no_text(self):
-        response = self.client.post(reverse('app_steps_new',
+        response = self.client.post(reverse('new_step',
                                             kwargs={'goal_id': self.goal.id}))
 
         self.assertEquals(400, response.status_code)
@@ -40,14 +40,14 @@ class StepsTest(TestCase):
     def test_new(self, new_step_signal):
         text = uuid4()
         response = self.client.post(
-            reverse('app_steps_new', kwargs={'goal_id': self.goal.id}),
+            reverse('new_step', kwargs={'goal_id': self.goal.id}),
             data={'text': text},
             follow=False
         )
 
         step = Step.objects.get(text=text)
 
-        self.assertRedirects(response, reverse('app_steps_start',
+        self.assertRedirects(response, reverse('start_step',
                                                kwargs={'goal_id': self.goal.id,
                                                        'step_id': step.id}))
 
@@ -71,7 +71,7 @@ class StepsTest(TestCase):
         step = Step.objects.create(goal=self.goal, text=uuid4(),
                                    start=timezone.now(), end=timezone.now())
 
-        response = self.client.get(reverse('app_steps_start', kwargs={
+        response = self.client.get(reverse('start_step', kwargs={
                 'goal_id': step.goal.id, 'step_id': step.id}))
 
         self.assertEquals(200, response.status_code)
@@ -80,7 +80,7 @@ class StepsTest(TestCase):
         step = Step.objects.create(goal=self.goal, text=uuid4(),
                                    start=timezone.now(), end=timezone.now())
 
-        response = self.client.get(reverse('app_steps_track', kwargs={
+        response = self.client.get(reverse('complete_step', kwargs={
             'goal_id': step.goal.id, 'step_id': step.id}))
 
         self.assertEquals(200, response.status_code)
@@ -91,13 +91,13 @@ class StepsTest(TestCase):
                                    start=timezone.now(), end=timezone.now())
 
         response = self.client.post(
-            reverse('app_steps_track', kwargs={
+            reverse('complete_step', kwargs={
                 'goal_id': step.goal.id, 'step_id': step.id}),
             data={'comments': 'foobar'},
             follow=False)
 
         self.assertRedirects(response,
-                             reverse('app_steps_new',
+                             reverse('new_step',
                                      kwargs={'goal_id': self.goal.id}))
 
         step.refresh_from_db()
@@ -112,12 +112,12 @@ class StepsTest(TestCase):
                                    start=timezone.now(), end=timezone.now())
 
         response = self.client.post(
-            reverse('app_steps_track', kwargs={
+            reverse('complete_step', kwargs={
                 'goal_id': step.goal.id, 'step_id': step.id}),
             follow=False)
 
         self.assertRedirects(response,
-                             reverse('app_steps_new',
+                             reverse('new_step',
                                      kwargs={'goal_id': self.goal.id}))
 
         step.refresh_from_db()
@@ -136,12 +136,12 @@ class StepsTest(TestCase):
             Step.create(goal, 'test')
 
         response = self.client.post(
-            reverse('app_steps_track', kwargs={
+            reverse('complete_step', kwargs={
                 'goal_id': goal.id, 'step_id': goal.current_step.id}),
             follow=False)
 
         self.assertRedirects(response,
-                             reverse('app_goals_complete',
+                             reverse('complete_goal',
                                      kwargs={'goal_id': goal.id}))
 
     def test_new_to_track_redirect(self):
@@ -150,15 +150,15 @@ class StepsTest(TestCase):
                                    start=timezone.now())
         step = Step.create(goal, 'test')
 
-        response = self.client.get(reverse('app_steps_new',
+        response = self.client.get(reverse('new_step',
                                            kwargs={'goal_id': goal.id}),
                                    follow=False)
 
-        self.assertRedirects(response, reverse('app_steps_track', kwargs={
+        self.assertRedirects(response, reverse('complete_step', kwargs={
             'goal_id': goal.id, 'step_id': step.id}))
 
     def test_latest_404_on_no_goal(self):
-        response = self.client.get(reverse('app_steps_latest',
+        response = self.client.get(reverse('latest_step',
                                            kwargs={'goal_id': uuid4()}))
 
         self.assertEquals(404, response.status_code)
@@ -168,10 +168,10 @@ class StepsTest(TestCase):
                                    timezone='Europe/London',
                                    start=timezone.now())
 
-        response = self.client.get(reverse('app_steps_latest',
+        response = self.client.get(reverse('latest_step',
                                            kwargs={'goal_id': goal.id}))
 
-        self.assertRedirects(response, reverse('app_steps_new',
+        self.assertRedirects(response, reverse('new_step',
                                                kwargs={'goal_id': goal.id}))
 
     def test_latest_redirects_to_last_step(self):
@@ -181,16 +181,16 @@ class StepsTest(TestCase):
 
         step1 = Step.create(goal, 'test')
 
-        response = self.client.get(reverse('app_steps_latest',
+        response = self.client.get(reverse('latest_step',
                                            kwargs={'goal_id': goal.id}))
 
-        self.assertRedirects(response, reverse('app_steps_track', kwargs={
+        self.assertRedirects(response, reverse('complete_step', kwargs={
             'goal_id': goal.id, 'step_id': step1.id}))
 
         step2 = Step.create(goal, 'test')
 
-        response = self.client.get(reverse('app_steps_latest',
+        response = self.client.get(reverse('latest_step',
                                            kwargs={'goal_id': goal.id}))
 
-        self.assertRedirects(response, reverse('app_steps_track', kwargs={
+        self.assertRedirects(response, reverse('complete_step', kwargs={
             'goal_id': goal.id, 'step_id': step2.id}))

@@ -4,9 +4,10 @@
         "pk": "5dc0bcf9-58e3-4f27-85e9-80c7dcf74ea9",
         "fields": {
             "user": "5",
-            "text": "test goal",
+            "name": "test goal",
+            "description": "test goal description",
             "start": "2016-04-10T08:45:24.515Z",
-            "timezone": "Europe/London",
+            "target": "2020-01-01",
             "active": false,
             "complete": false
         }

@@ -248,7 +248,7 @@ class UserJourneyTest(TestCase):
             self.logger.debug('Creating step #%d' % next_step)
 
             self.client.post(
-                reverse('app_steps_new', kwargs={'goal_id': self.goal.id}),
+                reverse('new_step', kwargs={'goal_id': self.goal.id}),
                 data={'text': 'test step'},
             )
 
@@ -260,7 +260,7 @@ class UserJourneyTest(TestCase):
 
             step = self.goal.steps.last()
 
-            self.client.post(reverse('app_steps_track', kwargs={
+            self.client.post(reverse('complete_step', kwargs={
                 'goal_id': step.goal.id,
                 'step_id': step.id}))
 
@@ -271,6 +271,6 @@ class UserJourneyTest(TestCase):
         def complete_goal(self):
             self.logger.debug('Completing goal')
 
-            self.client.post(reverse('app_goals_complete', kwargs={
+            self.client.post(reverse('complete_goal', kwargs={
                 'goal_id': self.goal.id
             }))

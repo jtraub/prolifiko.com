@@ -18,6 +18,7 @@
 
     <div class="content">{% block content %}{% endblock %}</div>
 
+    {% block footer %}
     <footer>
         <ul>
             <li><a href="{%  url 'menu_about' %}">About</a></li>
@@ -26,6 +27,7 @@
             <li><a href="{%  url 'menu_help' %}">Help</a></li>
         </ul>
     </footer>
+    {% endblock %}
 
     <script src="{% static 'bundle.js' %}"></script>
 </body>
