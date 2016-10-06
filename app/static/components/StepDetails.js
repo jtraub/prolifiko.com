@@ -52,12 +52,14 @@ export default class StepDetails extends React.Component {
                     <input
                         onChange={this.onNameChange.bind(this)}
                         type="text"
+                        name="stepName"
                         value={stepName || ''}
                     />
 
                     <Textarea
                         onChange={this.onTextFieldChange.bind(this)}
                         placeholder={placeholder}
+                        name="stepDescription"
                         value={stepDescription || ''}
                     />
                 </div>

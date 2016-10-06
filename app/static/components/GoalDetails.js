@@ -19,7 +19,7 @@ export default class GoalDetails extends React.Component {
     };
 
     onTextFieldChange(goalDescription, isValid) {
-        this.setState({ goalDescription, isValid }, () => {
+        this.setState({goalDescription, isValid}, () => {
             this.props.onChange({
                 goalDescription,
             }, isValid);
@@ -28,7 +28,7 @@ export default class GoalDetails extends React.Component {
 
     onNameChange(event) {
         const goalName = event.target.value;
-        this.setState({ goalName }, () => {
+        this.setState({goalName}, () => {
             this.props.onChange({
                 goalName,
             }, this.state.isValid);
@@ -51,13 +51,15 @@ export default class GoalDetails extends React.Component {
                 <input
                     onChange={this.onNameChange.bind(this)}
                     type="text"
+                    name="goalName"
                     value={goalName || ''}
-                />
+                    />
                 <Textarea
                     onChange={this.onTextFieldChange.bind(this)}
                     placeholder={placeholder}
+                    name="goalDescription"
                     value={goalDescription || ''}
-                />
+                    />
 
                 <section>
                     <p>Still struggling? Check out our blog on <a
@@ -72,7 +74,7 @@ export default class GoalDetails extends React.Component {
     }
 }
 
-export function FiveDayChallenge({ onChange, data }) {
+export function FiveDayChallengeGoal({ onChange, data }) {
     return (
         <GoalDetails onChange={onChange} data={data}>
             <section>
@@ -96,4 +98,4 @@ export function CustomGoal({ onChange, data }) {
             </section>
         </GoalDetails>
     );
-    }
+}

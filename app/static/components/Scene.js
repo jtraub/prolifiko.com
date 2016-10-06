@@ -80,15 +80,15 @@ export default class Scene extends React.Component {
         let next, previous, submit;
 
         if (pageIndex !== pages.length - 1) {
-            next = <button disabled={!pageData.isValid} onClick={this.next}>Next</button>;
+            next = <button id="next" disabled={!pageData.isValid} onClick={this.next}>Next</button>;
         }
 
         if (pageIndex !== 0) {
-            previous = <button onClick={this.prev}>Previous</button>;
+            previous = <button id="prev" onClick={this.prev}>Previous</button>;
         }
 
         if (pageIndex === pages.length - 1) {
-            submit = <button disabled={!pageData.isValid} onClick={this.submit}>Submit</button>;
+            submit = <button id="submit" disabled={!pageData.isValid} onClick={this.submit}>Submit</button>;
         }
 
         return (
