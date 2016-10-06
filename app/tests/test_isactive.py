@@ -1,3 +1,4 @@
+from unittest import skip
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -5,6 +6,7 @@ from django.utils import timezone
 from app.models import Goal, Step
 
 
+@skip
 class IsActiveTest(TestCase):
     def setUp(self):
         self.user = User.objects.create(

@@ -3,7 +3,6 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-import wagtail.wagtailcore.fields
 
 
 class Migration(migrations.Migration):
@@ -23,7 +22,6 @@ class Migration(migrations.Migration):
                     verbose_name='ID')),
                 ('name', models.TextField()),
                 ('user_journey_ref', models.TextField()),
-                ('content', wagtail.wagtailcore.fields.RichTextField()),
                 ('subject', models.TextField()),
             ],
         ),

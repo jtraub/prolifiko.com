@@ -43,6 +43,7 @@ def login(request):
     if user is None:
         return do_error('bad_password')
 
+    print(user, user.is_active)
     if not user.is_active:
         return redirect('app_deactivate', user_id=user.id)
 

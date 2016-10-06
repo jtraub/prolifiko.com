@@ -19,10 +19,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RemoveField(
             model_name='email',
-            name='content',
-        ),
-        migrations.RemoveField(
-            model_name='email',
             name='subject',
         ),
         migrations.RemoveField(
