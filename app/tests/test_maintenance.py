@@ -46,10 +46,3 @@ class MaintenanceTest(TestCase):
         response = client.get('/goals/new/', follow=False)
 
         self.assertEquals(response.status_code, 200)
-
-    @override_settings(MAINTENANCE_MODE=True)
-    def test_logged_out_shown_banner(self):
-        response = Client().get('/', follow=True)
-
-        self.assertEquals(response.redirect_chain[-1],
-                          (reverse('maintenance'), 302))
