@@ -19,10 +19,6 @@ def maintenance_middleware(get_response):
             if request.path == reverse('maintenance'):
                 return get_response(request)
 
-            if request.path == reverse('app_login')\
-                    or request.path == reverse('app_register'):
-                return redirect('maintenance')
-
             if request.user.is_authenticated() and is_user(request.user):
                 return redirect('maintenance')
 
