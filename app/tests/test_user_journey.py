@@ -233,7 +233,7 @@ class UserJourneyTest(TestCase):
         def create_goal(self):
             self.logger.debug('Creating goal')
 
-            self.client.post(reverse('app_goals_new'), data={
+            self.client.post(reverse('new_goal'), data={
                 'text': 'test goal',
                 'first_step': 'test_step',
                 'tz_offset': 0,

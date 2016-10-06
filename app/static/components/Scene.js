@@ -1,6 +1,7 @@
 import React from 'react';
 import _each from 'lodash.foreach';
 import _merge from 'lodash.merge';
+import decamelize from 'decamelize';
 
 export default class Scene extends React.Component {
 
@@ -66,9 +67,13 @@ export default class Scene extends React.Component {
         _each(this.state.data, (pageData) => {
             _each(pageData.data, (value, name) => {
                 if (value) {
-                    inputs.push(<input key={name} type="hidden" name={name} value={value}/>);
+                    inputs.push(<input key={name} type="hidden" name={decamelize(name)} value={value}/>);
                 }
             });
+        });
+
+        _each(this.props.data, (value, name) => {
+            inputs.push(<input key={name} type="hidden" name={name} value={value}/>);
         });
 
         // construct next, previous and submit buttons (if applicable)

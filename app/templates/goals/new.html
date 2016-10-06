@@ -5,9 +5,9 @@
 
 {% block content %}
     <div id="new-goal"></div>
-    {% user_is_subscribed %}
+    {% if user_is_subscribed %}
         <script src="{% static 'new-goal.js' %}"></script>
     {% else %}
-        <script src="{% static 'new-five-day.js' %}"></script>
-    {% else %}
+        <script src="{% static 'new-five-day-challenge.js' %}"></script>
+    {% endif %}
 {% endblock %}

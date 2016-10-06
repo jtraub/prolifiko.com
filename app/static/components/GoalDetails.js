@@ -45,15 +45,7 @@ export default class GoalDetails extends React.Component {
 
         return (
             <div className="page">
-                <section>
-                    <p>Welcome to the challenge! It’s great to have you on
-                        board.</p>
-
-                    <p>Your first task is to set a writing goal.</p>
-
-                    <p><strong>What do you want to achieve with your writing in
-                        the next 5 days?</strong></p>
-                </section>
+                {this.props.children}
 
                 Goal Name:
                 <input
@@ -79,3 +71,29 @@ export default class GoalDetails extends React.Component {
         );
     }
 }
+
+export function FiveDayChallenge({ onChange, data }) {
+    return (
+        <GoalDetails onChange={onChange} data={data}>
+            <section>
+                <p>Welcome to the challenge! It’s great to have you on
+                    board.</p>
+
+                <p>Your first task is to set a writing goal.</p>
+
+                <p><strong>What do you want to achieve with your writing in
+                    the next 5 days?</strong></p>
+            </section>
+        </GoalDetails>
+    );
+}
+
+export function CustomGoal({ onChange, data }) {
+    return (
+        <GoalDetails onChange={onChange} data={data}>
+            <section>
+                <p>Custom goal.</p>
+            </section>
+        </GoalDetails>
+    );
+    }

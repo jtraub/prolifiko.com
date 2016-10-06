@@ -12,7 +12,7 @@ class AppTest(TestCase):
         client.login(username='empty', password='test')
         response = client.get(reverse('index'), follow=False)
 
-        self.assertRedirects(response, reverse('app_goals_new'))
+        self.assertRedirects(response, reverse('new_goal'))
 
     def test_redirects_to_my_progress(self):
         client = Client()
