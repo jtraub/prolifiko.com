@@ -2,4 +2,4 @@
 
 export $(heroku config -s | xargs)
 
-foreman start web
+LOCAL=True foreman start web

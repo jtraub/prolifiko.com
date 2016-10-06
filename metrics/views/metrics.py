@@ -17,21 +17,22 @@ def dashboard(request):
     return render(request, 'dashboard.html')
 
 
-def funnel(name, users, steps):
+def funnel(name, users, steps, cumulative=False):
     registered = len(users)
 
     table = [('Registered', registered, '-')]
 
     for step_name, step_filter in steps:
         logger.info('%s - %s' % (name, step_name))
-        users = [u for u in users if step_filter(u)]
 
-        count = len(users)
+        if cumulative:
+            users = [u for u in users if step_filter(u)]
+            count = len(users)
+        else:
+            count = len([u for u in users if step_filter(u)])
+
         rate = "{:3.1f}%".format((count / registered) * 100)
         table.append((step_name, count, rate))
-
-        for user in users:
-            logger.debug('- ' + user.email)
 
     return table
 
@@ -50,7 +51,7 @@ def happy_path(users):
         ('Step #5', lambda u: Step.objects.filter(goal=u.goal).count() > 4),
         ('Track #5', lambda u: Step.objects.filter(goal=u.goal)[4].complete),
         ('Complete', lambda u: u.goal.complete)
-    ])
+    ], cumulative=True)
 
 
 def dr_path(users):
@@ -78,9 +79,6 @@ def d_path(users):
 @staff_member_required
 # @cache_page(60 * 15)
 def conversion(request):
-    # result = group([happy_path.s(), dr_path.s(), d_path.s()])()
-    # .get(timeout=30)
-
     date_format = '%a %b %d %Y'
 
     if 'start' in request.GET:
@@ -97,8 +95,6 @@ def conversion(request):
         end = timezone.now() \
             .replace(hour=0, minute=0, second=0, microsecond=0)
 
-    # exclude_active = 'exclude_active' in request.GET
-
     logger.info('Running conversion metric start=%s end=%s' % (start, end))
 
     users = []
@@ -111,26 +107,7 @@ def conversion(request):
         if user.goal and user.goal.deleted:
             continue
 
-        # if exclude_active:
-        #     if not user.is_active:
-        #         continue
-        #
-        #     if user.goal and not user.goal.complete:
-        #         continue
-        #
-        #     d_emails = Email.objects \
-        #         .filter(recipient=user) \
-        #         .filter(name__in=['dr3', 'd3']) \
-        #         .count()
-        #
-        #     if d_emails == 0:
-        #         continue
-
         users.append(user)
-
-    logger.debug('Users:')
-    for user in users:
-        logger.debug('+ ' + user.email)
 
     return render(request, 'conversion.html', {
         'happy_path': happy_path(users),
