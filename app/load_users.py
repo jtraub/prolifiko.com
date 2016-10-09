@@ -9,7 +9,7 @@ from django.core.management import call_command
 
 def load_fixture(apps, schema_editor):
     call_command('loaddata', abspath(
-        join(dirname(__file__), '../fixtures', 'users.json')))
+        join(dirname(__file__), 'fixtures', 'users.json')))
 
 
 def unload_fixture(apps, schema_editor):
