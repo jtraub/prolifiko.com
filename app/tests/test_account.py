@@ -21,7 +21,7 @@ class AccountTest(TestCase):
         self.client.login(username='test', password='test')
 
     def test_deactivate_400_on_bad_user(self):
-        response = self.client.get(reverse('app_deactivate',
+        response = self.client.get(reverse('deactivate',
                                            kwargs={'user_id': '0'}))
 
         self.assertEquals(response.status_code, 400)
@@ -30,7 +30,7 @@ class AccountTest(TestCase):
     def test_user_is_deactivated(self, add_event):
         user = User.objects.create(email='deactivate@t.com')
 
-        response = self.client.get(reverse('app_deactivate',
+        response = self.client.get(reverse('deactivate',
                                            kwargs={'user_id': user.id}))
 
         self.assertContains(response, 'Your account has been deactivated')
@@ -46,7 +46,7 @@ class AccountTest(TestCase):
         user.is_active = False
         user.save()
 
-        response = self.client.get(reverse('app_deactivate',
+        response = self.client.get(reverse('deactivate',
                                            kwargs={'user_id': user.id}))
 
         self.assertContains(response, 'Your account has been deactivated')

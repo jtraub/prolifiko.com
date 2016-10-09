@@ -17,13 +17,22 @@ nth = {
 
 
 class Goal(models.Model):
+    TYPE_FIVE_DAY = 'FIVE_DAY_CHALLENGE'
+    TYPE_CUSTOM = 'CUSTOM'
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    timezone = models.TextField()
+    type = models.CharField(max_length=256, choices=((name, name) for name in (
+        'FIVE_DAY_CHALLENGE',
+        'CUSTOM',
+    )))
 
-    text = models.TextField(max_length=1024)
+    name = models.TextField(max_length=256)
+    description = models.TextField(max_length=1024)
+
     start = models.DateTimeField()
+    target = models.DateField()
 
     active = models.BooleanField(default=False)
     lives = models.IntegerField(default=3)
@@ -37,15 +46,18 @@ class Goal(models.Model):
     def __str__(self):
         return '%s (%s)' % (self.id, self.user.email)
 
-    def create_step(self, text, start=None, commit=False):
+    def create_step(self, name, description,
+                    start, deadline,
+                    commit=False):
         if start is not None and dj_timezone.is_naive(start):
             raise ValueError()
 
         if start is None:
             start = timezone.now()
 
-        step = Step(goal=self, text=text, start=start)
-        step.update_end()
+        step = Step(goal=self,
+                    name=name, description=description,
+                    start=start, deadline=deadline)
 
         if commit:
             step.save()
@@ -93,9 +105,12 @@ class Step(models.Model):
     goal = models.ForeignKey(Goal, related_name='steps',
                              on_delete=models.CASCADE)
 
-    text = models.CharField(max_length=1024)
-    start = models.DateTimeField()  # UTC
-    end = models.DateTimeField()
+    name = models.TextField(max_length=256)
+    description = models.TextField(max_length=1024)
+
+    start = models.DateTimeField()
+    deadline = models.DateTimeField()
+
     time_tracked = models.DateTimeField(blank=True, null=True)
 
     complete = models.BooleanField(default=False)
@@ -104,19 +119,22 @@ class Step(models.Model):
     class Meta:
         ordering = ('start',)
 
-    @staticmethod
-    def create(goal: Goal, text: str):
-        start = timezone.now()
+    # @staticmethod
+    # def create(goal: Goal, name: str, description: str):
+    #     start = timezone.now()
+    #
+    #     tz = Timezone.objects.get(user=goal.user)
+    #
+    #     return Step.objects.create(
+    #         goal=goal,
+    #         name=name,
+    #         description=description,
+    #         start=start,
+    #         deadline=Step.midnight_deadline(start, tz.name)
+    #     )
 
-        return Step.objects.create(
-            goal=goal,
-            text=text,
-            start=start,
-            end=Step.deadline(start, goal.timezone)
-        )
-
     @staticmethod
-    def deadline(start, tz):
+    def midnight_deadline(start, tz):
         if dj_timezone.is_naive(start):
             raise ValueError()
 
@@ -130,17 +148,17 @@ class Step(models.Model):
             .replace(hour=0, minute=0, second=0, microsecond=0) \
             .astimezone(pytz.utc)
 
-    def update_end(self):
-        self.end = Step.deadline(self.start, self.goal.timezone)
+    def update_deadline(self):
+        self.deadline = Step.midnight_deadline(self.start, self.goal.timezone)
 
     def lose_life(self, now=None, commit=True):
         if now is None:
             now = timezone.now()
 
-        tz = pytz.timezone(self.goal.timezone)
+        tz = pytz.timezone(Timezone.objects.get(user=self.goal.user).name)
 
         self.goal.lives -= 1
-        self.end = (now.astimezone(tz) + timedelta(days=1)) \
+        self.deadline = (now.astimezone(tz) + timedelta(days=1)) \
             .replace(hour=0, minute=0, second=0, microsecond=0) \
             .astimezone(pytz.utc)
 
@@ -196,3 +214,21 @@ class Email(models.Model):
             return Email.TYPE_N
 
         return Email.TYPE_D
+
+
+class Timezone(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL)
+
+    name = models.TextField()
+
+    def __str__(self):
+        return '%s (%s)' % (self.user.email, self.name)
+
+
+class Subscription(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL)
+
+    name = models.TextField()
+
+    def __str__(self):
+        return '%s (%s)' % (self.user.email, self.name)

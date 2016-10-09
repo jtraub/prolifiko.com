@@ -6,10 +6,13 @@
     <title>Write Track</title>
 
     <link rel="stylesheet" type="text/css" href="{% static 'bundle.css' %}"/>
+
+    <script src="{% static 'moment.min.js' %}"></script>
+    <script src="{% static 'moment-timezone.min.js' %}"></script>
 </head>
 <body>
     <nav>
-        <div class="logo-container"><a href="{% url 'app_index' %}"><div class="logo"></div></a></div>
+        <div class="logo-container"><a href="{% url 'myprogress' %}"><div class="logo"></div></a></div>
         <h1>{% block heading %}{%  endblock %}</h1>
     </nav>
 
@@ -18,10 +21,10 @@
     {% block footer %}
     <footer>
         <ul>
-            <li><a href="{%  url 'app_menu_about' %}">About</a></li>
-            <li><a href="{%  url 'app_menu_terms' %}">Terms & Conditions</a></li>
-            <li><a href="{%  url 'app_menu_privacy' %}">Privacy</a></li>
-            <li><a href="{%  url 'app_menu_help' %}">Help</a></li>
+            <li><a href="{%  url 'menu_about' %}">About</a></li>
+            <li><a href="{%  url 'menu_terms' %}">Terms & Conditions</a></li>
+            <li><a href="{%  url 'menu_privacy' %}">Privacy</a></li>
+            <li><a href="{%  url 'menu_help' %}">Help</a></li>
         </ul>
     </footer>
     {% endblock %}

@@ -27,7 +27,7 @@ def new(request, goal_id):
     status = 200
 
     if goal.current_step and not goal.current_step.complete:
-        return redirect('app_steps_track',
+        return redirect('complete_step',
                         goal_id=goal.id, step_id=goal.current_step.id)
 
     if request.method == 'POST':
@@ -41,7 +41,7 @@ def new(request, goal_id):
 
             new_step.send('app.views.steps.new', step=step)
 
-            return redirect('app_steps_start',
+            return redirect('start_step',
                             goal_id=goal.id, step_id=step.id)
         else:
             status = 400
@@ -61,11 +61,11 @@ def latest(request, goal_id):
         raise Http404("Goal does not exist")
 
     if goal.steps.count() == 0:
-        return redirect('app_steps_new', goal_id=goal.id)
+        return redirect('new_step', goal_id=goal.id)
 
     latest_step = goal.steps.last()
 
-    return redirect('app_steps_track',
+    return redirect('complete_step',
                     goal_id=goal_id, step_id=latest_step.id)
 
 
@@ -119,9 +119,9 @@ def track(request, step):
         goal.save()
 
         if goal.complete:
-            return redirect('app_goals_complete', goal_id=goal.id)
+            return redirect('complete_goal', goal_id=goal.id)
 
-        return redirect('app_steps_new', goal_id=goal.id)
+        return redirect('new_step', goal_id=goal.id)
 
     return render(request, 'steps/track.html', {
         'step': step,

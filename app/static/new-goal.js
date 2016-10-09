@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import NewGoal from './components/NewGoal';
+import CreateGoal from './scenes/CreateGoal';
 import Cookies from 'cookies-js';
 
-render(<NewGoal csrfToken={Cookies.get('csrftoken')} timezones={window.TIMEZONES}/>, document.getElementById("new-goal"));
+render(<CreateGoal csrfToken={Cookies.get('csrftoken')}/>, document.getElementById("new-goal"));

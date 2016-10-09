@@ -13,33 +13,33 @@ class LoginTest(TestCase):
         self.client = Client()
 
     def test_auth_redirect(self):
-        response = Client().get(reverse('app_index'))
+        response = Client().get(reverse('myprogress'))
 
-        login_url = reverse('app_login') + '?next=' + reverse('app_index')
+        login_url = reverse('login') + '?next=' + reverse('myprogress')
         self.assertRedirects(response, login_url)
 
     def test_login_view(self):
-        response = Client().get(reverse('app_login'))
+        response = Client().get(reverse('login'))
 
         self.assertEqual(200, response.status_code)
 
     @override_settings(DEBUG=True)
     @patch('app.views.auth.add_event', spec=add_event)
     def test_login(self, add_event):
-        response = Client().post(reverse('app_login'), {
+        response = Client().post(reverse('login'), {
             'email': 'test@test.com',
             'password': 'test'
         }, follow=True)
 
-        redirect_to_index = (reverse('app_index'), 302)
-        self.assertEquals(redirect_to_index, response.redirect_chain[0])
+        redirect_to_myprogress = (reverse('myprogress'), 302)
+        self.assertEquals(redirect_to_myprogress, response.redirect_chain[0])
 
         user = User.objects.get(email='test@test.com')
 
         add_event.assert_called_with('login', user)
 
     def test_invalid(self):
-        response = Client().post(reverse('app_login'), {
+        response = Client().post(reverse('login'), {
             'email': 'test@test.com',
         }, follow=True)
 
@@ -48,7 +48,7 @@ class LoginTest(TestCase):
         self.assertTrue(response.context['form'].has_error('password'))
 
     def test_bad_email(self):
-        response = Client().post(reverse('app_login'), {
+        response = Client().post(reverse('login'), {
             'email': 'nope@test.com',
             'password': 'nope',
         }, follow=True)
@@ -59,7 +59,7 @@ class LoginTest(TestCase):
                         NON_FIELD_ERRORS, 'bad_email'))
 
     def test_bad_password(self):
-        response = Client().post(reverse('app_login'), {
+        response = Client().post(reverse('login'), {
             'email': 'test@test.com',
             'password': 'nope'
         }, follow=True)
@@ -76,12 +76,12 @@ class LoginTest(TestCase):
         user.is_active = False
         user.save()
 
-        response = Client().post(reverse('app_login'), {
+        response = Client().post(reverse('login'), {
             'email': user.email,
             'password': 'test'
         }, follow=False)
 
         print(response.context['form'])
 
-        self.assertRedirects(response, reverse('app_deactivate',
+        self.assertRedirects(response, reverse('deactivate',
                                                kwargs={'user_id': user.id}))

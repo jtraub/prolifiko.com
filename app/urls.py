@@ -10,11 +10,11 @@ password_reset_kwargs = {
 }
 
 urlpatterns = [
-    url(r'login/$', auth.login, name='app_login'),
-    url(r'register/$', auth.register, name='app_register'),
+    url(r'login/$', auth.login, name='login'),
+    url(r'register/$', auth.register, name='register'),
 
     url(r'users/(?P<user_id>[^/]+)/deactivate/$',
-        account.deactivate, name='app_deactivate'),
+        account.deactivate, name='deactivate'),
 
     url(r'account/reset_password/$',
         django_auth.password_reset,
@@ -30,29 +30,28 @@ urlpatterns = [
     url(r'^reset/done/$',
         django_auth.password_reset_complete, name='password_reset_complete'),
 
+    url(r'^$', index, name='myprogress'),
 
-    url(r'goals/new/$', goals.new, name='app_goals_new'),
+    url(r'goals/new/$', goals.new, name='new_goal'),
 
     url(r'goals/(?P<goal_id>[^/]+)/$',
-        goals.timeline, name='app_goals_timeline'),
+        goals.timeline, name='goal_progress'),
     url(r'goals/(?P<goal_id>[^/]+)/complete/$',
-        goals.complete, name='app_goals_complete'),
+        goals.complete, name='complete_goal'),
 
     url(r'goals/(?P<goal_id>[^/]+)/steps/new/$',
-        steps.new, name='app_steps_new'),
+        steps.new, name='new_step'),
     url(r'goals/(?P<goal_id>[^/]+)/steps/latest/$',
-        steps.latest, name='app_steps_latest'),
+        steps.latest, name='latest_step'),
     url(r'goals/(?P<goal_id>[^/]+)/steps/(?P<step_id>[^/]+)/start/$',
-        steps.start, name='app_steps_start'),
+        steps.start, name='start_step'),
     url(r'goals/(?P<goal_id>[^/]+)/steps/(?P<step_id>[^/]+)/track/$',
-        steps.track, name='app_steps_track'),
+        steps.track, name='complete_step'),
 
-    url(r'^$', index, name='app_index'),
-
-    url(r'^about/$', menu.about, name='app_menu_about'),
-    url(r'^terms/$', menu.terms,  name='app_menu_terms'),
-    url(r'^privacy/$', menu.privacy, name='app_menu_privacy'),
-    url(r'^help/$', menu.help, name='app_menu_help'),
+    url(r'^about/$', menu.about, name='menu_about'),
+    url(r'^terms/$', menu.terms,  name='menu_terms'),
+    url(r'^privacy/$', menu.privacy, name='menu_privacy'),
+    url(r'^help/$', menu.help, name='menu_help'),
 
     url(r'test/render_email/(?P<name>[^/]+)/$', test.render_email),
 

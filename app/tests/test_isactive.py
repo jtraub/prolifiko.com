@@ -29,17 +29,17 @@ class IsActiveTest(TestCase):
 
     def test_views(self):
         urls = [
-            reverse('app_goals_new'),
-            reverse('app_goals_timeline', kwargs={'goal_id': self.goal.id}),
-            reverse('app_goals_complete', kwargs={'goal_id': self.goal.id}),
-            reverse('app_steps_new', kwargs={'goal_id': self.goal.id}),
-            reverse('app_steps_start',
+            reverse('new_goal'),
+            reverse('myprogress', kwargs={'goal_id': self.goal.id}),
+            reverse('complete_goal', kwargs={'goal_id': self.goal.id}),
+            reverse('new_step', kwargs={'goal_id': self.goal.id}),
+            reverse('start_step',
                     kwargs={'goal_id': self.goal.id, 'step_id': self.step.id}),
-            reverse('app_steps_track',
+            reverse('complete_step',
                     kwargs={'goal_id': self.goal.id, 'step_id': self.step.id}),
         ]
 
-        deactivate_url = reverse('app_deactivate',
+        deactivate_url = reverse('deactivate',
                                  kwargs={'user_id': self.user.id})
 
         for url in urls:

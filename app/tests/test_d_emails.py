@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.utils import timezone
 import pytz
+from app import fixtures
 from app.models import Goal
 from app.tasks import send_d_emails_at_midnight
 
@@ -24,28 +25,17 @@ class DEmailTest(TestCase):
         start_cali = cali_tz.localize(datetime(2000, 1, 1, 19))
         start_nyc = nyc_tz.localize(datetime(2000, 1, 1, 19))
 
-        deadline_utc = pytz.utc.localize(datetime(2000, 1, 3, 0))
-        deadline_uk = uk_tz.localize(datetime(2000, 1, 3, 0))
-        deadline_cali = cali_tz.localize(datetime(2000, 1, 3, 0))
-        deadline_nyc = nyc_tz.localize(datetime(2000, 1, 3, 0))
+        uk_user = fixtures.user('uk@d.com', 'Europe/London')
+        uk_goal = fixtures.goal(uk_user, start=start_uk)
+        fixtures.step(uk_goal, start=start_uk)
 
-        uk_user = User.objects.create(email='uk@d.com', username='uk_d')
-        uk_goal = Goal.objects.create(user=uk_user, text='test',
-                                      timezone='Europe/London',
-                                      start=start_uk)
-        uk_goal.create_step('text', start_uk, commit=True)
+        cali_user = fixtures.user('cali@d.com', 'US/Pacific')
+        cali_goal = fixtures.goal(cali_user, start=start_cali)
+        fixtures.step(cali_goal, start=start_cali)
 
-        cali_user = User.objects.create(email='cali@d.com', username='cali_d')
-        cali_goal = Goal.objects.create(user=cali_user, text='test',
-                                        timezone='US/Pacific',
-                                        start=start_cali)
-        cali_goal.create_step('text', start_cali, commit=True)
-
-        nyc_user = User.objects.create(email='nyc@d.com', username='nyc_d')
-        nyc_goal = Goal.objects.create(user=nyc_user, text='test',
-                                       timezone='US/Eastern',
-                                       start=start_nyc)
-        nyc_goal.create_step('text', start_nyc, commit=True)
+        nyc_user = fixtures.user('nyc@d.com', 'US/Eastern')
+        nyc_goal = fixtures.goal(nyc_user, start=start_nyc)
+        fixtures.step(nyc_goal, start=start_nyc)
 
         now = start_utc
         while now <= pytz.utc.localize(datetime(2000, 1, 8, 0)):
@@ -109,7 +99,7 @@ class DEmailTest(TestCase):
         step.time_tracked = now
         step.save()
 
-        next_step = goal.create_step('test', now, commit=True)
+        fixtures.step(goal, start=now)
 
     def assertEmail(self, goal, name, lives):
         goal.refresh_from_db()

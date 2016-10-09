@@ -9,7 +9,7 @@ from django.core.management import call_command
 
 def load_fixture(apps, schema_editor):
     call_command('loaddata', abspath(
-        join(dirname(__file__), '../fixtures', 'users.json')))
+        join(dirname(__file__), 'fixtures', 'users.json')))
 
 
 def unload_fixture(apps, schema_editor):
@@ -20,7 +20,7 @@ def unload_fixture(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0005_email'),
+        ('app', '0001_initial'),
     ]
 
     operations = [

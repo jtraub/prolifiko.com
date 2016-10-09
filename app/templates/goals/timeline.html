@@ -4,7 +4,7 @@
 
 {% block content %}
 {% if not in_progress and not goal.complete %}
-<p style="margin-bottom: 1.5em;"><a href="{% url 'app_steps_new' goal_id=goal.id %}"><button>Create your next step</button></a></p>
+<p style="margin-bottom: 1.5em;"><a href="{% url 'new_step' goal_id=goal.id %}"><button>Create your next step</button></a></p>
 {% endif %}
 
 <div class="steps">
@@ -21,7 +21,7 @@
             <div class="step-status">
                 {% if not step.complete %}
                     <hr/>
-                    <a href="{% url 'app_steps_track' goal_id=step.goal.id step_id=step.id %}"><button>Track</button></a>
+                    <a href="{% url 'complete_step' goal_id=step.goal.id step_id=step.id %}"><button>Track</button></a>
                 {% elif step.comments %}
                     <hr/>
                     <h4>My Progress</h4>

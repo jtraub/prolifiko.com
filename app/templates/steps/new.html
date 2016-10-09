@@ -27,7 +27,7 @@
     {% endif %}
 </section>
 
-<form action="{% url 'app_steps_new' goal_id=goal.id%}" method="post">
+<form action="{% url 'new_step' goal_id=goal.id%}" method="post">
 
     {% csrf_token %}
 

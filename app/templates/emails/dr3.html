@@ -1,1 +1,11 @@
-{% extends 'emails/base.html' %}{% block content %}<p>You haven&rsquo;t set a goal for our Write Track 5-day challenge but that&rsquo;s okay &ndash; now might not have been the right time.</p><p><strong>You can pick up this challenge at any time &ndash; we&rsquo;re not going anywhere!</strong></p><p>Just click on <strong><a href="{{ BASE_URL }}{% url 'app_goals_new' %}">this link</a></strong> to set your goal and the support cycle will kick in.</p><p>In the meantime you might like to sign up to <a href="http://blog.write-track.co.uk">receive our fortnightly newsletter</a> where you can receive our ebook <em>The Liar&rsquo;s Guide to Writing</em> plus writing tips, advice and productivity hacks &ndash; all for free.</p><p>We hope to see you soon,</p><p>Bec and Chris</p>{% endblock %}
+{% extends 'emails/base.html' %}
+
+{% block content %}
+<p>You haven&rsquo;t set a goal for our Write Track 5-day challenge but that&rsquo;s okay &ndash; now might not have been the right time.</p>
+<p><strong>You can pick up this challenge at any time &ndash; we&rsquo;re not going anywhere!</strong></p>
+<p>Just click on <strong><a href="{{ BASE_URL }}{% url 'new_goal' %}">this link</a></strong> to set your goal and the support cycle will kick in.</p>
+<p>In the meantime you might like to sign up to <a href="http://blog.write-track.co.uk">receive our fortnightly newsletter</a> where you can receive our ebook <em>The Liar&rsquo;s Guide to Writing</em> plus writing tips, advice and productivity hacks &ndash; all for free.</p>
+<p>We hope to see you soon,</p>
+<p>Bec and Chris</p>
+{% endblock %}
+

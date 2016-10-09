@@ -3,7 +3,7 @@
 {% block heading %}Login{% endblock %}
 
 {% block content %}
-<form action="{% url 'app_login' %}" method="post" class="inline">
+<form action="{% url 'login' %}" method="post" class="inline">
     <input type="hidden" name="next" value="{{ next }}"/>
     {% csrf_token %}
 
@@ -12,6 +12,6 @@
 </form>
 
 <p>Forgotten your password? <a href="{% url 'password_reset' %}">Click here</a> to reset it.</p>
-<p>Not registered? <a href="{% url 'app_register' %}">Click here</a> to join.</p>
+<p>Not registered? <a href="{% url 'register' %}">Click here</a> to join.</p>
 <p>Need some help? <a href="mailto:bec@write-track.co.uk">Send us an email</a>.</p>
 {% endblock %}

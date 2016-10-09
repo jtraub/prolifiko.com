@@ -1,1 +1,20 @@
-{% extends 'emails/base.html' %}{% block content %}<p>People struggle to get going with their writing for different reasons.</p><p>What&rsquo;s holding you back?</p><p>If you&rsquo;re ready to start <strong><a href="{{ BASE_URL }}{% url 'app_goals_new' %}">click here to sign in.</a></strong></p><p>We know that when people find the time to write and finish their projects it makes them happier, more fulfilled and more likely to continue.</p><p>We&rsquo;d love you to start and be part of this writing challenge.</p><p>But you have to start somewhere.</p><p>It can be a small start &ndash; it can be a tiny beginning &ndash; but you have to make a commitment both to us and yourself.</p><p>In our last email we told you about writers like Lee and Alison who has&nbsp;transformed their writing practice by taking this 5 day challenge. It doesn&rsquo;t stop there:</p><p><em>Liz said: &ldquo;Your course was just the thing to revitalise me. I thought you'd got a great recipe going. You've definitely prompted a fresh burst of writing.&rdquo;</em>&nbsp;</p><p>Ed said: <em>I&rsquo;ve now managed to start the e-editing process and have formalised the order in which I will organise the book now. I&rsquo;m planning on continuing editing it over the next week. Thanks for all your help.&rdquo;</em></p><p>Sam said:<em> &ldquo;I made really good progress with my overall goal, to write something from scratch and feel like I can carry on writing well from here. Thank you for helping me through.&rdquo;</em></p><p>And finally, Maggie said:<em> &ldquo;Your course gave just the kick I needed. I now have a rough outline for the last three chapters so have a direction to follow and feel this is a huge step forward.&rdquo;</em></p><p>Just think, all these writers have made major steps towards finishing their projects and achieving their writing goals.</p><p>You can too. <strong><a href="{{ BASE_URL }}{% url 'app_goals_new' %}">Click here to get started.</a></strong></p><p>Let&rsquo;s do this! We know you can.</p><p>Bec and Chris</p>{% endblock %}
+{% extends 'emails/base.html' %}
+
+{% block content %}
+<p>People struggle to get going with their writing for different reasons.</p>
+<p>What&rsquo;s holding you back?</p>
+<p>If you&rsquo;re ready to start <strong><a href="{{ BASE_URL }}{% url 'new_goal' %}">click here to sign in.</a></strong></p>
+<p>We know that when people find the time to write and finish their projects it makes them happier, more fulfilled and more likely to continue.</p>
+<p>We&rsquo;d love you to start and be part of this writing challenge.</p>
+<p>But you have to start somewhere.</p>
+<p>It can be a small start &ndash; it can be a tiny beginning &ndash; but you have to make a commitment both to us and yourself.</p>
+<p>In our last email we told you about writers like Lee and Alison who has&nbsp;transformed their writing practice by taking this 5 day challenge. It doesn&rsquo;t stop there:</p>
+<p><em>Liz said: &ldquo;Your course was just the thing to revitalise me. I thought you'd got a great recipe going. You've definitely prompted a fresh burst of writing.&rdquo;</em>&nbsp;</p>
+<p>Ed said: <em>I&rsquo;ve now managed to start the e-editing process and have formalised the order in which I will organise the book now. I&rsquo;m planning on continuing editing it over the next week. Thanks for all your help.&rdquo;</em></p>
+<p>Sam said:<em> &ldquo;I made really good progress with my overall goal, to write something from scratch and feel like I can carry on writing well from here. Thank you for helping me through.&rdquo;</em></p>
+<p>And finally, Maggie said:<em> &ldquo;Your course gave just the kick I needed. I now have a rough outline for the last three chapters so have a direction to follow and feel this is a huge step forward.&rdquo;</em></p>
+<p>Just think, all these writers have made major steps towards finishing their projects and achieving their writing goals.</p>
+<p>You can too. <strong><a href="{{ BASE_URL }}{% url 'new_goal' %}">Click here to get started.</a></strong></p>
+<p>Let&rsquo;s do this! We know you can.</p>
+<p>Bec and Chris</p>
+{% endblock %}

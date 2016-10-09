@@ -7,17 +7,17 @@ class MenuTest(TestCase):
         self.client = Client()
 
     def test_about(self):
-        response = self.client.get(reverse('app_menu_about'))
+        response = self.client.get(reverse('menu_about'))
         self.assertContains(response, 'About')
 
     def test_terms(self):
-        response = self.client.get(reverse('app_menu_terms'))
+        response = self.client.get(reverse('menu_terms'))
         self.assertContains(response, 'Terms & Conditions')
 
     def test_privacy(self):
-        response = self.client.get(reverse('app_menu_privacy'))
+        response = self.client.get(reverse('menu_privacy'))
         self.assertContains(response, 'Privacy')
 
     def test_help(self):
-        response = self.client.get(reverse('app_menu_help'))
+        response = self.client.get(reverse('menu_help'))
         self.assertContains(response, 'Help')

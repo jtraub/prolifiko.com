@@ -18,31 +18,34 @@ export default class Textarea extends React.Component {
     };
 
     componentWillMount() {
-        this.setState({ wordsLeft: this.props.wordLimit });
+        this.setState({wordsLeft: this.props.wordLimit});
     }
 
     getValue() {
-        return this._input.value.trim();
+        return this.state.value;
     }
 
-    onChange() {
-        const { wordLimit } = this.props;
-        const words = this.getValue().split(' ').filter(function (word) {
+    onChange(event) {
+        const value = event.target.value;
+        this.setState({value});
+
+        const {wordLimit} = this.props;
+        const words = value.split(' ').filter(function (word) {
             return word.length > 0;
         });
 
         const wordsLeft = wordLimit - words.length;
-        this.setState({ wordsLeft });
+        this.setState({wordsLeft});
 
         const nextValid = words.length > 0 && words.length <= wordLimit;
         const isValid = this.state.isValid;
 
         if (nextValid !== isValid) {
-            this.setState({ isValid: nextValid });
+            this.setState({isValid: nextValid});
+        }
 
-            if (this.props.onChange) {
-                this.props.onChange(nextValid);
-            }
+        if (this.props.onChange) {
+            this.props.onChange(value, nextValid);
         }
     }
 
@@ -54,8 +57,8 @@ export default class Textarea extends React.Component {
                     rows={10}
                     placeholder={this.props.placeholder}
                     className="manualLimit"
-                    ref={input => this._input = input}
                     onChange={this.onChange.bind(this)}
+                    value={this.props.value}
                 />
                 <p>{this.state.wordsLeft} words remaining</p>
             </div>

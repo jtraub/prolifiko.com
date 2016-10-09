@@ -17,7 +17,7 @@
             "user_permissions": []
         }
     },
-        {
+    {
         "model": "auth.user",
         "pk": 2,
         "fields": {
@@ -85,6 +85,32 @@
             "is_staff": false,
             "is_active": true,
             "date_joined": "2016-03-24T10:49:27.370Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "app.timezone",
+        "pk": 1,
+        "fields": {
+            "user": 5,
+            "name": "Europe/London"
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 6,
+        "fields": {
+            "password": "pbkdf2_sha256$24000$v9wgNeLq50xT$jtyYLbOmtgL6hN/9xmWOLVwYhL8hdmPyc2oSgSlezPs=",
+            "last_login": "2016-01-01T00:00:00.000Z",
+            "is_superuser": true,
+            "username": "dan",
+            "first_name": "Dan",
+            "last_name": "",
+            "email": "jonesd9@me.com",
+            "is_staff": true,
+            "is_active": true,
+            "date_joined": "2016-10-01T10:13:58.190Z",
             "groups": [],
             "user_permissions": []
         }

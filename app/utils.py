@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.template import loader
 from django.core.mail import EmailMultiAlternatives
@@ -103,8 +104,12 @@ def add_event(collection, user: User, body: Dict=None):
 def is_active(view_func):
     def wrapper(request, *args, **kwargs):
         if not request.user.is_active:
-            return redirect('app_deactivate', user_id=request.user.id)
+            return redirect('deactivate', user_id=request.user.id)
 
         return view_func(request, *args, **kwargs)
 
     return wrapper
+
+
+def parse_date(string):
+    return datetime.strptime(string, '%Y-%m-%d').date()
