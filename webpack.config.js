@@ -15,6 +15,8 @@ module.exports = {
         filename: '[name].js'
     },
 
+    resolve: { alias: { moment: 'moment/moment.js' } },
+
     //externals: {
     //    "moment": "moment",
     //},

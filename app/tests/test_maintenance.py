@@ -16,7 +16,7 @@ class MaintenanceTest(TestCase):
         client = Client()
         client.login(username='real', password='test')
 
-        response = client.get('/', follow=False)
+        response = client.get(reverse('myprogress'), follow=False)
 
         self.assertRedirects(response, reverse('maintenance'))
 
@@ -27,7 +27,7 @@ class MaintenanceTest(TestCase):
         user.set_password('test')
         user.save()
 
-        response = Client().post('/login/', {
+        response = Client().post(reverse('login'), {
             'email': user.email,
             'password': 'test',
         }, follow=True)
@@ -36,7 +36,7 @@ class MaintenanceTest(TestCase):
                           (reverse('maintenance'), 302))
 
     def test_registration_hidden(self):
-        response = Client().get(reverse('app_register'), follow=False)
+        response = Client().get(reverse('register'), follow=False)
 
         self.assertRedirects(response, reverse('maintenance'))
 
@@ -49,7 +49,7 @@ class MaintenanceTest(TestCase):
         client = Client()
         client.login(username='tester', password='test')
 
-        response = client.get('/goals/new/', follow=False)
+        response = client.get(reverse('new_goal'), follow=False)
 
         self.assertEquals(response.status_code, 200)
 
@@ -62,6 +62,6 @@ class MaintenanceTest(TestCase):
         client = Client()
         client.login(username='tester', password='test')
 
-        response = client.get('/goals/new/', follow=False)
+        response = client.get(reverse('new_goal'), follow=False)
 
         self.assertEquals(response.status_code, 200)
