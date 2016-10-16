@@ -1,11 +1,13 @@
 from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
 
+from app import fixtures
+
 
 class FiveDayChallengeTest(TestCase):
     def test_redirects_to_new_goal_if_empty(self):
-        client = Client()
-        client.login(username='empty', password='test')
+        client = fixtures.client()
+
         response = client.get(reverse('myprogress'), follow=False)
 
         self.assertRedirects(response, reverse('new_goal'))
