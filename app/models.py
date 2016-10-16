@@ -91,6 +91,10 @@ class Goal(models.Model):
         return list(chain.from_iterable(
             [step.emails.all() for step in self.steps.all()]))
 
+    @property
+    def is_five_day(self):
+        return self.type == Goal.TYPE_FIVE_DAY
+
     def step_email(self, name):
         for email in self.step_emails:
             if email.name == name:

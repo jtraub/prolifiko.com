@@ -40,8 +40,8 @@ class GoalsTest(fixtures.TestCase):
             'type': Goal.TYPE_FIVE_DAY,
             'goal_name': 'goal name',
             'goal_description': 'goal description',
-            'first_step_name': 'step name',
-            'first_step_description': 'step description',
+            'step_name': 'step name',
+            'step_description': 'step description',
         }, follow=False)
 
         goal = Goal.objects.filter(user=self.user).first()
@@ -85,9 +85,9 @@ class GoalsTest(fixtures.TestCase):
             'goal_name': 'goal name',
             'goal_description': 'goal description',
             'goal_target': '2016-01-07',
-            'first_step_name': 'step name',
-            'first_step_description': 'step description',
-            'first_step_deadline': '2016-01-02',
+            'step_name': 'step name',
+            'step_description': 'step description',
+            'step_deadline': '2016-01-02',
         }, follow=False)
 
         goal = Goal.objects.filter(user=self.user).first()

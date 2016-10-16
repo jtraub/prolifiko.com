@@ -31,7 +31,7 @@ export default class StepDeadline extends React.Component {
                     <p>We suggest you target 24-48 hours.</p>
                 </section>
 
-                <DatePicker inline selected={selected} onChange={this.onChange.bind(this)}/>
+                <DatePicker inline minDate={moment().add(1, 'days')} selected={selected} onChange={this.onChange.bind(this)}/>
             </div>
         );
     }

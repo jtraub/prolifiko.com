@@ -4,10 +4,10 @@
 {% block heading %}Get Started{% endblock %}
 
 {% block content %}
-    <div id="new-goal"></div>
+    <div id="create"></div>
     {% if user_is_subscribed %}
-        <script src="{% static 'new-goal.js' %}"></script>
+        <script src="{% static 'create-goal.js' %}"></script>
     {% else %}
-        <script src="{% static 'new-five-day-challenge.js' %}"></script>
+        <script src="{% static 'create-five-day-challenge.js' %}"></script>
     {% endif %}
 {% endblock %}

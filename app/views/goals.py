@@ -17,11 +17,11 @@ logger = get_logger(__name__)
 def new_five_day_challenge(user, params, start, timezone):
     is_valid = 'goal_name' in params and \
                'goal_description' in params and \
-               'first_step_name' in params and \
-               'first_step_description' in params
+               'step_name' in params and \
+               'step_description' in params
 
     if not is_valid:
-        raise ValueError()
+        raise ValueError('Invalid request params %s' % params)
 
     goal = Goal(
         user=user,
@@ -40,8 +40,8 @@ def new_five_day_challenge(user, params, start, timezone):
         logger.info('Creating 5 day challenge first step goal=%s user=%s' % (
             goal.id, user.email))
 
-        goal.create_step(params['first_step_name'],
-                         params['first_step_description'],
+        goal.create_step(params['step_name'],
+                         params['step_description'],
                          start,
                          Step.midnight_deadline(start, timezone),
                          commit=True)
@@ -53,12 +53,12 @@ def new_custom_goal(user, params, start, timezone):
     is_valid = 'goal_name' in params and \
                'goal_description' in params and \
                'goal_target' in params and \
-               'first_step_name' in params and \
-               'first_step_description' in params and \
-               'first_step_deadline' in params
+               'step_name' in params and \
+               'step_description' in params and \
+               'step_deadline' in params
 
     if not is_valid:
-        raise ValueError()
+        raise ValueError('Invalid request params %s' % params)
 
     goal = Goal(
         user=user,
@@ -77,14 +77,14 @@ def new_custom_goal(user, params, start, timezone):
         logger.info('Creating custom goal first step goal=%s user=%s' % (
             goal.id, user.email))
 
-        deadline_date = parse_date(params['first_step_deadline'])
+        deadline_date = parse_date(params['step_deadline'])
         deadline_midnight = datetime.combine(deadline_date, time())
         deadline_utc = timezone \
             .localize(deadline_midnight) \
             .astimezone(pytz.utc)
 
-        goal.create_step(params['first_step_name'],
-                         params['first_step_description'],
+        goal.create_step(params['step_name'],
+                         params['step_description'],
                          start,
                          deadline_utc,
                          commit=True)
@@ -118,7 +118,7 @@ def new(request):
         return HttpResponseNotAllowed(['GET', 'POST'])
 
     if 'type' not in request.POST:
-        logger.info('"type" not found in new goal request')
+        logger.warn('"type" not found in new goal request')
         return HttpResponseBadRequest()
 
     tz = pytz.timezone(Timezone.objects.get(user=request.user).name)
@@ -137,6 +137,7 @@ def new(request):
                                    start,
                                    tz)
     except ValueError:
+        logger.exception('Failed to create goal')
         return HttpResponseBadRequest()
 
     first_step = goal.steps.first()

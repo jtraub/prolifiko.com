@@ -1,1 +1,10 @@
-<h1>My Progress</h1>
+{% extends 'base.html' %}
+
+{% block heading %}My Progress{% endblock %}
+
+{% block content %}
+{% for goal in goals %}
+<p>{{ goal.name }}</p>
+{% endfor %}
+{% endblock %}
+

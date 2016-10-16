@@ -9,7 +9,9 @@ def index(request):
     if len(user_goals) == 0:
         return redirect('new_goal')
 
-    return render(request, 'myprogress.html')
+    return render(request, 'myprogress.html', {
+        'goals': user_goals
+    })
 
 
 def maintenance(request):

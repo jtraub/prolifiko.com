@@ -1,18 +1,56 @@
-from datetime import datetime
+from datetime import datetime, time
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.http import Http404, HttpResponse
 from django.utils import timezone
-from django.conf import settings
 import pytz
 
-from app.models import Step, Goal
+from app.models import Step, Goal, Timezone
 from app.forms import NewStepForm, TrackStepForm
 from app.signals import new_step, step_complete
-from app.utils import get_logger, is_active
-
+from app.utils import get_logger, is_active, parse_date
 
 logger = get_logger(__name__)
+
+
+def create_midnight_step(params, goal, step_start, tz):
+    valid = 'step_name' in params and 'step_description' in params
+
+    if not valid:
+        raise ValueError('Invalid midnight step params %s' % params)
+
+    logger.debug('Creating midnight step goal=%s user=%s' % (
+        goal.id, goal.user.email))
+
+    return goal.create_step(params['step_name'],
+                            params['step_description'],
+                            step_start,
+                            Step.midnight_deadline(step_start, tz),
+                            commit=True)
+
+
+def create_step(params, goal, step_start, tz):
+    valid = 'step_name' in params and 'step_description' in params \
+        and 'step_deadline' in params
+
+    if not valid:
+        raise ValueError('Invalid custom step params %s' % params)
+
+    logger.debug('Creating step goal=%s user=%s' % (
+        goal.id, goal.user.email))
+
+    deadline_date = parse_date(params['step_deadline'])
+    deadline_midnight = datetime.combine(deadline_date, time())
+    deadline_utc = tz \
+        .localize(deadline_midnight) \
+        .astimezone(pytz.utc)
+
+    return goal.create_step(params['step_name'],
+                            params['step_description'],
+                            step_start,
+                            deadline_utc,
+                            commit=True)
 
 
 @login_required
@@ -23,35 +61,37 @@ def new(request, goal_id):
     except Goal.DoesNotExist:
         raise Http404("Goal does not exist")
 
-    form = NewStepForm()
-    status = 200
-
     if goal.current_step and not goal.current_step.complete:
         return redirect('complete_step',
                         goal_id=goal.id, step_id=goal.current_step.id)
 
     if request.method == 'POST':
-        form = NewStepForm(request.POST)
+        tz = pytz.timezone(Timezone.objects.get(user=request.user).name)
+        step_start = timezone.now()
 
-        if form.is_valid():
-            logger.debug('Creating step goal=%s user=%s' % (
-                goal.id, request.user.email))
-
-            step = goal.create_step(form.cleaned_data['text'], commit=True)
+        try:
+            if goal.is_five_day:
+                step = create_midnight_step(request.POST, goal, step_start, tz)
+            else:
+                step = create_step(request.POST, goal, step_start, tz)
 
             new_step.send('app.views.steps.new', step=step)
 
             return redirect('start_step',
                             goal_id=goal.id, step_id=step.id)
-        else:
-            status = 400
+        except ValueError:
+            logger.exception('Failed to create step')
+            return HttpResponseBadRequest()
 
     return render(request, 'steps/new.html', {
-        'form': form,
         'goal': goal,
         'next_step_num': goal.next_step_num,
-        'next_step_nth': goal.next_step_nth
-    }, status=status)
+        'next_step_nth': goal.next_step_nth,
+        'data': {
+            'stepNumber': goal.next_step_num,
+            'goalId': goal.id.hex,
+        }
+    })
 
 
 def latest(request, goal_id):

@@ -6,8 +6,10 @@ var path = require('path');
 module.exports = {
     entry: {
         bundle: './app/static/index.js',
-        'new-goal': './app/static/new-goal.js',
-        'new-five-day-challenge': './app/static/new-five-day-challenge.js',
+        'create-goal': './app/static/create-goal.js',
+        'create-five-day-challenge': './app/static/create-five-day-challenge.js',
+        'create-midnight-step': './app/static/create-midnight-step.js',
+        'create-step': './app/static/create-step.js',
     },
 
     output: {
@@ -16,10 +18,6 @@ module.exports = {
     },
 
     resolve: { alias: { moment: 'moment/moment.js' } },
-
-    //externals: {
-    //    "moment": "moment",
-    //},
 
     module: {
         loaders: [

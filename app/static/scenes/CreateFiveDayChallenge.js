@@ -4,6 +4,8 @@ import { FiveDayChallengeGoal } from '../components/GoalDetails';
 import Scene from '../components/Scene';
 
 export default function CreateFiveDayChallenge({ csrfToken }) {
+    console.log('Rendering CreateFiveDayChallenge');
+
     return <Scene
         csrfToken={csrfToken}
         pages={[FiveDayChallengeGoal, StepDetails]}

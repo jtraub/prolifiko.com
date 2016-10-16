@@ -45,18 +45,22 @@ export default class StepDetails extends React.Component {
         const stepDescription = this.state.stepDescription || this.props.data.stepDescription;
 
         return (
-            <div>
+            <div className="form--inline">
                 <p>What’s the first step you can take to achieve your 5-day writing goal?</p>
 
-                <div>
-                    Step Name:
+                <div className="form__input">
+                    <label>Name:</label>
                     <input
+                        placeholder="Give your step a name."
                         onChange={this.onNameChange.bind(this)}
                         type="text"
                         name="stepName"
                         value={stepName || ''}
                     />
+                </div>
 
+                <div className="form__input">
+                    <label>Description:</label>
                     <Textarea
                         onChange={this.onTextFieldChange.bind(this)}
                         placeholder={placeholder}

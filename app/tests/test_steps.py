@@ -10,21 +10,18 @@ from django.dispatch import Signal
 import pytz
 from datetime import time
 
+from app import fixtures
 from app.models import Goal, Step, Timezone
 from app.views import steps as views
 
 
-@skip
 class StepsTest(TestCase):
     fixtures = ['goals']
 
     def setUp(self):
-        self.client = Client()
-        self.client.login(username="test", password="test")
-
-        self.user = User.objects.get(username="test")
-        self.goal = Goal.objects.filter(user=self.user).first()
-        self.tz = pytz.timezone(Timezone.objects.get(user=self.user).name)
+        self.user = fixtures.user()
+        self.goal = fixtures.goal(self.user)
+        self.client = fixtures.client(self.user)
 
     def test_new_bad_goal(self):
         response = self.client.post(reverse('new_step',
@@ -39,39 +36,71 @@ class StepsTest(TestCase):
         self.assertEquals(400, response.status_code)
 
     @patch('app.views.steps.new_step', spec=Signal)
-    def test_new(self, new_step_signal):
-        text = uuid4()
-        response = self.client.post(
-            reverse('new_step', kwargs={'goal_id': self.goal.id}),
-            data={'text': text},
-            follow=False
-        )
+    def test_new_five_day(self, new_step_signal):
+        goal = fixtures.five_day_challenge(self.user)
 
-        step = Step.objects.get(text=text)
+        name = uuid4()
+        new_step_url = reverse('new_step', kwargs={'goal_id': goal.id})
+        response = self.client.post(new_step_url, data={
+            'step_name': name,
+            'step_description': 'test',
+        }, follow=False)
 
-        self.assertRedirects(response, reverse('start_step',
-                                               kwargs={'goal_id': self.goal.id,
-                                                       'step_id': step.id}))
+        step = Step.objects.get(name=name)
+
+        self.assertRedirects(response, reverse('start_step', kwargs={
+            'goal_id': goal.id, 'step_id': step.id}))
 
         self.assertIsNotNone(step)
-        self.assertEquals(self.goal.id, step.goal.id)
+        self.assertEquals(goal.id, step.goal.id)
+        self.assertEquals(step.description, 'test')
 
         self.assertAlmostEquals(step.start, timezone.now(),
                                 delta=timedelta(seconds=2))
 
-        local_start = step.start.astimezone(self.tz)
-        local_end = step.end.astimezone(self.tz)
-        self.assertEquals(step.end, Step.deadline(step.start, self.tz))
+        tz = pytz.timezone('Europe/London')
+        local_start = step.start.astimezone(tz)
+        local_deadline = step.deadline.astimezone(tz)
+        self.assertEquals(step.deadline,
+                          Step.midnight_deadline(step.start, tz))
         self.assertEquals((local_start + timedelta(days=2)).date(),
-                          local_end.date())
-        self.assertEquals(local_end.time(), time())
+                          local_deadline.date())
+        self.assertEquals(local_deadline.time(), time())
+
+        new_step_signal.send.assert_called_with(
+            'app.views.steps.new', step=step)
+
+    @patch('app.views.steps.new_step', spec=Signal)
+    def test_new_custom(self, new_step_signal):
+        name = uuid4()
+
+        new_step_url = reverse('new_step', kwargs={'goal_id': self.goal.id})
+        response = self.client.post(new_step_url, data={
+            'step_name': name,
+            'step_description': 'test',
+            'step_deadline': '2020-01-01',
+        }, follow=False)
+
+        step = Step.objects.get(name=name)
+
+        self.assertRedirects(response, reverse('start_step', kwargs={
+            'goal_id': self.goal.id, 'step_id': step.id}))
+
+        self.assertIsNotNone(step)
+        self.assertEquals(self.goal.id, step.goal.id)
+        self.assertEquals(step.description, 'test')
+
+        tz = pytz.timezone('Europe/London')
+        self.assertAlmostEquals(step.start, timezone.now(),
+                                delta=timedelta(seconds=2))
+        local_deadline = step.deadline.astimezone(tz)
+        self.assertEquals(step.deadline, local_deadline)
 
         new_step_signal.send.assert_called_with(
             'app.views.steps.new', step=step)
 
     def test_start_form(self):
-        step = Step.objects.create(goal=self.goal, text=uuid4(),
-                                   start=timezone.now(), end=timezone.now())
+        step = fixtures.step(self.goal)
 
         response = self.client.get(reverse('start_step', kwargs={
                 'goal_id': step.goal.id, 'step_id': step.id}))
@@ -79,8 +108,7 @@ class StepsTest(TestCase):
         self.assertEquals(200, response.status_code)
 
     def test_track_form(self):
-        step = Step.objects.create(goal=self.goal, text=uuid4(),
-                                   start=timezone.now(), end=timezone.now())
+        step = fixtures.step(self.goal)
 
         response = self.client.get(reverse('complete_step', kwargs={
             'goal_id': step.goal.id, 'step_id': step.id}))
@@ -89,8 +117,7 @@ class StepsTest(TestCase):
 
     @patch('app.views.steps.step_complete', spec=Signal)
     def test_track_with_comments(self, step_complete_signal):
-        step = Step.objects.create(goal=self.goal, text=uuid4(),
-                                   start=timezone.now(), end=timezone.now())
+        step = fixtures.step(self.goal)
 
         response = self.client.post(
             reverse('complete_step', kwargs={
@@ -110,8 +137,7 @@ class StepsTest(TestCase):
 
     @patch('app.views.steps.step_complete', spec=Signal)
     def test_track_no_comments(self, step_complete_signal):
-        step = Step.objects.create(goal=self.goal, text=uuid4(),
-                                   start=timezone.now(), end=timezone.now())
+        step = fixtures.step(self.goal)
 
         response = self.client.post(
             reverse('complete_step', kwargs={
@@ -130,69 +156,53 @@ class StepsTest(TestCase):
 
     @patch('app.views.steps.step_complete', spec=Signal)
     def test_track_last_step_redirects_to_complete(self, step_complete_signal):
-        goal = Goal.objects.create(user=self.user, text='test',
-                                   timezone='Europe/London',
-                                   start=timezone.now())
-
         for i in range(5):
-            Step.create(goal, 'test')
+            fixtures.step(self.goal)
 
-        response = self.client.post(
-            reverse('complete_step', kwargs={
-                'goal_id': goal.id, 'step_id': goal.current_step.id}),
-            follow=False)
+        track_step_url = reverse('complete_step', kwargs={
+            'goal_id': self.goal.id,
+            'step_id': self.goal.current_step.id})
 
-        self.assertRedirects(response,
-                             reverse('complete_goal',
-                                     kwargs={'goal_id': goal.id}))
+        response = self.client.post(track_step_url, follow=False)
+
+        self.assertRedirects(response, reverse('complete_goal', kwargs={
+            'goal_id': self.goal.id}))
 
     def test_new_to_track_redirect(self):
-        goal = Goal.objects.create(user=self.user, text='test',
-                                   timezone='Europe/London',
-                                   start=timezone.now())
-        step = Step.create(goal, 'test')
+        step = fixtures.step(self.goal)
 
-        response = self.client.get(reverse('new_step',
-                                           kwargs={'goal_id': goal.id}),
-                                   follow=False)
+        new_step_url = reverse('new_step', kwargs={'goal_id': self.goal.id})
+        response = self.client.get(new_step_url, follow=False)
 
         self.assertRedirects(response, reverse('complete_step', kwargs={
-            'goal_id': goal.id, 'step_id': step.id}))
+            'goal_id': self.goal.id, 'step_id': step.id}))
 
     def test_latest_404_on_no_goal(self):
-        response = self.client.get(reverse('latest_step',
-                                           kwargs={'goal_id': uuid4()}))
+        response = self.client.get(reverse('latest_step', kwargs={
+            'goal_id': uuid4()}))
 
         self.assertEquals(404, response.status_code)
 
     def test_latest_redirects_to_new_step(self):
-        goal = Goal.objects.create(user=self.user, text='test',
-                                   timezone='Europe/London',
-                                   start=timezone.now())
+        response = self.client.get(reverse('latest_step', kwargs={
+            'goal_id': self.goal.id}))
 
-        response = self.client.get(reverse('latest_step',
-                                           kwargs={'goal_id': goal.id}))
-
-        self.assertRedirects(response, reverse('new_step',
-                                               kwargs={'goal_id': goal.id}))
+        self.assertRedirects(response, reverse('new_step', kwargs={
+            'goal_id': self.goal.id}))
 
     def test_latest_redirects_to_last_step(self):
-        goal = Goal.objects.create(user=self.user, text='test',
-                                   timezone='Europe/London',
-                                   start=timezone.now())
+        step1 = fixtures.step(self.goal)
 
-        step1 = Step.create(goal, 'test')
-
-        response = self.client.get(reverse('latest_step',
-                                           kwargs={'goal_id': goal.id}))
+        response = self.client.get(reverse('latest_step', kwargs={
+            'goal_id': self.goal.id}))
 
         self.assertRedirects(response, reverse('complete_step', kwargs={
-            'goal_id': goal.id, 'step_id': step1.id}))
+            'goal_id': self.goal.id, 'step_id': step1.id}))
 
-        step2 = Step.create(goal, 'test')
+        step2 = fixtures.step(self.goal)
 
-        response = self.client.get(reverse('latest_step',
-                                           kwargs={'goal_id': goal.id}))
+        response = self.client.get(reverse('latest_step', kwargs={
+            'goal_id': self.goal.id}))
 
         self.assertRedirects(response, reverse('complete_step', kwargs={
-            'goal_id': goal.id, 'step_id': step2.id}))
+            'goal_id': self.goal.id, 'step_id': step2.id}))
