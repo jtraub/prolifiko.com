@@ -12,3 +12,4 @@ ssl/
 .cache/
 .python-version
 .cache/
+*.log

@@ -32,7 +32,9 @@ form li {
 
 form.inline {
   padding: 0 10%;
+}
 
+form.inline, .form--inline {
   label {
     display: inline-block;
     width: 100%;
@@ -42,6 +44,8 @@ form.inline {
 
   input {
     width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 0.5em;
     padding: .5rem;
     display: block;
     border: 1px solid rgba(0, 0, 0, .15);

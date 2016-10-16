@@ -11,8 +11,8 @@ export default function CreateGoal({ csrfToken }) {
     return <Scene
         csrfToken={csrfToken}
         pages={[
-            GoalTarget,
             CustomGoal,
+            GoalTarget,
             StepDetails,
             StepDeadline,
         ]}

@@ -36,7 +36,7 @@ export default class GoalDetails extends React.Component {
     }
 
     render() {
-        const placeholder = 'Tip: What you write is up to you but try to be specific, eg ' +
+        const placeholder = 'Describe your goal.\nTip: What you write is up to you but try to be specific, eg ' +
             'you might want to write for an amount of time or to a word ' +
             'count, or on a specific project.';
 
@@ -44,22 +44,29 @@ export default class GoalDetails extends React.Component {
         const goalDescription = this.state.goalDescription || this.props.data.goalDescription;
 
         return (
-            <div className="page">
+            <div className="page form--inline">
                 {this.props.children}
 
-                Goal Name:
-                <input
-                    onChange={this.onNameChange.bind(this)}
-                    type="text"
-                    name="goalName"
-                    value={goalName || ''}
-                    />
-                <Textarea
-                    onChange={this.onTextFieldChange.bind(this)}
-                    placeholder={placeholder}
-                    name="goalDescription"
-                    value={goalDescription || ''}
-                    />
+                <div className="form__input">
+                    <label>Name:</label>
+                    <input
+                        placeholder="Give your goal a name."
+                        onChange={this.onNameChange.bind(this)}
+                        type="text"
+                        name="goalName"
+                        value={goalName || ''}
+                        />
+                </div>
+
+                <div className="form__input">
+                    <label>Description:</label>
+                    <Textarea
+                        onChange={this.onTextFieldChange.bind(this)}
+                        placeholder={placeholder}
+                        name="goalDescription"
+                        value={goalDescription || ''}
+                        />
+                </div>
 
                 <section>
                     <p>Still struggling? Check out our blog on <a

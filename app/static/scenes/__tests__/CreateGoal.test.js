@@ -19,24 +19,10 @@ describe('<CreateGoal/>', () => {
         return firstOfNextMonth;
     }
 
-    it('prompts for goal and step details', () => {
+    it('suggests targets', () => {
         wrapper = mount(<CreateGoal csrfToken="foo"/>);
 
-        // Page 1 - GoalTarget
-
-        const goalTarget = wrapper.find(GoalTarget);
-        expect(goalTarget.isEmpty()).toBe(false);
-
-        firstOfNextMonth(goalTarget).simulate('click');
-
-        // Next page
-
-        wrapper.find('#next').simulate('click');
-        expect(wrapper.find('#prev').isEmpty()).toBe(false);
-        expect(wrapper.find('#next').isEmpty()).toBe(false);
-        expect(wrapper.find('#submit').isEmpty()).toBe(true);
-
-        // Page 2 - GoalDetails
+        // Page 1 - GoalDetails
 
         const goalDetails = wrapper.find(GoalDetails);
         expect(goalDetails.isEmpty()).toBe(false);
@@ -49,6 +35,57 @@ describe('<CreateGoal/>', () => {
 
         goalName.simulate('change', { target: { value: 'My Goal' }});
         goalDescription.simulate('change', { target: { value: 'A goal description' }});
+
+        // Next page
+
+        wrapper.find('#next').simulate('click');
+        expect(wrapper.find('#prev').isEmpty()).toBe(false);
+        expect(wrapper.find('#next').isEmpty()).toBe(false);
+        expect(wrapper.find('#submit').isEmpty()).toBe(true);
+
+        // Page 2 - GoalTarget
+
+        const goalTarget = wrapper.find(GoalTarget);
+        expect(goalTarget.isEmpty()).toBe(false);
+
+        wrapper.find('.suggestion--5').simulate('click');
+
+        const expectedTarget = moment().add(5, 'days').format('YYYY-MM-DD');
+        expect(wrapper.find('input[name="goal_target"]').prop('value')).toBe(expectedTarget);
+    });
+
+    it('prompts for goal and step details', () => {
+        wrapper = mount(<CreateGoal csrfToken="foo"/>);
+
+        // Page 1 - GoalDetails
+
+        const goalDetails = wrapper.find(GoalDetails);
+        expect(goalDetails.isEmpty()).toBe(false);
+
+        const goalName = goalDetails.find('input[name="goalName"]');
+        const goalDescription = goalDetails.find(Textarea).find('textarea');
+
+        expect(goalName.isEmpty()).toBe(false);
+        expect(goalDescription.isEmpty()).toBe(false);
+
+        goalName.simulate('change', { target: { value: 'My Goal' }});
+        goalDescription.simulate('change', { target: { value: 'A goal description' }});
+
+        // Next page
+
+        wrapper.find('#next').simulate('click');
+        expect(wrapper.find('#prev').isEmpty()).toBe(false);
+        expect(wrapper.find('#next').isEmpty()).toBe(false);
+        expect(wrapper.find('#submit').isEmpty()).toBe(true);
+
+        // Page 2 - GoalTarget
+
+        const goalTarget = wrapper.find(GoalTarget);
+        expect(goalTarget.isEmpty()).toBe(false);
+
+        wrapper.find('.flatButton.custom').simulate('click');
+        firstOfNextMonth(goalTarget).simulate('click');
+
 
         // Next page
 
