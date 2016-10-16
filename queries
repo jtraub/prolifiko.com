@@ -1,2 +1,0 @@
-Goals with 0 lives and no D3 email:
-select u.email, g.* from app_goal g left join app_email e on e.recipient_id = g.user_id left join auth_user u on u.id = g.user_id where g.lives = 0 and e.recipient_id not in (select recipient_id from app_email where name = 'd3' group by recipient_id) group by u.email, g.id;

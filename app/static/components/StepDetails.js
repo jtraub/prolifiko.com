@@ -5,6 +5,7 @@ export default class StepDetails extends React.Component {
     static propTypes = {
         onChange: React.PropTypes.func.isRequired,
         data: React.PropTypes.object.isRequired,
+        stepNumber: React.PropTypes.number,
     };
 
     static defaultProps = {
