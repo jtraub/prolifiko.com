@@ -10,17 +10,16 @@
 <div class="steps">
     <div class="step {% if goal.complete %} step--complete{% endif %}">
         <h3 class="step-heading">My Goal</h3>
-        <p class="step-text">{{ goal.text|safe }}</p>
+        <p class="step-text">{{ goal.description|safe }}</p>
     </div>
 
     {% for step in goal.steps.all|dictsortreversed:"start" %}
         <div class="step{% if step.complete %} step--complete{% endif %}">
             <h3 class="step-heading">Step #{{ step.number }}</h3>
-            <p class="step-text">{{ step.text|safe }}</p>
+            <p class="step-text">{{ step.description|safe }}</p>
 
             <div class="step-status">
                 {% if not step.complete %}
-                    <hr/>
                     <a href="{% url 'complete_step' goal_id=step.goal.id step_id=step.id %}"><button>Track</button></a>
                 {% elif step.comments %}
                     <hr/>

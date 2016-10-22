@@ -5,17 +5,33 @@
 {% block content %}
 {% for goal in goals %}
 <div class="dash-goal">
-    <h2>{{ goal.name }}</h2>
+
+    {% if goal.active %}
     <div class="steps">
+        <div class="goal-name">
+            <h2>{{ goal.name }}</h2>
+        </div>
+
         {% for step in goal.steps.all reversed %}
         <div class="step {% if step.complete %}step--complete{% endif %}">
             <h3 class="step-heading">{{ step.name }}</h3>
-            <p class="step-text"}>
+
+            {% if not step.complete %}
+            <p class="step-text">
                 {{ step.description }}
             </p>
+            {% endif %}
+
         </div>
         {% endfor %}
     </div>
+
+    {% else %}
+    <div class="steps">
+        <h2>{{ goal.name }}</h2>
+    </div>
+
+    {% endif %}
 </div>
 {% endfor %}
 {% endblock %}
