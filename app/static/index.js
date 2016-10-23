@@ -1,9 +1,10 @@
 require('./index.scss');
+var $ = require('jquery');
 
 var LimitTextDone = [];
 var MAX_WORDS = 100;
 
-window.limitText = function limitText(textarea, requireText=true) {
+window.limitText = function limitText(textarea, requireText = true) {
     if (LimitTextDone.indexOf(textarea) > -1) {
         return;
     }
@@ -69,3 +70,16 @@ if (timezoneInput) {
     console.log('Guessing timezone as', guess);
     timezoneInput.value = guess;
 }
+
+$(document).ready(function() {
+
+    $('.goal-name').on('click', function () {
+        $(this).siblings('.steps').toggle();
+    });
+
+    $('.step').on('click', function () {
+        $(this).children('.step-text').toggle();
+    });
+
+});
+

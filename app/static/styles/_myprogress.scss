@@ -4,18 +4,18 @@
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
-.steps {
+.goal-name {
+    background: white;
+    display: inline-block;
+    width: 100%;
 
-    .goal-name {
-        background: white;
-        display: inline-block;
-        width: 100%;
-
-        h2 {
-            padding: 0.5em;
-            margin: 0;
-        }
+    h2 {
+        padding: 0.5em;
+        margin: 0;
     }
+}
+
+.steps {
 
     .step {
         background: white;
@@ -26,6 +26,11 @@
 
         &.step--complete {
             color: $gray-dark;
+
+            // jquery will toggle the text for completed steps
+            .step-text {
+                display: none;
+            }
         }
     }
 
@@ -53,5 +58,10 @@
         margin: 0.5em auto;
         padding: 0;
         width: 85%;
+    }
+
+    // jquery will toggle the text for completed steps
+    &.goal--complete {
+        display: none;
     }
 }
