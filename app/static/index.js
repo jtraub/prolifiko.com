@@ -81,5 +81,9 @@ $(document).ready(function() {
         $(this).children('.step-text').toggle();
     });
 
+    $('.step button').on('click', function(event) {
+        event.stopPropagation();
+    })
+
 });
 
