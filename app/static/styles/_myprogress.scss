@@ -1,37 +1,72 @@
-.steps {
-  .step {
+.grouped-goals-heading {
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.dash-goal {
     background: white;
-    margin-bottom: .5em;
-    padding-bottom: .5em;
+    margin: 0.5em 0;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
 
-    &.step--complete {
-      color: $gray-dark;
+.goal-name {
+    background: white;
+    display: inline-block;
+    width: 100%;
+
+    h2 {
+        padding: 0.5em;
+        margin: 0;
     }
-  }
+}
 
-  p {
-    margin: 0;
-    padding: 0.5em;
-  }
+.steps {
 
-  .step-heading {
-    -webkit-margin-before: 0;
-    -webkit-margin-after: 0;
-    padding: 0.5em 0;
-    background: $yellow;
-  }
+    .step {
+        background: white;
+        margin-bottom: .5em;
 
-  .step-text, .step-progress {
-    font-family: $fixed-width-font;
-  }
+        // when hiding step-text due to complete this makes a white padded area under the h2
+        //padding-bottom: .5em;
 
-  hr {
-    display: block;
-    height: 1px;
-    border: 0;
-    border-top: 1px solid #ccc;
-    margin: 0.5em auto;
-    padding: 0;
-    width: 85%;
-  }
+        &.step--complete {
+            color: $gray-dark;
+
+            // jquery will toggle the text for completed steps
+            .step-text {
+                display: none;
+            }
+        }
+    }
+
+    p {
+        margin: 0;
+        padding: 0.5em;
+    }
+
+    .step-heading {
+        -webkit-margin-before: 0;
+        -webkit-margin-after: 0;
+        padding: 0.5em 0;
+        background: $yellow;
+    }
+
+    .step-text, .step-progress {
+        font-family: $fixed-width-font;
+    }
+
+    hr {
+        display: block;
+        height: 1px;
+        border: 0;
+        border-top: 1px solid #ccc;
+        margin: 0.5em auto;
+        padding: 0;
+        width: 85%;
+    }
+
+    // jquery will toggle the text for completed steps
+    &.goal--complete {
+        display: none;
+    }
 }

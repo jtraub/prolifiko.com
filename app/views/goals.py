@@ -6,7 +6,7 @@ from django.db import transaction
 from django.utils import timezone
 import pytz
 
-from app.models import Goal, Step, Subscription, Timezone
+from app.models import Goal, Step, Timezone
 from app.signals import new_goal, goal_complete, new_step
 from app.utils import get_logger, is_active, parse_date
 from app.subscriptions import is_user_subscribed
@@ -179,6 +179,12 @@ def complete(request, goal_id):
         logger.info('Goal complete user=%s' % goal.user.email)
 
         goal.complete = True
+
+        for step in goal.steps.all():
+            if not step.complete:
+                step.complete = True
+                step.save()
+
         goal.save()
 
         goal_complete.send('app.views.goals.complete', goal=goal)
