@@ -28,7 +28,7 @@ export default class StepDetails extends React.Component {
     }
 
     onNameChange(event) {
-        const stepName = event.target.value
+        const stepName = event.target.value;
         this.setState({stepName}, () => {
             this.props.onChange({
                 stepName,
