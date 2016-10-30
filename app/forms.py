@@ -75,9 +75,8 @@ class NewStepForm(forms.ModelForm):
             })}
 
 
-track_step_tip = 'Tip: Tell us any progress you made. Number of words, ' \
-                 'length of time etc. It\'s really important to keep a ' \
-                 'record of your progress.'
+track_step_tip = 'Tip: Tell us any progress you made, like number of words, ' \
+                 'length of time etc.'
 
 
 class TrackStepForm(forms.ModelForm):

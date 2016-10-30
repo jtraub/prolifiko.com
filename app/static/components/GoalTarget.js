@@ -24,10 +24,10 @@ export default class GoalTarget extends React.Component {
 
         const today = moment(moment().format('YYYY-MM-DD'));
 
-        const suggestion = days => {
-            const target = moment(today).add({ days });
+        const suggestion = weeks => {
+            const target = moment(today).add({ weeks });
 
-            let className = `suggestion suggestion--${days} flatButton`;
+            let className = `suggestion suggestion--${weeks} flatButton`;
 
             if (selected && selected.isSame(target)) {
                 className += ' flatButton--selected';
@@ -36,7 +36,7 @@ export default class GoalTarget extends React.Component {
             return (
                 <a className={className} onClick={() => this.onChange(target)}>
                     <div className="flatButton__content">
-                        <h3>{days} Days</h3>
+                        <h3>{weeks} Week{weeks > 1 ? 's' : null}</h3>
                         <h5>{target.format('ddd MMM Do')}</h5>
                     </div>
                 </a>
@@ -50,10 +50,10 @@ export default class GoalTarget extends React.Component {
         } else {
             content = (
                 <div className="suggestions">
-                    {suggestion(5)}
-                    {suggestion(7)}
-                    {suggestion(10)}
-                    {suggestion(30)}
+                    {suggestion(1)}
+                    {suggestion(2)}
+                    {suggestion(3)}
+                    {suggestion(4)}
                     <div style={{ clear: 'both' }}/>
                     <a className="flatButton custom" onClick={() => this.setState({ showCalendar: true })}>
                         <div className="flatButton__content">

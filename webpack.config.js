@@ -14,7 +14,8 @@ module.exports = {
 
     output: {
         path: path.resolve('./dist'),
-        filename: '[name].js'
+        filename: '[name].js',
+        publicPath: '/',
     },
 
     resolve: { alias: { moment: 'moment/moment.js' } },
@@ -37,3 +38,20 @@ module.exports = {
         ])
     ]
 };
+
+if (process.env.NODE_ENV === 'development') {
+    for (name in module.exports.entry) {
+        module.exports.entry[name] = [
+            'webpack-dev-server/client?http://0.0.0.0:8080', // WebpackDevServer host and port
+            'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors]
+            module.exports.entry[name]
+        ];
+    }
+
+    module.exports.module.loaders.forEach(loader => {
+        if (loader.loader === 'babel') {
+            loader.loaders = ['react-hot', 'babel'];
+            delete loader.loader;
+        }
+    });
+}

@@ -51,7 +51,6 @@ def new_five_day_challenge(user, params, start, timezone):
 
 def new_custom_goal(user, params, start, timezone):
     is_valid = 'goal_name' in params and \
-               'goal_description' in params and \
                'goal_target' in params and \
                'step_name' in params and \
                'step_description' in params and \
@@ -64,10 +63,12 @@ def new_custom_goal(user, params, start, timezone):
         user=user,
         type=Goal.TYPE_CUSTOM,
         name=params['goal_name'],
-        description=params['goal_description'],
         start=start,
         target=parse_date(params['goal_target']),
     )
+
+    if 'goal_description' in params:
+        goal.description = params['goal_description']
 
     with transaction.atomic():
         logger.info('Creating custom goal user=%s' % goal.user.email)
@@ -95,7 +96,10 @@ def new_custom_goal(user, params, start, timezone):
 @login_required
 @is_active
 def new(request):
-    user_is_subscribed = is_user_subscribed(request.user)
+    if 'subscribed' in request.GET:
+        user_is_subscribed = request.GET['subscribed'] == 'true'
+    else:
+        user_is_subscribed = is_user_subscribed(request.user)
 
     if not user_is_subscribed:
         current_goal = Goal.objects \
