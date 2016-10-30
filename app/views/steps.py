@@ -153,15 +153,21 @@ def track(request, step):
         goal = step.goal
         goal.active = False
 
-        if goal.steps.count() == 5:
-            goal.complete = True
+        if goal.type == Goal.TYPE_FIVE_DAY:
+            if goal.steps.count() == 5:
+                goal.complete = True
 
-        goal.save()
+            goal.save()
 
-        if goal.complete:
-            return redirect('complete_goal', goal_id=goal.id)
+            if goal.complete:
+                return redirect('complete_goal', goal_id=goal.id)
 
-        return redirect('new_step', goal_id=goal.id)
+            # five day challenges should be forced to create a new step
+            return redirect('new_step', goal_id=goal.id)
+
+        # non five day challenges go to dashboard where users can complete
+        # goals or start a new step
+        return redirect('myprogress')
 
     return render(request, 'steps/track.html', {
         'step': step,
