@@ -3,6 +3,8 @@ from unittest.mock import patch, Mock
 from django.contrib.auth.models import User
 from django.test import TestCase
 import pytz
+
+from app.models import Subscription
 from app.tasks import send_dr_emails
 
 import logging
@@ -18,22 +20,23 @@ class DrEmailTest(TestCase):
         nyc_tz = pytz.timezone('US/Eastern')
 
         register_utc = datetime(2000, 1, 1, 0).replace(tzinfo=pytz.utc)
-        print('utc', register_utc)
 
         register_uk = uk_tz.localize(datetime(2000, 1, 1, 19))
-        print('uk', register_uk.astimezone(pytz.utc))
         uk_user = User.objects.create(
             email='uk@dr.com', username='uk_dr', date_joined=register_uk)
 
         register_cali = cali_tz.localize(datetime(2000, 1, 1, 19))
-        print('cali', register_cali.astimezone(pytz.utc))
         cali_user = User.objects.create(
             email='cali@dr.com', username='cali_dr', date_joined=register_cali)
 
         register_nyc = nyc_tz.localize(datetime(2000, 1, 1, 19))
-        print('nyc', register_nyc.astimezone(pytz.utc))
         nyc_user = User.objects.create(
             email='nyc@dr.com', username='nyc_dr', date_joined=register_nyc)
+
+        # Add a subscribed user to check they don't get any emails
+        subscribed_user = User.objects.create(
+            email='sub@dr.com', username='sub_dr', date_joined=register_uk)
+        Subscription.objects.create(user=subscribed_user, name='test')
 
         now = register_utc
         while now <= pytz.utc.localize(datetime(2000, 1, 5, 0)):
