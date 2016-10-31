@@ -2,11 +2,11 @@ from django.contrib.auth.models import User
 from django.db import transaction
 from django.db.models import Count, Q
 from django.utils import timezone
-from django.conf import settings
 from datetime import timedelta, datetime
 from celery import shared_task
 import pytz
 
+from app.subscriptions import is_user_subscribed
 from .utils import send_email
 from .models import Email, Step, Goal
 
@@ -36,9 +36,11 @@ def send_dr_emails(now=None):
 
         return User.objects \
             .annotate(goal_count=Count('goal')) \
+            .annotate(subscription_count=Count('subscription')) \
             .filter(is_active=True) \
             .filter(date_joined__lte=before, date_joined__gt=after) \
-            .filter(goal_count=0)
+            .filter(goal_count=0) \
+            .filter(subscription_count=0)
 
     def send_dr_email(recipient, name):
         dr_emails_sent = [email.name for email in
@@ -82,6 +84,9 @@ def send_d_emails_at_midnight(now=None):
     for step in late_steps:
         goal = step.goal
         user = goal.user
+
+        if is_user_subscribed(user):
+            continue
 
         # 3 lives = d1
         # 2 lives = d2
