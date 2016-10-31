@@ -46,8 +46,11 @@ def create_step(params, goal, step_start, tz):
         .localize(deadline_midnight) \
         .astimezone(pytz.utc)
 
+    description = params['step_description']\
+        if 'step_description' in params else None
+
     return goal.create_step(params['step_name'],
-                            params['step_description'],
+                            description,
                             step_start,
                             deadline_utc,
                             commit=True)
@@ -169,7 +172,11 @@ def track(request, step):
         # goals or start a new step
         return redirect('myprogress')
 
-    return render(request, 'steps/track.html', {
+    template = 'steps/track_five_day.html' \
+        if step.goal.type == Goal.TYPE_FIVE_DAY \
+        else 'steps/track.html'
+
+    return render(request, template, {
         'step': step,
         'form': form,
     })

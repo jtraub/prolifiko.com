@@ -1,7 +1,7 @@
 import React from 'react';
-import { CustomGoal } from '../components/GoalDetails';
+import { CustomGoalDetails } from '../components/GoalDetails';
 import GoalTarget  from '../components/GoalTarget';
-import StepDetails from '../components/StepDetails';
+import { CustomStepDetails } from '../components/StepDetails';
 import StepDeadline from '../components/StepDeadline';
 import Scene from '../components/Scene';
 
@@ -11,9 +11,9 @@ export default function CreateGoal({ csrfToken }) {
     return <Scene
         csrfToken={csrfToken}
         pages={[
-            CustomGoal,
+            CustomGoalDetails,
             GoalTarget,
-            StepDetails,
+            props => <CustomStepDetails {...props} stepNumber={1} />,
             StepDeadline,
         ]}
         data={{ type: 'CUSTOM' }}

@@ -22,8 +22,8 @@ class Goal(models.Model):
         'CUSTOM',
     )))
 
-    name = models.TextField(max_length=256)
-    description = models.TextField(max_length=1024)
+    name = models.TextField(max_length=140)
+    description = models.TextField(max_length=1024, blank=True)
 
     start = models.DateTimeField()
     target = models.DateField()
@@ -103,8 +103,8 @@ class Step(models.Model):
     goal = models.ForeignKey(Goal, related_name='steps',
                              on_delete=models.CASCADE)
 
-    name = models.TextField(max_length=256)
-    description = models.TextField(max_length=1024)
+    name = models.TextField(max_length=140)
+    description = models.TextField(max_length=1024, blank=True)
 
     start = models.DateTimeField()
     deadline = models.DateTimeField()

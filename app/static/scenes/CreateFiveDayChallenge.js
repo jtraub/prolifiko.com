@@ -1,6 +1,6 @@
 import React from 'react';
-import StepDetails from '../components/StepDetails';
-import { FiveDayChallengeGoal } from '../components/GoalDetails';
+import { MidnightStepDetails } from '../components/StepDetails';
+import { FiveDayChallengeDetails } from '../components/GoalDetails';
 import Scene from '../components/Scene';
 
 export default function CreateFiveDayChallenge({ csrfToken }) {
@@ -8,7 +8,10 @@ export default function CreateFiveDayChallenge({ csrfToken }) {
 
     return <Scene
         csrfToken={csrfToken}
-        pages={[FiveDayChallengeGoal, StepDetails]}
+        pages={[
+            FiveDayChallengeDetails,
+            props => <MidnightStepDetails {...props} stepNumber={1} />
+        ]}
         data={{ type: 'FIVE_DAY_CHALLENGE' }}
     />;
 }

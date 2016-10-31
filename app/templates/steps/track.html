@@ -4,29 +4,9 @@
 
 {% block content %}
 <section>
-    {% if step.number == 5 %}
-        <p>Your fifth and final step was:</p>
-    {% else %}
-        <p>What progress did you make? Your {{ step.nth }} step was:</p>
-    {% endif %}
+    <p>You've completed a step. Way to go!</p>
 
-    <blockquote>{{ step.text|safe }}</blockquote>
-
-    {% if step.number == 1 %}
-        <p>You can track any progress you've made on this step – even if you didn’t achieve it in full :-)</p>
-
-        <p>Tell us what you wrote.</p>
-    {% elif step.number == 2 %}
-        <p>Remember, any progress still means you’ve completed this step.</p>
-
-        <p>Tell us what you writing you did.</p>
-    {% elif step.number == 3 %}
-        <p>Now, tell us what writing you did.</p>
-    {% elif step.number == 4 %}
-        <p>Tell us what you did. We’d love to hear what progress you made.</p>
-    {% else %}
-        <p>Tell us what you achieved.</p>
-    {% endif %}
+    <p>Tell us what progress you made:</p>
 </section>
 
 <form action="{% url 'complete_step' goal_id=step.goal.id step_id=step.id %}" method="post">

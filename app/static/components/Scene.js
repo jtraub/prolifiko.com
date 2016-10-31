@@ -31,6 +31,8 @@ export default class Scene extends React.Component {
     }
 
     onChange(data, isValid) {
+        console.log('Scene received data', data);
+
         // this is a bit horrible because this.state.data is an array of objects, where
         // each object has the parameter `data`. i.e. data[0].data, data[0].isValid
         const newData = Object.assign({}, this.state.data);

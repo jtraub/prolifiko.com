@@ -1,67 +1,38 @@
 import React from 'react';
 import Textarea from './Textarea';
+import AbstractDetails from './AbstractDetails';
 
-export default class GoalDetails extends React.Component {
-    static propTypes = {
-        onChange: React.PropTypes.func.isRequired,
-        data: React.PropTypes.object.isRequired,
-    };
+export class FiveDayChallengeDetails extends AbstractDetails {
+    componentWillMount() {
+        this.setDataPrefix('goal');
 
-    static defaultProps = {
-        data: {
-            goalName: '',
-            goalDescription: '',
-        }
-    };
+        const value = 'Five Day Challenge';
 
-    state = {
-        isValid: false,
-    };
-
-    onTextFieldChange(goalDescription, isValid) {
-        this.setState({goalDescription, isValid}, () => {
-            this.props.onChange({
-                goalDescription,
-            }, isValid);
-        });
-    }
-
-    onNameChange(event) {
-        const goalName = event.target.value;
-        this.setState({goalName}, () => {
-            this.props.onChange({
-                goalName,
-            }, this.state.isValid);
-        });
+        this.onNameChange({ target: { value } });
     }
 
     render() {
-        const placeholder = 'Describe your goal.\nTip: What you write is up to you but try to be specific, eg ' +
-            'you might want to write for an amount of time or to a word ' +
-            'count, or on a specific project.';
+        const goalDescription = this.getDescription();
 
-        const goalName = this.state.goalName || this.props.data.goalName;
-        const goalDescription = this.state.goalDescription || this.props.data.goalDescription;
+        const placeholder = 'Tip: What you write is up to you but try to be ' +
+            'specific, eg you might want to write for an amount of time or to a ' +
+            'word count, or on a specific project.';
 
         return (
             <div className="page form--inline">
-                {this.props.children}
+                <section>
+                    <p>Welcome to the challenge! It’s great to have you on
+                        board.</p>
+
+                    <p>Your first task is to set a writing goal.</p>
+
+                    <p><strong>What do you want to achieve with your writing in
+                        the next 5 days?</strong></p>
+                </section>
 
                 <div className="form__input">
-                    <label>Name:</label>
-                    <input
-                        placeholder="Give your goal a name."
-                        onChange={this.onNameChange.bind(this)}
-                        type="text"
-                        name="goalName"
-                        value={goalName || ''}
-                        />
-                </div>
-
-                <div className="form__input">
-                    <label>Description:</label>
                     <Textarea
-                        onChange={this.onTextFieldChange.bind(this)}
+                        onChange={this.onDescriptionChange.bind(this)}
                         placeholder={placeholder}
                         name="goalDescription"
                         value={goalDescription || ''}
@@ -69,7 +40,7 @@ export default class GoalDetails extends React.Component {
                 </div>
 
                 <section>
-                    <p>Still struggling? Check out our blog on <a
+                    <p>Still struggling? Check out our resources on <a
                         href="http://blog.write-track.co.uk/how-to-set-a-writing-goal/">how
                         to set a goal</a>.</p>
 
@@ -81,28 +52,63 @@ export default class GoalDetails extends React.Component {
     }
 }
 
-export function FiveDayChallengeGoal({ onChange, data }) {
-    return (
-        <GoalDetails onChange={onChange} data={data}>
-            <section>
-                <p>Welcome to the challenge! It’s great to have you on
-                    board.</p>
+export class CustomGoalDetails extends AbstractDetails {
+    componentWillMount() {
+        this.setDataPrefix('goal');
+    }
 
-                <p>Your first task is to set a writing goal.</p>
+    render() {
+        const goalName = this.getName();
+        const goalDescription = this.getDescription();
 
-                <p><strong>What do you want to achieve with your writing in
-                    the next 5 days?</strong></p>
-            </section>
-        </GoalDetails>
-    );
-}
+        const placeholder = 'Tip: Don’t be too adventurous at this stage. Make' +
+            ' your writing goal something you can achieve in four weeks or less.';
 
-export function CustomGoal({ onChange, data }) {
-    return (
-        <GoalDetails onChange={onChange} data={data}>
-            <section>
-                <p>Custom goal.</p>
-            </section>
-        </GoalDetails>
-    );
+        const { nameCharsRemaining } = this.state;
+        let charLimitColor = 'inherit';
+
+        if (nameCharsRemaining < 0) {
+            charLimitColor = 'red';
+        }
+
+        return (
+            <div className="page form--inline">
+                <section>
+                    <p>What's your writing project? Describe your goal here:</p>
+                </section>
+
+                <div className="form__input">
+                    <Textarea
+                        onChange={this.onDescriptionChange.bind(this)}
+                        placeholder={placeholder}
+                        name="goalDescription"
+                        value={goalDescription || ''}
+                    />
+                </div>
+
+                <section>
+                    <p>Now, give this goal a short name:</p>
+                </section>
+
+                <div className="form__input">
+                    <textarea
+                        cols={40}
+                        rows={5}
+                        placeholder="For example, this could be 'Write chapter 1'."
+                        onChange={this.onNameChange.bind(this)}
+                        name="goalName"
+                        value={goalName || ''}
+                    />
+                    <p style={{ color: charLimitColor }}>{nameCharsRemaining} characters remaining</p>
+                </div>
+
+                <section>
+                    <p>
+                        Want a quick primer on goal setting? We’ve made this video just for you.
+                        <a href="http://blog.write-track.co.uk/how-to-set-a-writing-goal/">NEEDS A LINK</a>.
+                    </p>
+                </section>
+            </div>
+        );
+    }
 }
