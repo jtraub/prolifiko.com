@@ -4,16 +4,10 @@ import uuid
 from itertools import chain
 from django.utils import timezone as dj_timezone
 import pytz
-from datetime import datetime, date, time, timedelta
+from datetime import timedelta
 from django.utils import timezone
-
-nth = {
-    1: 'first',
-    2: 'second',
-    3: 'third',
-    4: 'fourth',
-    5: 'fifth',
-}
+import inflect
+inflect_engine = inflect.engine()
 
 
 class Goal(models.Model):
@@ -80,7 +74,7 @@ class Goal(models.Model):
 
     @property
     def next_step_nth(self):
-        return nth[int(self.next_step_num)]
+        return inflect_engine.ordinal(self.next_step_num)
 
     @property
     def current_step(self):
@@ -122,20 +116,6 @@ class Step(models.Model):
 
     class Meta:
         ordering = ('start',)
-
-    # @staticmethod
-    # def create(goal: Goal, name: str, description: str):
-    #     start = timezone.now()
-    #
-    #     tz = Timezone.objects.get(user=goal.user)
-    #
-    #     return Step.objects.create(
-    #         goal=goal,
-    #         name=name,
-    #         description=description,
-    #         start=start,
-    #         deadline=Step.midnight_deadline(start, tz.name)
-    #     )
 
     @staticmethod
     def midnight_deadline(start, tz):
@@ -179,7 +159,7 @@ class Step(models.Model):
 
     @property
     def nth(self):
-        return nth[self.number]
+        return inflect_engine.ordinal(self.number)
 
     @property
     def user(self):

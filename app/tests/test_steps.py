@@ -21,6 +21,10 @@ class StepsTest(TestCase):
     def setUp(self):
         self.user = fixtures.user()
         self.goal = fixtures.goal(self.user)
+
+        self.goal.type = Goal.TYPE_FIVE_DAY
+        self.goal.save()
+
         self.client = fixtures.client(self.user)
 
     def test_new_bad_goal(self):
