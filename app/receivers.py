@@ -42,8 +42,14 @@ def receive_new_goal(sender, **kwargs):
     goal = kwargs['goal']
 
     add_event('goals.new', goal.user, {
-        'goal_id': goal.id.hex
+        'goal_id': goal.id.hex,
+        'goal_type': goal.type
     })
+
+    if goal.is_five_day:
+        send_email('n2_new_goal', goal.user, goal)
+    else:
+        send_email('new_custom_goal', goal.user, goal)
 
 
 @receiver(goal_complete)
@@ -52,10 +58,12 @@ def receive_goal_complete(send, **kwargs):
     goal = kwargs['goal']
 
     add_event('goals.complete', goal.user, {
-        'goal_id': goal.id.hex
+        'goal_id': goal.id.hex,
+        'goal_type': goal.type
     })
 
-    send_email('n7_goal_complete', goal.user, goal)
+    if goal.is_five_day:
+        send_email('n7_goal_complete', goal.user, goal)
 
 
 @receiver(new_step)
@@ -65,17 +73,16 @@ def receive_new_step(sender, **kwargs):
 
     add_event('steps.new', step.goal.user, {
         'goal_id': step.goal.id.hex,
+        'goal_type': step.goal.type,
         'step_id': step.id.hex,
         'step_num': step.number
     })
 
-    if step.goal.steps.count() == 1:
-        send_email('n2_new_goal', step.goal.user, step.goal)
-    else:
+    if step.goal.is_five_day and step.number > 1:
         # We want the step before this one - that's the one that's been
-        # completed. E.g. if we've received step 2 here, we want step_num to be
-        # 1, which is the list index of step 2.
-        step_num = list(step.goal.steps.all()).index(step)
+        # completed. E.g. if we've received step 2 here, we want step
+        # num to be 1, which is the list index of step 2.
+        step_num = step.number - 1
         n_num = step_num + 2
         email = 'n%d_step_%d_complete' % (n_num, step_num)
         send_email(email, step.goal.user, step.goal)
@@ -88,6 +95,7 @@ def receive_step_complete(sender, **kwargs):
 
     add_event('steps.complete', step.goal.user, {
         'goal_id': step.goal.id.hex,
+        'goal_type': step.goal.type,
         'step_id': step.id.hex,
         'step_num': step.number
     })

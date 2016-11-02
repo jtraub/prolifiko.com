@@ -219,6 +219,9 @@ EMAIL_META = {
     'd3': {
         'subject': 'Writing challenge - try again',
     },
+    'new_custom_goal': {
+        'subject': 'Well done - you\'re on your way',
+    },
 }
 
 EMAIL_SEND_PERIOD = int(os.environ.setdefault('PF_EMAIL_SEND_PERIOD', '15'))

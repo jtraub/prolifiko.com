@@ -1,0 +1,27 @@
+{%  extends 'emails/base.html' %}
+
+{% block content %}
+<p>Hi</p>
+<p>Way to go! You've just set your writing goal and first step.</p>
+<p>You're now on your way to achieving your writing ambitions – and we couldn't be happier for you :)</p>
+
+<p>You told us that your goal was:</p>
+<p><h3>{{ goal.name }}</h3></p>
+<p><pre>{{ goal.description }}</pre></p>
+<p>And that your first step towards reaching that goal is:</p>
+<p><h3>{{ goal.current_step.name }}</h3></p>
+<p><pre>{{ goal.current_step.description }}</pre></p>
+<p>And you’ve given yourself this deadline to achieve this step:</p>
+<p>{{ goal.current_step.deadline }}</p>
+
+<p>But to complete it, you have to write!</p>
+<p>Very often, taking the first step is the hardest. You are not alone – we know how difficult it can be.</p>
+<p>Research says that writers who write from the outset – even in small amounts – are more likely to keep
+going long term and have more successful outcomes.</p>
+<p>So, now it’s up to you. But we’ll be keeping a close eye on your progress.</p>
+<p>We hope we help you continue with your writing – we know you can do it!</p>
+
+<p>See you soon</p>
+
+<p>Bec and Chris</p>
+{% endblock %}

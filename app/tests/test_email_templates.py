@@ -5,7 +5,6 @@ from os.path import isfile, join
 from app import fixtures
 
 from app.utils import render_email
-from app.models import Goal, Step
 
 
 class EmailTemplatesTest(TestCase):
