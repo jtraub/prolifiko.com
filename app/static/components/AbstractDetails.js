@@ -52,10 +52,10 @@ export default class AbstractDetails extends React.Component {
     }
 
     getName() {
-        return this.state.name || this.props.data.name;
+        return this.state.name || this.props.data[this.dataPrefix + 'Name'];
     }
 
     getDescription() {
-        return this.state.description || this.props.data.description;
+        return this.state.description || this.props.data[this.dataPrefix + 'Description'];
     }
 }
