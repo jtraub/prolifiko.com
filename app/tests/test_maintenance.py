@@ -7,6 +7,18 @@ from django.conf import settings
 
 @override_settings(MAINTENANCE_MODE=True)
 class MaintenanceTest(TestCase):
+    def test_no_auth_redirected_to_login(self):
+        response = Client().get(reverse('myprogress'), follow=False)
+        self.assertRedirects(response, reverse('login'))
+
+    def test_login_page_accessible(self):
+        response = Client().get(reverse('login'))
+        self.assertEquals(200, response.status_code)
+
+    def test_registration_accessible(self):
+        response = Client().get(reverse('register'), follow=False)
+        self.assertEquals(200, response.status_code)
+
     def test_logged_in_users_shown_banner(self):
         user = User(username='real')
         user.email = 'real@real.com'
@@ -35,10 +47,19 @@ class MaintenanceTest(TestCase):
         self.assertEquals(response.redirect_chain[-1],
                           (reverse('maintenance'), 302))
 
-    def test_registration_hidden(self):
-        response = Client().get(reverse('register'), follow=False)
+    def test_staff_not_redirected(self):
+        user = User(username='staff')
+        user.email = 'staff@real.com'
+        user.is_staff = True
+        user.set_password('test')
+        user.save()
 
-        self.assertRedirects(response, reverse('maintenance'))
+        client = Client()
+        client.login(username='staff', password='test')
+
+        response = client.get(reverse('new_goal'), follow=False)
+
+        self.assertEquals(response.status_code, 200)
 
     def test_test_email_not_redirected(self):
         user = User(username='tester')
