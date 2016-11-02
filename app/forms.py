@@ -4,11 +4,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth import password_validation
 import django.contrib.auth.forms as auth
 from django.core.validators import validate_email
+from django.conf import settings
 from uuid import uuid4
 
 from django.db import transaction
 
-from .models import Goal, Step, Timezone
+from .models import Goal, Step, Timezone, Subscription
 
 
 def validate_unique_email(value):
@@ -51,6 +52,9 @@ class RegistrationForm(forms.ModelForm):
 
                 Timezone.objects.create(user=user,
                                         name=self.cleaned_data['timezone'])
+
+                if user.email in settings.CONTINUE_USERS:
+                    Subscription.objects.create(user=user, name='auto')
 
         return user
 

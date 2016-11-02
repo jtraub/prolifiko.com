@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.dispatch import Signal
 from unittest.mock import patch
 
-from app.models import Timezone
+from app.models import Timezone, Subscription
 from app.views import auth as views
 
 
@@ -71,9 +71,27 @@ class RegistrationTest(TestCase):
             'email': 'already@test.com',
             'password': 'test',
             'first_name': 'name',
+            'timezone': 'Europe/London',
         }, follow=True)
 
         self.assertEquals(400, response.status_code)
 
         self.assertEquals(['Email address already registered'],
                           response.context['form'].errors['email'])
+
+    @override_settings(CONTINUE_USERS=['continue@test.com'])
+    def test_auto_subscription(self):
+        response = self.client.post(reverse('register'), {
+            'email': 'continue@test.com',
+            'password': 'test',
+            'first_name': 'name',
+            'timezone': 'Europe/London',
+        }, follow=True)
+
+        self.assertEquals(201, response.status_code)
+
+        user = User.objects.get(email='continue@test.com')
+
+        subscription = Subscription.objects.filter(user=user).first()
+        self.assertIsNotNone(subscription)
+        self.assertEquals('auto', subscription.name)

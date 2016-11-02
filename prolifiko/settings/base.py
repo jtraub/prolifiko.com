@@ -261,3 +261,5 @@ TEST_EMAIL_DOMAINS = [
     '@swarmcommunications.co.uk',
     '@prolifiko.com',
 ]
+
+CONTINUE_USERS = []
