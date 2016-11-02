@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 
 
 def maintenance_middleware(get_response):
-    def is_user(user):
+    def is_test_user(user):
         if user.email in settings.TEST_EMAIL_ADDRESSES:
             return False
 
@@ -16,16 +16,22 @@ def maintenance_middleware(get_response):
 
     def middleware(request):
         if settings.MAINTENANCE_MODE:
-            if request.user.is_staff:
+            if not request.user.is_authenticated():
                 return get_response(request)
 
+            # Allow users to get to the login page so that staff users
+            # can login
+            if request.path == reverse('login'):
+                return get_response(request)
+
+            # Let staff and testers do anything
+            if request.user.is_staff or is_test_user(request.user):
+                return get_response(request)
+
+            # Passthru for the maintenance page
             if request.path == reverse('maintenance'):
                 return get_response(request)
 
-            if (request.user.is_authenticated() and is_user(request.user))\
-                    or request.path == reverse('register'):
-                return redirect('maintenance')
-
-        return get_response(request)
+        return redirect(reverse('maintenance'))
 
     return middleware
