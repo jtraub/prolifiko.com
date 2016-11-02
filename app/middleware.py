@@ -16,6 +16,9 @@ def maintenance_middleware(get_response):
 
     def middleware(request):
         if settings.MAINTENANCE_MODE:
+            if request.user.is_staff:
+                return get_response(request)
+
             if request.path == reverse('maintenance'):
                 return get_response(request)
 
