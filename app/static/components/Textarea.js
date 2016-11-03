@@ -53,8 +53,7 @@ export default class Textarea extends React.Component {
         return (
             <div>
                 <textarea
-                    cols={40}
-                    rows={10}
+                    rows={8}
                     placeholder={this.props.placeholder}
                     className="manualLimit"
                     onChange={this.onChange.bind(this)}

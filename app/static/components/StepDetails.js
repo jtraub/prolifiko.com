@@ -142,8 +142,7 @@ export class CustomStepDetails extends AbstractDetails {
 
                 <div className="form__input">
                     <textarea
-                        cols={40}
-                        rows={5}
+                        rows={4}
                         placeholder={namePlaceholder}
                         onChange={this.onNameChange.bind(this)}
                         name="stepName"
