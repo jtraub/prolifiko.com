@@ -85,5 +85,11 @@ $(document).ready(function() {
         event.stopPropagation();
     })
 
+    $('.menu').show();
+
+    $('.burger').click(function () {
+        $('.content').toggleClass('show-menu');
+    });
+
 });
 
