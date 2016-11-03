@@ -15,6 +15,19 @@ button:disabled {
   color: $gray-light;
 }
 
+button.smol {
+    padding: 0.5em 2em;
+}
+
+button.next, button.submit {
+    float: right;
+}
+
+a.prev {
+    padding: 1em 0.5em;
+    float: left;
+}
+
 textarea {
   font-family: $fixed-width-font;
   width: 100%;
