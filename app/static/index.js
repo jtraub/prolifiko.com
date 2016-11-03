@@ -85,9 +85,8 @@ $(document).ready(function() {
         event.stopPropagation();
     })
 
-    $('.menu').show();
-
     $('.burger').click(function () {
+        $('.menu').toggleClass('show');
         $('.content').toggleClass('show-menu');
     });
 
