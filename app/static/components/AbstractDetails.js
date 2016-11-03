@@ -30,7 +30,7 @@ export default class AbstractDetails extends React.Component {
     }
 
     onDescriptionChange(description, isDescriptionValid) {
-        const isValid = this.isValid(isDescriptionValid, this.state.name);
+        const isValid = this.isValid(isDescriptionValid, this.getName());
         this.setState({ description, isDescriptionValid }, () => {
             const newData = {};
             newData[this.dataPrefix + 'Description'] = description;

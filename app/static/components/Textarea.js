@@ -2,12 +2,14 @@ import React from 'react';
 
 export default class Textarea extends React.Component {
     static propTypes = {
+        onChange: React.PropTypes.func.isRequired,
+        required: React.PropTypes.bool,
         wordLimit: React.PropTypes.number,
-        onChange: React.PropTypes.func,
         placeholder: React.PropTypes.string,
     };
 
     static defaultProps = {
+        required: true,
         wordLimit: 100,
     };
 
@@ -21,31 +23,33 @@ export default class Textarea extends React.Component {
         this.setState({wordsLeft: this.props.wordLimit});
     }
 
-    getValue() {
-        return this.state.value;
-    }
-
     onChange(event) {
         const value = event.target.value;
-        this.setState({value});
+        const { wordLimit } = this.props;
 
-        const {wordLimit} = this.props;
-        const words = value.split(' ').filter(function (word) {
+        const wordsLeft = wordLimit - this.getWords(value).length;
+
+        this.setState({ wordsLeft });
+
+        this.props.onChange(value, this.isValid(value));
+    }
+
+    getWords(value) {
+        value = value || this.props.value;
+
+        return value.split(' ').filter(function (word) {
             return word.length > 0;
         });
+    }
 
-        const wordsLeft = wordLimit - words.length;
-        this.setState({wordsLeft});
+    isValid(value) {
+        const words = this.getWords(value);
+        const { wordLimit, required } = this.props;
 
-        const nextValid = words.length > 0 && words.length <= wordLimit;
-        const isValid = this.state.isValid;
-
-        if (nextValid !== isValid) {
-            this.setState({isValid: nextValid});
-        }
-
-        if (this.props.onChange) {
-            this.props.onChange(value, nextValid);
+        if (required) {
+            return words.length > 0 && words.length <= wordLimit;
+        } else {
+            return words.length <= wordLimit;
         }
     }
 

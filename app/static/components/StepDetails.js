@@ -100,6 +100,10 @@ export class CustomStepDetails extends AbstractDetails {
         this.setDataPrefix('step');
     }
 
+    componentDidMount() {
+        this.onDescriptionChange(this.getDescription(), this.description.isValid());
+    }
+
     render() {
         const stepName = this.getName();
         const stepDescription = this.getDescription();
@@ -157,10 +161,12 @@ export class CustomStepDetails extends AbstractDetails {
 
                 <div className="form__input">
                     <Textarea
+                        required={false}
                         onChange={this.onDescriptionChange.bind(this)}
                         placeholder={descriptionPlaceholder}
                         name="stepDescription"
                         value={stepDescription || ''}
+                        ref={ref => this.description = ref}
                     />
                    </div>
             </div>
