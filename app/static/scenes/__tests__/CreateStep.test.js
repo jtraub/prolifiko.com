@@ -27,11 +27,11 @@ describe('<CreateStep/>', () => {
         expect(stepDescription.isEmpty()).toBe(false);
 
         // there shouldn't be 'prev' and 'submit' buttons on first page
-        expect(wrapper.find('#previous').isEmpty()).toBe(true);
-        expect(wrapper.find('#submit').isEmpty()).toBe(true);
+        expect(wrapper.find('.previous').isEmpty()).toBe(true);
+        expect(wrapper.find('.submit').isEmpty()).toBe(true);
 
         // ensure submit button is disabled
-        const next = wrapper.find('#next');
+        const next = wrapper.find('.next');
         expect(next.prop('disabled')).toBe(true);
 
         // populate form with valid data
@@ -42,10 +42,10 @@ describe('<CreateStep/>', () => {
         expect(next.prop('disabled')).toBe(false);
         next.simulate('click');
 
-        expect(wrapper.find('#next').isEmpty()).toBe(true);
-        expect(wrapper.find('#prev').isEmpty()).toBe(false);
+        expect(wrapper.find('.next').isEmpty()).toBe(true);
+        expect(wrapper.find('.prev').isEmpty()).toBe(false);
 
-        const submit = wrapper.find('#submit');
+        const submit = wrapper.find('.submit');
         expect(submit.isEmpty()).toBe(false);
         expect(submit.prop('disabled')).toBe(true);
 

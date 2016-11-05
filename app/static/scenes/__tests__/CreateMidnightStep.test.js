@@ -21,11 +21,11 @@ describe('<CreateMidnightStep/>', () => {
         expect(stepDescription.isEmpty()).toBe(false);
 
         // there shouldn't be 'prev' and 'next' buttons because there is only one page
-        expect(wrapper.find('#prev').isEmpty()).toBe(true);
-        expect(wrapper.find('#next').isEmpty()).toBe(true);
+        expect(wrapper.find('.prev').isEmpty()).toBe(true);
+        expect(wrapper.find('.next').isEmpty()).toBe(true);
 
         // ensure submit button is disabled
-        const submit = wrapper.find('#submit');
+        const submit = wrapper.find('.submit');
         expect(submit.prop('disabled')).toBe(true);
 
         // populate form with valid data

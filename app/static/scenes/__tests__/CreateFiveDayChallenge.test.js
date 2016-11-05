@@ -24,11 +24,11 @@ describe('<CreateFiveDayChallenge/>', () => {
 
         // Next page
 
-        wrapper.find('#next').simulate('click');
+        wrapper.find('.next').simulate('click');
         expect(wrapper.find(FiveDayChallengeDetails).isEmpty()).toBe(true);
-        expect(wrapper.find('#prev').isEmpty()).toBe(false);
-        expect(wrapper.find('#next').isEmpty()).toBe(true);
-        expect(wrapper.find('#submit').isEmpty()).toBe(false);
+        expect(wrapper.find('.prev').isEmpty()).toBe(false);
+        expect(wrapper.find('.next').isEmpty()).toBe(true);
+        expect(wrapper.find('.submit').isEmpty()).toBe(false);
 
         // Page 2 - Step Details
 

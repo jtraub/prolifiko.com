@@ -30,10 +30,10 @@ describe('<CreateGoal/>', () => {
 
         // Next page
 
-        wrapper.find('#next').simulate('click');
-        expect(wrapper.find('#prev').isEmpty()).toBe(false);
-        expect(wrapper.find('#next').isEmpty()).toBe(false);
-        expect(wrapper.find('#submit').isEmpty()).toBe(true);
+        wrapper.find('.next').simulate('click');
+        expect(wrapper.find('.prev').isEmpty()).toBe(false);
+        expect(wrapper.find('.next').isEmpty()).toBe(false);
+        expect(wrapper.find('.submit').isEmpty()).toBe(true);
 
         // Page 2 - GoalTarget
 
@@ -44,11 +44,11 @@ describe('<CreateGoal/>', () => {
 
         // Next page
 
-        wrapper.find('#next').simulate('click');
+        wrapper.find('.next').simulate('click');
         expect(wrapper.find(CustomGoalDetails).isEmpty()).toBe(true);
-        expect(wrapper.find('#prev').isEmpty()).toBe(false);
-        expect(wrapper.find('#next').isEmpty()).toBe(false);
-        expect(wrapper.find('#submit').isEmpty()).toBe(true);
+        expect(wrapper.find('.prev').isEmpty()).toBe(false);
+        expect(wrapper.find('.next').isEmpty()).toBe(false);
+        expect(wrapper.find('.submit').isEmpty()).toBe(true);
 
         // Page 3 - Step Details
 
@@ -66,11 +66,11 @@ describe('<CreateGoal/>', () => {
 
         // Next page
 
-        wrapper.find('#next').simulate('click');
+        wrapper.find('.next').simulate('click');
         expect(wrapper.find(CustomStepDetails).isEmpty()).toBe(true);
-        expect(wrapper.find('#prev').isEmpty()).toBe(false);
-        expect(wrapper.find('#next').isEmpty()).toBe(true);
-        expect(wrapper.find('#submit').isEmpty()).toBe(false);
+        expect(wrapper.find('.prev').isEmpty()).toBe(false);
+        expect(wrapper.find('.next').isEmpty()).toBe(true);
+        expect(wrapper.find('.submit').isEmpty()).toBe(false);
 
         // Page 4 - Step Deadline
 
