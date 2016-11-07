@@ -46,7 +46,7 @@
                         <div class="step {% if step.complete %}step--complete{% endif %}">
                             <h3 class="step-heading">{{ step.name }}</h3>
 
-                            <p class="step-text">{{ step.description }}</p>
+                            <p class="step-text">{{ step.description | default_if_none:"" }}</p>
 
                             {% if not step.complete %}
                                 <a href="{% url 'complete_step' goal_id=goal.id step_id=step.id %}">
@@ -78,7 +78,7 @@
                     <div class="step {% if step.complete %}step--complete{% endif %}">
                         <h3 class="step-heading">{{ step.name }}</h3>
 
-                        <p class="step-text">{{ step.description }}</p>
+                        <p class="step-text">{{ step.description | default_if_none:"" }}</p>
 
                     </div>
                 {% endfor %}
