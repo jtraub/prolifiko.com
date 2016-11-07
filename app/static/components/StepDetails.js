@@ -120,7 +120,7 @@ export class CustomStepDetails extends AbstractDetails {
         if (stepNumber === 1) {
             intro = (
                 <section>
-                    <p>Briefly describe the first step you're going to take to meet your writing goal:</p>
+                    <p>Briefly describe the first step you're going to take to meet your writing goal.</p>
                 </section>
             );
         } else if (stepNumber === 2) {

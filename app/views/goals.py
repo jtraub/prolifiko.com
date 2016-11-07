@@ -53,7 +53,6 @@ def new_custom_goal(user, params, start, timezone):
     is_valid = 'goal_name' in params and \
                'goal_target' in params and \
                'step_name' in params and \
-               'step_description' in params and \
                'step_deadline' in params
 
     if not is_valid:
@@ -84,8 +83,11 @@ def new_custom_goal(user, params, start, timezone):
             .localize(deadline_midnight) \
             .astimezone(pytz.utc)
 
+        step_description = params['step_description'] \
+            if 'step_description' in params else None
+
         goal.create_step(params['step_name'],
-                         params['step_description'],
+                         step_description,
                          start,
                          deadline_utc,
                          commit=True)
@@ -149,7 +151,10 @@ def new(request):
     new_goal.send('app.views.goals.new', goal=goal)
     new_step.send('app.views.goals.new', step=first_step)
 
-    return redirect('start_step', goal_id=goal.id, step_id=first_step.id)
+    if goal.type == Goal.TYPE_FIVE_DAY:
+        return redirect('start_step', goal_id=goal.id, step_id=first_step.id)
+    else:
+        return redirect('myprogress')
 
 
 @login_required
@@ -191,8 +196,11 @@ def complete(request, goal_id):
 
         goal.save()
 
-        goal_complete.send('app.views.goals.complete', goal=goal)
+        if goal.type == Goal.TYPE_FIVE_DAY:
+            goal_complete.send('app.views.goals.complete', goal=goal)
 
-        return render(request, 'goals/feedback.html', {'goal': goal})
+            return render(request, 'goals/feedback.html', {'goal': goal})
+
+        return redirect('new_goal')
 
     return render(request, 'goals/complete.html', {'goal': goal})

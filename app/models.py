@@ -104,7 +104,7 @@ class Step(models.Model):
                              on_delete=models.CASCADE)
 
     name = models.TextField(max_length=140)
-    description = models.TextField(max_length=1024, blank=True)
+    description = models.TextField(max_length=1024, blank=True, null=True)
 
     start = models.DateTimeField()
     deadline = models.DateTimeField()

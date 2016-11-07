@@ -27,7 +27,7 @@ export default class GoalTarget extends React.Component {
         const today = moment(moment().format('YYYY-MM-DD'));
 
         const suggestion = weeks => {
-            const target = moment(today).add({ weeks });
+            const target = moment(today).add({weeks});
 
             let className = `suggestion suggestion--${weeks} flatButton`;
 
@@ -46,20 +46,38 @@ export default class GoalTarget extends React.Component {
         };
 
         let content;
+        let customDate;
 
         if (this.state.showCalendar) {
-            content = <DatePicker inline minDate={moment(today).add(1, 'days')} selected={selected} onChange={this.onChange.bind(this)}/>;
-        } else {
+            customDate = true;
+            content = (
+                <div>
+                    <DatePicker inline
+                                minDate={moment(today).add(1, 'days')}
+                                selected={selected}
+                                onChange={this.onChange.bind(this)}/>
+                    <a className="flatButton custom"
+                       onClick={() => this.setState({showCalendar: false})}>
+                        <div className="flatButton__content">
+                            <h3>Pick a set date</h3>
+                        </div>
+                    </a>
+                </div>
+            );
+        }
+        else {
+            customDate = false;
             content = (
                 <div className="suggestions">
                     {suggestion(1)}
                     {suggestion(2)}
                     {suggestion(3)}
                     {suggestion(4)}
-                    <div style={{ clear: 'both' }}/>
-                    <a className="flatButton custom" onClick={() => this.setState({ showCalendar: true })}>
+                    <div style={{clear: 'both'}}/>
+                    <a className="flatButton custom"
+                       onClick={() => this.setState({showCalendar: true})}>
                         <div className="flatButton__content">
-                            <h3>Pick my own</h3>
+                            <h3>Pick my own date</h3>
                         </div>
                     </a>
                 </div>
@@ -69,9 +87,12 @@ export default class GoalTarget extends React.Component {
         return (
             <div className="goalTarget">
                 <section>
-                    <p>Next you need to decide when you'd like to achieve this goal by.</p>
-
-                    <p>We suggest you target 5-10 days.</p>
+                    <p>
+                        Don’t pick a deadline that makes your goal too easy or too hard to reach. If
+                        it seems easy-peasy – stretch yourself more. If it feels like mission
+                        impossible, be nicer to yourself!
+                    </p>
+                    <p>I want to achieve my goal {customDate ? 'by' : 'in'}:</p>
                 </section>
 
                 {content}
