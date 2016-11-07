@@ -5,8 +5,6 @@
 {% block content %}
 <section>
     <p>You've completed a step. Way to go!</p>
-
-    <p>Tell us what progress you made:</p>
 </section>
 
 <form action="{% url 'complete_step' goal_id=step.goal.id step_id=step.id %}" method="post">

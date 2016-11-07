@@ -64,8 +64,11 @@ export class CustomGoalDetails extends AbstractDetails {
         const goalName = this.getName();
         const goalDescription = this.getDescription();
 
-        const placeholder = 'Tip: Don’t be too adventurous at this stage. Make' +
+        const descPlaceholder = 'Tip: Don’t be too adventurous at this stage. Make' +
             ' your writing goal something you can achieve in four weeks or less.';
+
+        const namePlaceholder= 'Tip: in 140 characters or less describe your goal. For example,' +
+            ' this could be ‘outline and write chapter 1';
 
         const { nameCharsRemaining } = this.state;
         let charLimitColor = 'inherit';
@@ -77,27 +80,27 @@ export class CustomGoalDetails extends AbstractDetails {
         return (
             <div className="page form--inline">
                 <section>
-                    <p>What's your writing project? Describe your goal here:</p>
+                    <p>What's your writing project? Describe your goal here.</p>
                 </section>
 
                 <div className="form__input">
                     <Textarea
                         onChange={this.onDescriptionChange.bind(this)}
-                        placeholder={placeholder}
+                        placeholder={descPlaceholder}
                         name="goalDescription"
                         value={goalDescription || ''}
                     />
                 </div>
 
                 <section>
-                    <p>Now, give this goal a short name:</p>
+                    <p>Now, give this goal a short name.</p>
                 </section>
 
                 <div className="form__input">
                     <textarea
                         cols={40}
                         rows={5}
-                        placeholder="For example, this could be 'Write chapter 1'."
+                        placeholder={namePlaceholder}
                         onChange={this.onNameChange.bind(this)}
                         name="goalName"
                         value={goalName || ''}

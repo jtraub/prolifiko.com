@@ -31,8 +31,8 @@ def create_midnight_step(params, goal, step_start, tz):
 
 
 def create_step(params, goal, step_start, tz):
-    valid = 'step_name' in params and 'step_description' in params \
-        and 'step_deadline' in params
+    valid = 'step_name' in params \
+            and 'step_deadline' in params
 
     if not valid:
         raise ValueError('Invalid custom step params %s' % params)
@@ -46,7 +46,7 @@ def create_step(params, goal, step_start, tz):
         .localize(deadline_midnight) \
         .astimezone(pytz.utc)
 
-    description = params['step_description']\
+    description = params['step_description'] \
         if 'step_description' in params else None
 
     return goal.create_step(params['step_name'],
@@ -80,8 +80,10 @@ def new(request, goal_id):
 
             new_step.send('app.views.steps.new', step=step)
 
-            return redirect('start_step',
-                            goal_id=goal.id, step_id=step.id)
+            if goal.is_five_day:
+                return redirect('start_step', goal_id=goal.id, step_id=step.id)
+
+            return redirect('myprogress')
         except ValueError:
             logger.exception('Failed to create step')
             return HttpResponseBadRequest()
