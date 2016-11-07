@@ -98,8 +98,7 @@ class GoalsTest(fixtures.TestCase):
 
         self.assertIsNotNone(first_step)
 
-        self.assertRedirects(response, reverse('start_step', kwargs={
-            'goal_id': goal.id, 'step_id': first_step.id}))
+        self.assertRedirects(response, reverse('myprogress'))
 
         self.assertIsNotNone(goal)
         self.assertAlmostEquals(timezone.now(), goal.start,
@@ -126,6 +125,8 @@ class GoalsTest(fixtures.TestCase):
     @patch('app.views.goals.goal_complete', spec=Signal)
     def test_complete(self, goal_complete):
         goal = fixtures.goal(self.user)
+        goal.type = Goal.TYPE_FIVE_DAY
+        goal.save()
 
         response = self.client.post(reverse('complete_goal',
                                             kwargs={'goal_id': goal.id}))
