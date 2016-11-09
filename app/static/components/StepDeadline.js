@@ -3,6 +3,7 @@ import moment from 'moment';
 import DatePicker from 'react-datepicker';
 
 export default class StepDeadline extends React.Component {
+    static HEADING = 'Set Your Deadline';
 
     static propTypes = {
         onChange: React.PropTypes.func.isRequired,

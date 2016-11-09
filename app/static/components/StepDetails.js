@@ -96,6 +96,8 @@ export class MidnightStepDetails extends AbstractDetails {
 }
 
 export class CustomStepDetails extends AbstractDetails {
+    static HEADING = 'Set Your Step';
+
     componentWillMount() {
         this.setDataPrefix('step');
     }

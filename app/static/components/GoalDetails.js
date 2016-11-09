@@ -3,6 +3,7 @@ import Textarea from './Textarea';
 import AbstractDetails from './AbstractDetails';
 
 export class FiveDayChallengeDetails extends AbstractDetails {
+
     componentWillMount() {
         this.setDataPrefix('goal');
 
@@ -53,6 +54,8 @@ export class FiveDayChallengeDetails extends AbstractDetails {
 }
 
 export class CustomGoalDetails extends AbstractDetails {
+    static HEADING = 'Set Your Goal';
+
     componentWillMount() {
         this.setDataPrefix('goal');
     }

@@ -7,6 +7,8 @@ export default class GoalTarget extends React.Component {
         onChange: React.PropTypes.func.isRequired,
     };
 
+    static HEADING = 'Set Your Target';
+
     state = {
         showCalendar: false,
     };

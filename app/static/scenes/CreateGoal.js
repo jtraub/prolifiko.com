@@ -8,12 +8,20 @@ import Scene from '../components/Scene';
 export default function CreateGoal({ csrfToken }) {
     console.log('Rendering CreateGoal');
 
+    class CustomFirstStepDetails extends React.Component {
+        static HEADING = CustomStepDetails.HEADING;
+
+        render() {
+            return <CustomStepDetails {...this.props} stepNumber={1} />;
+        }
+    }
+
     return <Scene
         csrfToken={csrfToken}
         pages={[
             CustomGoalDetails,
             GoalTarget,
-            props => <CustomStepDetails {...props} stepNumber={1} />,
+            CustomFirstStepDetails,
             StepDeadline,
         ]}
         data={{ type: 'CUSTOM' }}

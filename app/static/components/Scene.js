@@ -59,9 +59,30 @@ export default class Scene extends React.Component {
         this._form.submit();
     }
 
+    getPage() {
+        return this.state.pages[this.state.pageIndex];
+    }
+
+    updateHeading() {
+        const page = this.getPage();
+        const h1 = document.querySelector('.heading');
+
+        if (h1 && page.component.HEADING) {
+            h1.innerHTML = page.component.HEADING;
+        }
+    }
+
+    componentDidMount() {
+        this.updateHeading();
+    }
+
+    componentDidUpdate() {
+        this.updateHeading();
+    }
+
     render() {
         const {pageIndex, pages} = this.state;
-        const page = this.state.pages[pageIndex];
+        const page = this.getPage();
         const pageData = this.state.data[pageIndex];
 
         let inputs = [];
