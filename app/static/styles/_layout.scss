@@ -1,4 +1,7 @@
 body {
+  // Stops the body from scrolling when the burger menu is open
+  overflow-x: hidden;
+
   margin: 0 auto;
   @media (min-width: 480px) {
     width: 75%;
