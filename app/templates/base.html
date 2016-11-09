@@ -28,7 +28,9 @@
     </div>
     {%  endblock %}
 
-    <div class="content">{% block content %}{% endblock %}</div>
+    <div class="content {% block content_class %}{% endblock %}">
+        {% block content %}{% endblock %}
+    </div>
 
     <script src="{% static 'bundle.js' %}"></script>
 </body>
