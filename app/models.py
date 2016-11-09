@@ -212,7 +212,9 @@ class Timezone(models.Model):
 class Subscription(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
 
-    name = models.TextField()
+    name = models.CharField(max_length=16, choices=((name, name) for name in (
+        'test',
+    )))
 
     def __str__(self):
         return '%s (%s)' % (self.user.email, self.name)
