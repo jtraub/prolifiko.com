@@ -262,4 +262,6 @@ TEST_EMAIL_DOMAINS = [
     '@prolifiko.com',
 ]
 
-CONTINUE_USERS = []
+CONTINUE_USERS = [
+    'continue@test.com'
+]

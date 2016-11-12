@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from app.forms import RegistrationForm, LoginForm
 from app.utils import add_event, get_logger
 from app.signals import registration
+from app.models import Subscription
 
 
 logger = get_logger(__name__)
@@ -62,12 +63,15 @@ def register(request):
         if form.is_valid():
             logger.debug('Registering user email=%s' %
                          form.cleaned_data['email'])
-
             user = form.save()
 
             registration.send('app.views.auth.register', user=user)
 
-            return render(request, 'registration/check_inbox.html', status=201)
+            page = 'registration/continue_registered.html' \
+                if Subscription.objects.get(user=user) else \
+                'registration/check_inbox.html'
+
+            return render(request, page, status=201)
         else:
             errors = {field: error[0] for field, error in form.errors.items()}
             logger.debug('Registration failed ' + str(errors))
