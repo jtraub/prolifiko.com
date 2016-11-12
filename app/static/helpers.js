@@ -1,3 +1,7 @@
 export function setHeading(heading) {
-    document.querySelector('.heading').innerHTML = heading;
+    const h1 = document.querySelector('.heading');
+
+    if (h1) {
+        h1.innerHTML = heading;
+    }
 }
