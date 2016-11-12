@@ -1,13 +1,14 @@
 import React from 'react';
 import moment from 'moment';
 import DatePicker  from 'react-datepicker';
+import { setHeading } from '../helpers';
 
 export default class GoalTarget extends React.Component {
     static propTypes = {
         onChange: React.PropTypes.func.isRequired,
     };
 
-    static HEADING = 'Set Your Target';
+    static HEADING = 'Set Your Goal Deadline';
 
     state = {
         showCalendar: false,
@@ -15,6 +16,14 @@ export default class GoalTarget extends React.Component {
 
     onChange(date) {
         this.props.onChange({goalTarget: date.format('YYYY-MM-DD')}, true);
+    }
+
+    componentDidUpdate() {
+        if (this.state.showCalendar) {
+            setHeading('Pick Your Own Date');
+        } else {
+            setHeading(GoalTarget.HEADING);
+        }
     }
 
     render() {

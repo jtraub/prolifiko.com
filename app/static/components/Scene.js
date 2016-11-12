@@ -2,6 +2,7 @@ import React from 'react';
 import _each from 'lodash.foreach';
 import _merge from 'lodash.merge';
 import decamelize from 'decamelize';
+import { setHeading } from '../helpers';
 
 export default class Scene extends React.Component {
 
@@ -65,10 +66,9 @@ export default class Scene extends React.Component {
 
     updateHeading() {
         const page = this.getPage();
-        const h1 = document.querySelector('.heading');
 
-        if (h1 && page.component.HEADING) {
-            h1.innerHTML = page.component.HEADING;
+        if (page.component.HEADING) {
+            setHeading(page.component.HEADING);
         }
     }
 

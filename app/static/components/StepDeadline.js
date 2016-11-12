@@ -1,9 +1,10 @@
 import React from 'react';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
+import { setHeading } from '../helpers';
 
 export default class StepDeadline extends React.Component {
-    static HEADING = 'Set Your Deadline';
+    static HEADING = 'Set Your Step Deadline';
 
     static propTypes = {
         onChange: React.PropTypes.func.isRequired,
@@ -22,6 +23,14 @@ export default class StepDeadline extends React.Component {
 
     onChange(date) {
         this.props.onChange({stepDeadline: date.format('YYYY-MM-DD')}, true);
+    }
+
+    componentDidUpdate() {
+        if (this.state.showCalendar) {
+            setHeading('Pick Your Own Date');
+        } else {
+            setHeading(StepDeadline.HEADING);
+        }
     }
 
     render() {
