@@ -110,8 +110,7 @@ export class CustomGoalDetails extends AbstractDetails {
 
                 <section>
                     <p>
-                        Want a quick primer on goal setting? We’ve made this video just for you.
-                        <a href="http://blog.write-track.co.uk/how-to-set-a-writing-goal/">NEEDS A LINK</a>.
+                        Want a quick primer on goal setting? We’ve made this video just for you. <a href="https://youtu.be/2Ngdj5_j_5E" target="_blank">Watch the video</a>
                     </p>
                 </section>
             </div>
