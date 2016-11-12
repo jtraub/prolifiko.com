@@ -170,7 +170,13 @@ export class CustomStepDetails extends AbstractDetails {
                         value={stepDescription || ''}
                         ref={ref => this.description = ref}
                     />
-                   </div>
+               </div>
+
+                <section>
+                    <p>
+                        Need some tips on setting a step? Check out this video. <a href="https://youtu.be/MMlU6NEnxpg" target="_blank">Watch the video</a>
+                    </p>
+                </section>
             </div>
         );
     }
