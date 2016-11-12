@@ -14,7 +14,7 @@
     </div>
 
     {% for step in goal.steps.all|dictsortreversed:"start" %}
-        <div class="step{% if step.complete %} step--complete{% endif %}">
+        <div class="card step{% if step.complete %} step--complete{% endif %}">
             <h3 class="step-heading">Step #{{ step.number }}</h3>
             <p class="step-text">{{ step.description|safe }}</p>
 

@@ -73,22 +73,6 @@ if (timezoneInput) {
 
 $(document).ready(function() {
 
-    $('.dash-goal .goal-name').on('click', function () {
-        $(this).siblings('.goal-description').toggle();
-    });
-
-    $('.dash-goal--complete .goal-name').on('click', function () {
-        $(this).siblings('.steps').toggle();
-    });
-
-    $('.step').on('click', function () {
-        $(this).children('.step-text').toggle();
-    });
-
-    $('.step button').on('click', function(event) {
-        event.stopPropagation();
-    })
-
     $('.burger').click(function () {
         $('.menu').toggleClass('show');
         $('.content').toggleClass('show-menu');
