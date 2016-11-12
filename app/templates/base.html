@@ -16,6 +16,10 @@
         <h1 class="heading">{% block heading %}{%  endblock %}</h1>
     </nav>
 
+    <div class="content {% block content_class %}{% endblock %}">
+        {% block content %}{% endblock %}
+    </div>
+
     {% block menu %}
     <div class="menu">
         <ul>
@@ -27,10 +31,6 @@
         </ul>
     </div>
     {%  endblock %}
-
-    <div class="content {% block content_class %}{% endblock %}">
-        {% block content %}{% endblock %}
-    </div>
 
     <script src="{% static 'bundle.js' %}"></script>
 </body>

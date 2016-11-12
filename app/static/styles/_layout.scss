@@ -1,7 +1,13 @@
-body {
-  // Stops the body from scrolling when the burger menu is open
-  overflow-x: hidden;
+html, body {
+    height: 100%;
+}
 
+body {
+  // Let's us position the menu absolutely, relative to the mock mobile
+  // viewport.
+  position: relative;
+
+  // Create a mock mobile viewport that restrict's the width of the app.
   margin: 0 auto;
   @media (min-width: 480px) {
     width: 75%;
@@ -17,8 +23,8 @@ body {
 nav {
   background: $yellow;
   padding: 1em;
-    max-height: 4rem;
-    box-sizing: border-box;
+  max-height: 4rem;
+  box-sizing: border-box;
 
   .logo-container {
     position: absolute;
@@ -49,7 +55,8 @@ nav {
 }
 
 .menu {
-    position: fixed;
+    position: absolute;
+    top: 4rem; // Align with bottom of nav
     background: $yellow;
     width: 50%;
     height: 100%;
@@ -81,12 +88,7 @@ nav {
 
 .content {
     background: $background;
-    position: relative;
 
     box-sizing: border-box;
     padding: 0.5em;
-
-    &.show-menu {
-        left: 50%;
-    }
 }
