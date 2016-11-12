@@ -73,7 +73,11 @@ if (timezoneInput) {
 
 $(document).ready(function() {
 
-    $('.goal-name').on('click', function () {
+    $('.dash-goal .goal-name').on('click', function () {
+        $(this).siblings('.goal-description').toggle();
+    });
+
+    $('.dash-goal--complete .goal-name').on('click', function () {
         $(this).siblings('.steps').toggle();
     });
 

@@ -3,88 +3,123 @@
 {% block heading %}My Progress{% endblock %}
 
 {% block content %}
-
-    <h3 class="grouped-goals-heading">Active Goal</h3>
-    {% if active_goals|length == 0 %}
-        <h3>You have no active goals</h3>
-
-        {% if is_subscribed %}
-            <a href="{% url 'new_goal' %}">
-                <button>Create Goal</button>
-            </a>
-        {% endif %}
-    {% else %}
-        {% for goal in active_goals %}
-
-            {% with goal.steps.last as last_step %}
-            {% if last_step.complete %}
-
-                <a href="{% url 'complete_goal' goal_id=goal.id %}">
-                    <button>Complete Goal</button>
-                </a>
-
-            {% endif %}
-
-            <div class="dash-goal">
-
-                <div class="goal-name">
-                    <h2>{{ goal.name }}</h2>
-                </div>
-                <div class="steps">
-
-                    <p>{{ goal.description }}</p>
-
-                    {% if last_step.complete %}
-
-                        <a href="{% url 'new_step' goal_id=goal.id %}">
-                            <button>Create Step</button>
-                        </a>
-                    {% endif %}
+    {% if active_goal %}
+        <div class="card">
 
 
-                    {% for step in goal.steps.all reversed %}
-                        <div class="step {% if step.complete %}step--complete{% endif %}">
-                            <h3 class="step-heading">{{ step.name }}</h3>
+            {% with active_goal.steps.last as current_step %}
+                {% if not current_step.complete %}
+                    <h3>My Current Step</h3>
 
-                            <p class="step-text">{{ step.description | default_if_none:"" }}</p>
+                    <h4>{{ current_step.name }}</h4>
+                    <p>{{ current_step.description }}</p>
+                    <p>{{ current_step.deadline }}</p>
 
-                            {% if not step.complete %}
-                                <a href="{% url 'complete_step' goal_id=goal.id step_id=step.id %}">
-                                    <button>Track</button>
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-
-            </div>
+                    <a href="{% url 'complete_step' goal_id=current_step.goal.id step_id=current_step.id %}"><button>Complete this step</button></a>
+                {% else %}
+                    <p>You don't have an active step! Create one now.</p>
+                    <a href="{% url 'new_step' goal_id=active_goal.id %}"><button>Create my next step</button></a>
+                {% endif %}
             {% endwith %}
-        {% endfor %}
-    {% endif %}
-
-    <h3 class="grouped-goals-heading">Completed Goals</h3>
-    {% for goal in completed_goals %}
-        <div class="dash-goal">
-
-            <div class="goal-name">
-                <h2>{{ goal.name }}</h2>
-            </div>
-
-            <div class="steps {% if goal.complete %}goal--complete{% endif %}">
-
-                <p>{{ goal.description }}</p>
-
-                {% for step in goal.steps.all reversed %}
-                    <div class="step {% if step.complete %}step--complete{% endif %}">
-                        <h3 class="step-heading">{{ step.name }}</h3>
-
-                        <p class="step-text">{{ step.description | default_if_none:"" }}</p>
-
-                    </div>
-                {% endfor %}
-            </div>
-
         </div>
-    {% endfor %}
+        <div class="card">
+            <div>
+                <h3>My Current Goal</h3>
+                <h5>{{ active_goal.name }}</h5>
+                <p>{{ active_goal.description }}</p>
+                <p>{{ active_goal.target }}</p>
+                <p><a href="{% url 'goal_progress' goal_id=active_goal.id %}">more >></a></p>
+            </div>
+        </div>
+    {% else %}
+        <p>You don't have an active goal!</p>
+        <button>Create a goal</button>
+    {% endif %}
+{#        #}
+{##}
+{#    <h3 class="grouped-goals-heading">My Current Goal</h3>#}
+{#    {% if active_goals|length == 0 %}#}
+{#        <h3>You have no active goals.</h3>#}
+{##}
+{#        {% if is_subscribed %}#}
+{#            <a href="{% url 'new_goal' %}">#}
+{#                <button>Create Goal</button>#}
+{#            </a>#}
+{#        {% endif %}#}
+{#    {% else %}#}
+{#        {% for goal in active_goals %}#}
+{##}
+{#            {% with goal.steps.last as last_step %}#}
+{#            {% if last_step.complete %}#}
+{##}
+{#                <a href="{% url 'complete_goal' goal_id=goal.id %}">#}
+{#                    <button>Complete Goal</button>#}
+{#                </a>#}
+{##}
+{#            {% endif %}#}
+{##}
+{#            <div class="dash-goal dash-goal--active">#}
+{##}
+{#                <h2 class="goal-name">{{ goal.name }}</h2>#}
+{##}
+{#                {% if goal.description %}#}
+{#                    <p class="goal-description">{{ goal.description }}</p>#}
+{#                {% endif %}#}
+{##}
+{#                <hr />#}
+{##}
+{#                <div class="steps">#}
+{#                    {% if last_step.complete %}#}
+{##}
+{#                        <a href="{% url 'new_step' goal_id=goal.id %}">#}
+{#                            <button>Create Step</button>#}
+{#                        </a>#}
+{#                    {% endif %}#}
+{##}
+{##}
+{#                    {% for step in goal.steps.all reversed %}#}
+{#                        <div class="step {% if step.complete %}step--complete{% endif %}">#}
+{#                            <h3 class="step-heading">{{ step.name }}</h3>#}
+{##}
+{#                            <p class="step-text">{{ step.description | default_if_none:"" }}</p>#}
+{##}
+{#                            {% if not step.complete %}#}
+{#                                <a href="{% url 'complete_step' goal_id=goal.id step_id=step.id %}">#}
+{#                                    <button>Track</button>#}
+{#                                </a>#}
+{#                            {% endif %}#}
+{#                        </div>#}
+{#                    {% endfor %}#}
+{#                </div>#}
+{##}
+{#            </div>#}
+{#            {% endwith %}#}
+{#        {% endfor %}#}
+{#    {% endif %}#}
+{##}
+{#    <h3 class="grouped-goals-heading">Completed Goals</h3>#}
+{#    {% for goal in completed_goals %}#}
+{#        <div class="dash-goal dash-goal--complete">#}
+{##}
+{#            <div class="goal-name">#}
+{#                <h2>{{ goal.name }}</h2>#}
+{#            </div>#}
+{##}
+{#            <div class="steps {% if goal.complete %}goal--complete{% endif %}">#}
+{##}
+{#                <p>{{ goal.description }}</p>#}
+{##}
+{#                {% for step in goal.steps.all reversed %}#}
+{#                    <div class="step {% if step.complete %}step--complete{% endif %}">#}
+{#                        <h3 class="step-heading">{{ step.name }}</h3>#}
+{##}
+{#                        <p class="step-text">{{ step.description | default_if_none:"" }}</p>#}
+{##}
+{#                    </div>#}
+{#                {% endfor %}#}
+{#            </div>#}
+{##}
+{#        </div>#}
+{#    {% endfor %}#}
 {% endblock %}
 
