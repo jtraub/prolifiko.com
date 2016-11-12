@@ -1,13 +1,16 @@
+from django.contrib.auth import get_user
 from django.test import TestCase, Client, override_settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.dispatch import Signal
 from unittest.mock import patch
 
+from app import fixtures
 from app.models import Timezone, Subscription
 from app.views import auth as views
 
 
+@override_settings(CONTINUE_USERS=['continue@test.com'])
 class RegistrationTest(TestCase):
     def setUp(self):
         self.client = Client()
@@ -45,9 +48,9 @@ class RegistrationTest(TestCase):
             'password': 'test',
             'first_name': 'name',
             'timezone': 'Europe/London',
-        }, follow=True)
+        }, follow=False)
 
-        self.assertContains(response, 'check your inbox', status_code=201)
+        self.assertRedirects(response, reverse('welcome'))
 
         user = User.objects.get(email='new@test.com')
         self.assertEqual('new@test.com', user.email)
@@ -79,8 +82,7 @@ class RegistrationTest(TestCase):
         self.assertEquals(['Email address already registered'],
                           response.context['form'].errors['email'])
 
-    @override_settings(CONTINUE_USERS=['continue@test.com'])
-    def test_auto_subscription(self):
+    def test_auto_subscription_and_login(self):
         response = self.client.post(reverse('register'), {
             'email': 'continue@test.com',
             'password': 'test',
@@ -88,10 +90,30 @@ class RegistrationTest(TestCase):
             'timezone': 'Europe/London',
         }, follow=True)
 
-        self.assertEquals(201, response.status_code)
+        self.assertEquals(200, response.status_code)
 
         user = User.objects.get(email='continue@test.com')
 
         subscription = Subscription.objects.filter(user=user).first()
         self.assertIsNotNone(subscription)
         self.assertEquals('auto', subscription.name)
+
+        authenticated_user = get_user(self.client)
+        self.assertTrue(authenticated_user.is_authenticated())
+
+    def test_welcome_fiveday(self):
+        user = fixtures.user('fiveday@test.com', subscribed=False)
+        self.client.login(username=user.username, password='test')
+
+        response = self.client.get(reverse('welcome'))
+
+        print(response.content)
+        self.assertContains(response, 'check your inbox')
+
+    def test_welcome_continue(self):
+        user = fixtures.user('continue@test.com')
+        self.client.login(username=user.username, password='test')
+
+        response = self.client.get(reverse('welcome'))
+
+        self.assertContains(response, 'a quick recap')

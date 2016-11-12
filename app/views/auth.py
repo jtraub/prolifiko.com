@@ -1,13 +1,14 @@
 from django.contrib.auth import authenticate, login as do_login
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
 from app.forms import RegistrationForm, LoginForm
 from app.utils import add_event, get_logger
 from app.signals import registration
-from app.models import Subscription
-
+from app.subscriptions import is_user_subscribed
 
 logger = get_logger(__name__)
 
@@ -67,11 +68,17 @@ def register(request):
 
             registration.send('app.views.auth.register', user=user)
 
-            page = 'registration/continue_registered.html' \
-                if Subscription.objects.get(user=user) else \
-                'registration/check_inbox.html'
+            if is_user_subscribed(user):
+                # Log registered users in so that they can go straight from
+                # the welcome page to creating a goal. Five day challenge users
+                # need to check their inbox first.
+                authenticated_user = authenticate(
+                    username=user.username,
+                    password=form.cleaned_data['password'])
 
-            return render(request, page, status=201)
+                do_login(request, authenticated_user)
+
+            return redirect('welcome')
         else:
             errors = {field: error[0] for field, error in form.errors.items()}
             logger.debug('Registration failed ' + str(errors))
@@ -82,3 +89,10 @@ def register(request):
 
     return render(request, 'registration/register.html', {'form': form},
                   status=status)
+
+
+def welcome(request):
+    if request.user.is_authenticated() and is_user_subscribed(request.user):
+        return render(request, 'registration/continue_registered.html')
+    else:
+        return render(request, 'registration/check_inbox.html')

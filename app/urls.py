@@ -12,6 +12,7 @@ password_reset_kwargs = {
 urlpatterns = [
     url(r'login/$', auth.login, name='login'),
     url(r'register/$', auth.register, name='register'),
+    url(r'welcome/$', auth.welcome, name='welcome'),
 
     url(r'users/(?P<user_id>[^/]+)/deactivate/$',
         account.deactivate, name='deactivate'),
