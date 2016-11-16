@@ -32,9 +32,9 @@
     "moment": "^2.14.1",
     "moment-timezone": "^0.5.5",
     "normalize.css": "^4.2.0",
-    "react": "^15.3.1",
+    "react": "^15.3.2",
     "react-datepicker": "^0.29.0",
-    "react-dom": "^15.3.1"
+    "react-dom": "^15.3.2"
   },
   "devDependencies": {
     "babel-core": "^6.14.0",
@@ -49,12 +49,12 @@
     "eslint": "^3.7.0",
     "eslint-config-airbnb": "^12.0.0",
     "eslint-plugin-babel": "^3.3.0",
-    "eslint-plugin-import": "^2.0.0",
+    "eslint-plugin-import": "^1.16.0",
     "eslint-plugin-jsx-a11y": "^2.2.2",
     "eslint-plugin-react": "^6.3.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
-    "jest": "^15.1.1",
+    "jest": "^16.0.2",
     "lodash.foreach": "^4.5.0",
     "node-sass": "^3.8.0",
     "react-addons-test-utils": "^15.3.2",
