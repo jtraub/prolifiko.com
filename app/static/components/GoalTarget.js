@@ -65,12 +65,6 @@ export default class GoalTarget extends React.Component {
                                 minDate={moment(today).add(1, 'days')}
                                 selected={selected}
                                 onChange={this.onChange.bind(this)}/>
-                    <a className="flatButton custom"
-                       onClick={() => this.setState({showCalendar: false})}>
-                        <div className="flatButton__content">
-                            <h3>Pick a set date</h3>
-                        </div>
-                    </a>
                 </div>
             );
         }

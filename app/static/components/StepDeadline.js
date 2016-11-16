@@ -58,26 +58,17 @@ export default class StepDeadline extends React.Component {
         };
 
         let content;
-        let customDate;
 
         if (this.state.showCalendar) {
-            customDate = true;
             content = (
                 <div>
                     <DatePicker inline
                                 minDate={moment(today).add(1, 'days')}
                                 selected={selected}
                                 onChange={this.onChange.bind(this)}/>
-                    <a className="flatButton custom"
-                       onClick={() => this.setState({showCalendar: false})}>
-                        <div className="flatButton__content">
-                            <h3>Pick a set date</h3>
-                        </div>
-                    </a>
                 </div>
             );
         } else {
-            customDate = false;
             content = (
                 <div className="suggestions">
                     {suggestion(1)}
