@@ -23,7 +23,7 @@ body {
   text-align: center;
 }
 
-h4 {
+h2, h3, h4 {
   -webkit-margin-before: 0;
   -webkit-margin-after: 0;
 }
@@ -66,10 +66,24 @@ ol, ul {
   }
 }
 
+.card {
+    background: white;
+    margin: .5rem 0;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 
+    .card-title {
+        background: $gray;
+        padding: 0.5em;
+    }
+
+    .card-body {
+        padding: .75rem;
+    }
+}
 
 @import 'styles/layout';
 @import 'styles/forms';
 @import 'styles/myprogress';
+@import 'styles/timeline';
 @import 'styles/create';
 @import 'styles/aboutpages';

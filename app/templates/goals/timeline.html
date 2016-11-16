@@ -1,33 +1,36 @@
 {% extends "base.html" %}
 
-{% block heading %}My Progress{% endblock %}
+{% block heading %}Goal Timeline{% endblock %}
 
 {% block content %}
-{% if not in_progress and not goal.complete %}
-<p style="margin-bottom: 1.5em;"><a href="{% url 'new_step' goal_id=goal.id %}"><button>Create your next step</button></a></p>
-{% endif %}
-
-<div class="steps">
-    <div class="step {% if goal.complete %} step--complete{% endif %}">
-        <h3 class="step-heading">My Goal</h3>
-        <p class="step-text">{{ goal.description|safe }}</p>
-    </div>
-
-    {% for step in goal.steps.all|dictsortreversed:"start" %}
-        <div class="step{% if step.complete %} step--complete{% endif %}">
-            <h3 class="step-heading">Step #{{ step.number }}</h3>
-            <p class="step-text">{{ step.description|safe }}</p>
-
-            <div class="step-status">
-                {% if not step.complete %}
-                    <a href="{% url 'complete_step' goal_id=step.goal.id step_id=step.id %}"><button>Track</button></a>
-                {% elif step.comments %}
-                    <hr/>
-                    <h4>My Progress</h4>
-                    <p class="step-progress">{{ step.comments|safe }}</p>
-                {% endif %}
+    <div class="goal-timeline">
+        <div class="card">
+            <div class="card-title">
+                <h2 class="goal-name">{{ goal.name }}</h2>
+            </div>
+            <div class="card-body">
+                <p class="goal-description">{{ goal.description|safe }}</p>
             </div>
         </div>
-    {% endfor %}
-</div>
+
+        {% for step in goal.steps.all|dictsortreversed:"start" %}
+            <div class="card{% if step.complete %} step--complete{% endif %}">
+                <div class="card-body">
+                    <h3>{{ step.name }}</h3>
+
+                    {%  if step.description %}
+                        <p class="step-description">{{ step.description|safe }}</p>
+                    {% endif %}
+
+                    {% if step.complete %}
+                        <hr/>
+                        <p>Completed on {{ step.time_tracked|date }}</p>
+                        <p class="step-comments">{{ step.comments|safe }}</p>
+                    {% else %}
+                        <p>Due by {{ step.deadline|date }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

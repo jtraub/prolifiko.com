@@ -3,38 +3,95 @@
 {% block heading %}My Progress{% endblock %}
 
 {% block content %}
-    {% if active_goal %}
-        <div class="card">
-
-
-            {% with active_goal.steps.last as current_step %}
-                {% if not current_step.complete %}
-                    <h3>My Current Step</h3>
-
-                    <h4>{{ current_step.name }}</h4>
-                    <p>{{ current_step.description }}</p>
-                    <p>{{ current_step.deadline }}</p>
-
-                    <a href="{% url 'complete_step' goal_id=current_step.goal.id step_id=current_step.id %}"><button>Complete this step</button></a>
-                {% else %}
-                    <p>You don't have an active step! Create one now.</p>
-                    <a href="{% url 'new_step' goal_id=active_goal.id %}"><button>Create my next step</button></a>
-                {% endif %}
-            {% endwith %}
+    <div class="my-progress">
+        <div class="goal-switches">
+            <div class="goal-switch-active goal-switch--active">Active</div>
+            <div class="goal-switch-completed">Completed</div>
         </div>
-        <div class="card">
-            <div>
-                <h3>My Current Goal</h3>
-                <h5>{{ active_goal.name }}</h5>
-                <p>{{ active_goal.description }}</p>
-                <p>{{ active_goal.target }}</p>
-                <p><a href="{% url 'goal_progress' goal_id=active_goal.id %}">more >></a></p>
-            </div>
+
+        <div class="goal active-goal">
+            {% if active_goal %}
+                <div class="card">
+                    {% with active_goal.steps.last as current_step %}
+                        <div class="card-title">
+                            <h3>My Current Step</h3>
+                        </div>
+                        {% if not current_step.complete %}
+                            <div class="card-body">
+                                <h3 class="step-name">{{ current_step.name|safe }}</h3>
+                                {% if step.description %}
+                                    <p class="step-description">{{ current_step.description|safe }}</p>
+                                {% endif %}
+                                <p>Due before <span class="step-deadline">{{ current_step.deadline }}</span></p>
+
+                                <a href="{% url 'complete_step' goal_id=current_step.goal.id step_id=current_step.id %}"><button>Complete this step</button></a>
+                            </div>
+                        {% else %}
+                            <div class="card-body">
+                                <p>You don't have an active step!</p>
+                                <p>Achieved your goal?</p>
+                                <a href="{% url 'complete_goal' goal_id=active_goal.id %}"><button>I've achieved my goal!</button></a>
+                                <p>If not, let's create your next step.</p>
+                                <a href="{% url 'new_step' goal_id=active_goal.id %}"><button>Create my next step</button></a>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                <div class="card">
+                    <div class="card-title">
+                        <h3>My Current Goal</h3>
+                    </div>
+
+                    <div class="card-body">
+                        <h3 class="goal-name">{{ active_goal.name|safe }}</h3>
+                        <p class="goal-description">{{ active_goal.description|safe }}</p>
+                        <p>Due on <span class="goal-target">{{ active_goal.target }}</p>
+                        <p><a href="{% url 'goal_progress' goal_id=active_goal.id %}">more >></a></p>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card">
+                    <div class="card-body">
+                        <p>You don't have an active goal!</p>
+                        <button>Create a goal</button>
+                    </div>
+                </div>
+            {% endif %}
         </div>
-    {% else %}
-        <p>You don't have an active goal!</p>
-        <button>Create a goal</button>
-    {% endif %}
+
+        <div class="completed-goals">
+            {% if completed_goals %}
+                {% for goal in completed_goals %}
+                    <div class="card">
+                        <div class="card-title">
+                            <h2 class="goal-name">{{ goal.name }}</h2>
+                        </div>
+                        <div class="card-body">
+                            <p class="goal-description">{{ goal.description|safe }}</p>
+                            <p class="goal-target">{{ active_goal.target }}</p>
+                            <p><a href="{% url 'goal_progress' goal_id=active_goal.id %}">more >></a></p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="goal-name">{{ active_goal.name|safe }}</h2>
+                            <p class="goal-description">{{ active_goal.description|safe }}</p>
+                            <p class="goal-target">{{ active_goal.target }}</p>
+                            <p><a href="{% url 'goal_progress' goal_id=active_goal.id %}">more >></a></p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="card">
+                    <div class="card-body">
+                        <p>You haven't completed a goal yet - get to it!</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
 {#        #}
 {##}
 {#    <h3 class="grouped-goals-heading">My Current Goal</h3>#}

@@ -94,5 +94,33 @@ $(document).ready(function() {
         $('.content').toggleClass('show-menu');
     });
 
+    var activeGoalSwitch = $('.goal-switch-active');
+    var completedGoalSwitch = $('.goal-switch-completed');
+    var activeGoal = $('.active-goal');
+    var completedGoals = $('.completed-goals');
+
+    activeGoalSwitch.on('click', function () {
+        if (activeGoal.is(':visible')) {
+            return;
+        }
+
+        activeGoal.show();
+        completedGoals.hide();
+
+        activeGoalSwitch.toggleClass('goal-switch--active');
+        completedGoalSwitch.toggleClass('goal-switch--active');
+    });
+
+    completedGoalSwitch.on('click', function () {
+        if (completedGoals.is(':visible')) {
+            return;
+        }
+
+        activeGoal.hide();
+        completedGoals.show();
+
+        activeGoalSwitch.toggleClass('goal-switch--active');
+        completedGoalSwitch.toggleClass('goal-switch--active');
+    });
 });
 
