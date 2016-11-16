@@ -38,16 +38,30 @@ class ReceiversTest(TestCase):
         send_email.assert_called_with('n2_new_goal', self.user, self.five_day)
 
     def test_new_goal(self, add_event, send_email):
-        receive_new_goal(self, goal=self.goal)
+        user = fixtures.user('new_goal_test@t.com')
+        goal = fixtures.goal(user)
+        receive_new_goal(self, goal=goal)
 
-        add_event.assert_called_with('goals.new', self.user, {
-            'goal_id': self.goal.id.hex,
+        add_event.assert_called_with('goals.new', user, {
+            'goal_id': goal.id.hex,
             'goal_type': Goal.TYPE_CUSTOM
         })
 
-        send_email.assert_called_with('new_custom_goal',
-                                      self.user,
-                                      self.goal)
+        send_email.assert_called_with('new_custom_goal', user, goal)
+
+    def test_new_goal_only_sends_email_for_first_goal(self,
+                                                      add_event,
+                                                      send_email):
+        second_goal = fixtures.goal(self.user)
+
+        receive_new_goal(self, goal=second_goal)
+
+        add_event.assert_called_with('goals.new', self.user, {
+            'goal_id': second_goal.id.hex,
+            'goal_type': Goal.TYPE_CUSTOM
+        })
+
+        send_email.assert_not_called()
 
     def test_five_day_complete(self, add_event, send_email):
         receive_goal_complete(self, goal=self.five_day)

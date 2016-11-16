@@ -1,4 +1,6 @@
 from django.dispatch import receiver
+
+from app.models import Goal
 from .signals import *
 from .utils import send_email, add_event, get_logger
 
@@ -49,7 +51,8 @@ def receive_new_goal(sender, **kwargs):
     if goal.is_five_day:
         send_email('n2_new_goal', goal.user, goal)
     else:
-        send_email('new_custom_goal', goal.user, goal)
+        if Goal.objects.filter(user=goal.user).count() == 1:
+            send_email('new_custom_goal', goal.user, goal)
 
 
 @receiver(goal_complete)
