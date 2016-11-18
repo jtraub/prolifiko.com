@@ -66,7 +66,7 @@
                         <div class="card-body">
                             <p class="goal-description">{{ goal.description|safe }}</p>
                             <p class="goal-target">{{ active_goal.target }}</p>
-                            <p><a href="{% url 'goal_progress' goal_id=active_goal.id %}">more >></a></p>
+                            <p><a href="{% url 'goal_progress' goal_id=goal.id %}">more >></a></p>
                         </div>
                     </div>
                 {% endfor %}
