@@ -24,15 +24,12 @@
                                 {% endif %}
                                 <p>Due before <span class="step-deadline">{{ current_step.deadline }}</span></p>
 
-                                <a href="{% url 'complete_step' goal_id=current_step.goal.id step_id=current_step.id %}"><button>Complete this step</button></a>
+                                <a href="{% url 'complete_step' goal_id=current_step.goal.id step_id=current_step.id %}"><button>Track this step</button></a>
                             </div>
                         {% else %}
                             <div class="card-body">
-                                <p>You don't have an active step!</p>
-                                <p>Achieved your goal?</p>
-                                <a href="{% url 'complete_goal' goal_id=active_goal.id %}"><button>I've achieved my goal!</button></a>
-                                <p>If not, let's create your next step.</p>
                                 <a href="{% url 'new_step' goal_id=active_goal.id %}"><button>Create my next step</button></a>
+                                <a href="{% url 'complete_goal' goal_id=active_goal.id %}"><button>I've achieved my goal!</button></a>
                             </div>
                         {% endif %}
                     {% endwith %}
@@ -64,19 +61,10 @@
                 {% for goal in completed_goals %}
                     <div class="card">
                         <div class="card-title">
-                            <h2 class="goal-name">{{ goal.name }}</h2>
+                            <h2 class="goal-name">Goal: {{ goal.name }}</h2>
                         </div>
                         <div class="card-body">
                             <p class="goal-description">{{ goal.description|safe }}</p>
-                            <p class="goal-target">{{ active_goal.target }}</p>
-                            <p><a href="{% url 'goal_progress' goal_id=active_goal.id %}">more >></a></p>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-body">
-                            <h2 class="goal-name">{{ active_goal.name|safe }}</h2>
-                            <p class="goal-description">{{ active_goal.description|safe }}</p>
                             <p class="goal-target">{{ active_goal.target }}</p>
                             <p><a href="{% url 'goal_progress' goal_id=active_goal.id %}">more >></a></p>
                         </div>

@@ -6,7 +6,7 @@
     <div class="goal-timeline">
         <div class="card">
             <div class="card-title">
-                <h2 class="goal-name">{{ goal.name }}</h2>
+                <h2 class="goal-name">Goal: {{ goal.name }}</h2>
             </div>
             <div class="card-body">
                 <p class="goal-description">{{ goal.description|safe }}</p>
@@ -16,7 +16,7 @@
         {% for step in goal.steps.all|dictsortreversed:"start" %}
             <div class="card{% if step.complete %} step--complete{% endif %}">
                 <div class="card-body">
-                    <h3>{{ step.name }}</h3>
+                    <h3>Step: {{ step.name }}</h3>
 
                     {%  if step.description %}
                         <p class="step-description">{{ step.description|safe }}</p>
@@ -24,7 +24,7 @@
 
                     {% if step.complete %}
                         <hr/>
-                        <p>Completed on {{ step.time_tracked|date }}</p>
+                        <p>Tracked on {{ step.time_tracked|date }}</p>
                         <p class="step-comments">{{ step.comments|safe }}</p>
                     {% else %}
                         <p>Due by {{ step.deadline|date }}</p>
