@@ -71,7 +71,7 @@ export class CustomGoalDetails extends AbstractDetails {
             ' your writing goal something you can achieve in four weeks or less.';
 
         const namePlaceholder= 'Tip: in 140 characters or less describe your goal. For example,' +
-            ' this could be ‘outline and write chapter 1';
+            ' this could be \'outline and write chapter 1\''.;
 
         const { nameCharsRemaining } = this.state;
         let charLimitColor = 'inherit';
