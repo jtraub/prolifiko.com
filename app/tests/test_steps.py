@@ -1,29 +1,23 @@
-from unittest import skip
 from django.test import TestCase, Client
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
 from django.utils import timezone
 from uuid import uuid4
-from datetime import timedelta, datetime
+from datetime import timedelta
 from unittest.mock import patch
 from django.dispatch import Signal
 import pytz
 from datetime import time
 
 from app import fixtures
-from app.models import Goal, Step, Timezone
-from app.views import steps as views
+from app.models import Step
 
 
 class StepsTest(TestCase):
     fixtures = ['goals']
 
     def setUp(self):
-        self.user = fixtures.user()
-        self.goal = fixtures.goal(self.user)
-
-        self.goal.type = Goal.TYPE_FIVE_DAY
-        self.goal.save()
+        self.user = fixtures.user(subscribed=False)
+        self.goal = fixtures.five_day_challenge(self.user)
 
         self.client = fixtures.client(self.user)
 
@@ -76,10 +70,14 @@ class StepsTest(TestCase):
 
     @patch('app.views.steps.new_step', spec=Signal)
     def test_new_custom(self, new_step_signal):
+        user = fixtures.user('custom_step@t.com')
+        client = fixtures.client(user)
+
+        goal = fixtures.goal(user)
         name = uuid4()
 
-        new_step_url = reverse('new_step', kwargs={'goal_id': self.goal.id})
-        response = self.client.post(new_step_url, data={
+        new_step_url = reverse('new_step', kwargs={'goal_id': goal.id})
+        response = client.post(new_step_url, data={
             'step_name': name,
             'step_description': 'test',
             'step_deadline': '2020-01-01',
@@ -87,11 +85,10 @@ class StepsTest(TestCase):
 
         step = Step.objects.get(name=name)
 
-        self.assertRedirects(response, reverse('start_step', kwargs={
-            'goal_id': self.goal.id, 'step_id': step.id}))
+        self.assertRedirects(response, reverse('myprogress'))
 
         self.assertIsNotNone(step)
-        self.assertEquals(self.goal.id, step.goal.id)
+        self.assertEquals(goal.id, step.goal.id)
         self.assertEquals(step.description, 'test')
 
         tz = pytz.timezone('Europe/London')
@@ -159,7 +156,9 @@ class StepsTest(TestCase):
             'app.views.steps.track', step=step)
 
     @patch('app.views.steps.step_complete', spec=Signal)
-    def test_track_last_step_redirects_to_complete(self, step_complete_signal):
+    def test_track_last_five_day_step_redirects_to_feedback(
+            self, step_complete_signal):
+
         for i in range(5):
             fixtures.step(self.goal)
 
@@ -169,8 +168,7 @@ class StepsTest(TestCase):
 
         response = self.client.post(track_step_url, follow=False)
 
-        self.assertRedirects(response, reverse('complete_goal', kwargs={
-            'goal_id': self.goal.id}))
+        self.assertRedirects(response, reverse('feedback'))
 
     def test_new_to_track_redirect(self):
         step = fixtures.step(self.goal)

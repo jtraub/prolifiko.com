@@ -199,7 +199,7 @@ def complete(request, goal_id):
         if goal.type == Goal.TYPE_FIVE_DAY:
             goal_complete.send('app.views.goals.complete', goal=goal)
 
-            return render(request, 'goals/feedback.html', {'goal': goal})
+            return render(request, 'feedback_five_day.html')
 
         return redirect('new_goal')
 

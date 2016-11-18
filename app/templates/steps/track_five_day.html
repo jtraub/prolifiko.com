@@ -10,7 +10,7 @@
         <p>What progress did you make? Your {{ step.nth }} step was:</p>
     {% endif %}
 
-    <blockquote>{{ step.text|safe }}</blockquote>
+    <blockquote>{{ step.description|safe }}</blockquote>
 
     {% if step.number == 1 %}
         <p>You can track any progress made on this step – even if you didn’t achieve it in full :-)</p>
@@ -32,6 +32,12 @@
 <form action="{% url 'complete_step' goal_id=step.goal.id step_id=step.id %}" method="post">
     {% csrf_token %}
     <div>{{ form.comments }}</div>
-    <div><button type="submit">Track</button></div>
+
+    <section>
+        <p>Tracking your final step means you've finished this kickstart challenge. Congratulations!</p>
+        <p>Click on the button to complete.</p>
+    </section>
+
+    <div><button type="submit">Complete challenge</button></div>
 </form>
 {% endblock %}

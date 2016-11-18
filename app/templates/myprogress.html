@@ -19,7 +19,7 @@
                         {% if not current_step.complete %}
                             <div class="card-body">
                                 <h3 class="step-name">{{ current_step.name|safe }}</h3>
-                                {% if step.description %}
+                                {% if current_step.description %}
                                     <p class="step-description">{{ current_step.description|safe }}</p>
                                 {% endif %}
                                 <p>Due before <span class="step-deadline">{{ current_step.deadline }}</span></p>

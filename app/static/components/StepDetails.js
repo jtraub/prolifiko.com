@@ -3,6 +3,8 @@ import Textarea from './Textarea'
 import AbstractDetails from './AbstractDetails';
 
 export class MidnightStepDetails extends AbstractDetails {
+    static HEADING = 'Set Your Step';
+
     componentWillMount() {
         this.setDataPrefix('step');
 
@@ -90,6 +92,13 @@ export class MidnightStepDetails extends AbstractDetails {
                         value={stepDescription || ''}
                     />
                 </div>
+
+                <section>
+                    <p>
+                        Still struggling? Check out our resources on how to set a first step.
+                        <a href="" target="_blank">Watch the video</a>
+                    </p>
+                </section>
             </div>
         );
     }

@@ -165,7 +165,7 @@ def track(request, step):
             goal.save()
 
             if goal.complete:
-                return redirect('complete_goal', goal_id=goal.id)
+                return redirect('feedback')
 
             # five day challenges should be forced to create a new step
             return redirect('new_step', goal_id=goal.id)

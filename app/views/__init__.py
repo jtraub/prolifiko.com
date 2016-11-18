@@ -23,3 +23,8 @@ def index(request):
 
 def maintenance(request):
     return render(request, 'maintenance.html')
+
+
+def feedback(request):
+    if not is_user_subscribed(request.user):
+        return render(request, 'feedback_five_day.html')

@@ -49,11 +49,13 @@ export default class Scene extends React.Component {
     }
 
     next() {
-        this.setState({pageIndex: this.state.pageIndex + 1});
+        this.setState({pageIndex: this.state.pageIndex + 1}, () =>
+            this.updateHeading());
     }
 
     prev() {
-        this.setState({pageIndex: this.state.pageIndex - 1});
+        this.setState({pageIndex: this.state.pageIndex - 1}, () =>
+            this.updateHeading());
     }
 
     submit() {
@@ -73,10 +75,6 @@ export default class Scene extends React.Component {
     }
 
     componentDidMount() {
-        this.updateHeading();
-    }
-
-    componentDidUpdate() {
         this.updateHeading();
     }
 

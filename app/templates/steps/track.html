@@ -4,6 +4,13 @@
 
 {% block content %}
 <form action="{% url 'complete_step' goal_id=step.goal.id step_id=step.id %}" method="post">
+    <section>
+        <p>What progress did you make? Your step was:</p>
+
+        <h3>{{ step.name|safe }}</h3>
+        <blockquote>{{ step.description|safe }}</blockquote>
+    </section>
+
     {% csrf_token %}
     <div>{{ form.comments }}</div>
     <section>
