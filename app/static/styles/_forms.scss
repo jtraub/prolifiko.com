@@ -55,7 +55,7 @@ form.inline, .form--inline {
     margin-bottom: 0.5em;
   }
 
-  input {
+  input, select {
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 0.5em;
@@ -64,4 +64,8 @@ form.inline, .form--inline {
     border: 1px solid rgba(0, 0, 0, .15);
     border-radius: .25rem;
   }
+}
+
+select {
+    background: white;
 }
