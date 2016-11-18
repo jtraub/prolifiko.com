@@ -8,7 +8,8 @@
 <p>If you want to learn more, check out our resource <a href="http://blog.write-track.co.uk/7stepshabit/">7 steps to finding the perfect writing habit</a><u>. </u></p>
 <p>But now, back to the challenge.</p>
 <p>You set yourself a final step to:</p>
-<p><pre>{{ goal.current_step.text }}</pre></p>
+<p><h3>{{ goal.current_step.name }}</h3></p>
+<p><pre>{{ goal.current_step.description }}</pre></p>
 <p>When you&rsquo;ve completed this step, <a href="{{ BASE_URL }}{% url 'latest_step' goal_id=goal.id %}">click here</a> to track and tell us about your progress.</p>
 <p>We can&rsquo;t wait to hear from you tomorrow. You&rsquo;re so close!</p>
 <p>The finish line might be in sight but don&rsquo;t slow down now. Remember, if you don&rsquo;t track by midnight tomorrow &ndash; you&rsquo;ll lose a life.</p>

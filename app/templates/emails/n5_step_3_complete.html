@@ -10,7 +10,8 @@
 <p>In our next email, you&rsquo;ll learn how to normalise your writing habit so you do it every day without thinking.</p>
 <p>But now, back to the challenge.</p>
 <p>You set yourself a fourth step to:</p>
-<p><pre>{{ goal.current_step.text }}</pre></p>
+<p><h3>{{ goal.current_step.name }}</h3></p>
+<p><pre>{{ goal.current_step.description }}</pre></p>
 <p>When you&rsquo;ve completed this step, <a href="{{ BASE_URL }}{% url 'latest_step' goal_id=goal.id %}">click here</a> to track and tell us about your progress.</p>
 <p>Remember, if you don&rsquo;t track by midnight tomorrow &ndash; you&rsquo;ll lose a life.</p>
 <p>Good luck for the final challenge, you&rsquo;re nearly there.</p>
