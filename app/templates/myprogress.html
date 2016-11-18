@@ -49,8 +49,13 @@
             {% else %}
                 <div class="card">
                     <div class="card-body">
-                        <p>You don't have an active goal!</p>
-                        <button>Create a goal</button>
+                        {% if user_is_subscribed %}
+                            <p>You don't have an active goal!</p>
+                            <a href="{% url 'new_goal' %}"><button>Create a goal</button></a>
+                        {% else %}
+                            <p>You've completed the five day challenge!</p>
+                            <p>We'll be in touch with more challenges soon.</p>
+                        {% endif %}
                     </div>
                 </div>
             {% endif %}

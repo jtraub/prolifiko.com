@@ -17,7 +17,7 @@ def index(request):
     return render(request, 'myprogress.html', {
         'active_goal': active_goal,
         'completed_goals': completed_goals,
-        'is_subscribed': is_user_subscribed(request.user)
+        'user_is_subscribed': is_user_subscribed(request.user)
     })
 
 

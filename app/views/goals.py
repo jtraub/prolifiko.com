@@ -111,7 +111,7 @@ def new(request):
         if current_goal:
             logger.debug('Redirecting free user to existing goal goal=%s' %
                          current_goal.id)
-            return redirect('goal_progress', goal_id=current_goal.id)
+            return redirect('myprogress')
 
     if request.method == 'GET':
         logger.debug('Rendering new goal form is_subscribed=%s' %

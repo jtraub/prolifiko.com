@@ -4,6 +4,7 @@
 
 {% block content %}
     <div class="goal-timeline">
+        <a href="{% url 'myprogress' %}"><button>Back to My Progress</button></a>
         <div class="card">
             <div class="card-title">
                 <h2 class="goal-name">Goal: {{ goal.name }}</h2>
