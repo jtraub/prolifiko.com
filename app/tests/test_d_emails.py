@@ -1,14 +1,12 @@
 from datetime import datetime, timedelta
 from unittest.mock import patch, Mock
-from django.contrib.auth.models import User
-from django.test import TestCase
-from django.utils import timezone
+from django.test import TestCase, override_settings
 import pytz
 from app import fixtures
-from app.models import Goal, Subscription
 from app.tasks import send_d_emails_at_midnight
 
 
+@override_settings(DEBUG=True)
 @patch('django.core.mail.utils.socket')
 class DEmailTest(TestCase):
     fmt = '%Y-%m-%d %H:%M:%S %Z%z'

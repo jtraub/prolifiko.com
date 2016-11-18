@@ -16,10 +16,11 @@ class UtilsTest(TestCase):
     def setUp(self):
         self.user = User.objects.create(email='user@real.com')
 
+    @patch('app.utils.email_signal')
     @patch('app.utils.loader')
     @patch('django.core.mail.utils.socket')
     @override_settings(EMAIL_META={'test': {'subject': 'Test Subject'}})
-    def test_send_email(self, socket, loader):
+    def test_send_email(self, socket, loader, email_signal):
         socket.getfqdn = Mock(return_value='test')
 
         goal = Mock(spec=Goal)
@@ -57,6 +58,9 @@ class UtilsTest(TestCase):
         email = emails.first()
         self.assertEquals('test', email.name)
 
+        email_signal.send.assert_called_with('app.utils.send_email',
+                                             email=email)
+
     def test_send_email_raises_on_inactive_user(self):
         user = MagicMock(spec=User)
         user.is_active = False
@@ -68,23 +72,9 @@ class UtilsTest(TestCase):
     @override_settings(DEBUG=True)
     @patch('app.utils.keen')
     def test_add_event_debug(self, keen):
-        collection = 'test'
-        body = {'foo': 'bar'}
-
-        utils.add_event(collection, self.user, body)
-
-        expected = {
-            'collection': collection,
-            'body': {
-                'foo': 'bar',
-                'user_id': self.user.id,
-                'email': self.user.email
-            }
-        }
+        utils.add_event('test', self.user, {'foo': 'bar'})
 
         self.assertFalse(keen.add_event.called)
-        self.assertEquals(len(utils.events), 1)
-        self.assertEquals(utils.events[0], expected)
 
     @override_settings(DEBUG=False)
     @patch('app.utils.keen')

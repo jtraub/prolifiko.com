@@ -12,20 +12,27 @@ from app import fixtures
 @patch('app.receivers.add_event', spec=add_event)
 class ReceiversTest(TestCase):
     def setUp(self):
-        self.user = User.objects.get(username='test')
+        self.user = fixtures.user('receivers@t.com', subscribed=False)
         self.five_day = fixtures.five_day_challenge(self.user)
         self.five_day_step = fixtures.step(self.five_day)
         self.goal = fixtures.goal(self.user)
         self.step = fixtures.step(self.goal)
 
     def test_registration(self, add_event, send_email):
-        user = User.objects.first()
+        receive_registration(self, user=self.user)
+
+        add_event.assert_called_with('register', self.user, {
+            'timezone': 'Europe/London'
+        })
+
+        send_email.assert_called_with('n1_registration', self.user)
+
+    def test_registration_subscribed(self, add_event, send_email):
+        user = fixtures.user('subscribed@t.com')
 
         receive_registration(self, user=user)
 
-        add_event.assert_called_with('register', user)
-
-        send_email.assert_called_with('n1_registration', user)
+        add_event.assert_called_with('subscribe', user)
 
     def test_new_five_day(self, add_event, send_email):
         receive_new_goal(self, goal=self.five_day)

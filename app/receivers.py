@@ -34,18 +34,7 @@ def log_signal(func):
 def receive_registration(sender, **kwargs):
     user = kwargs['user']
 
-    add_event('register', user, {
-        'subscribed': is_user_subscribed(user),
-        'timezone': Timezone.objects.get(user=user).name
-    })
-
     send_email('n1_registration', user)
-
-
-@receiver(registration)
-@log_signal
-def receive_registration(sender, **kwargs):
-    user = kwargs['user']
 
     add_event('register', user, {
         'timezone': Timezone.objects.get(user=user).name

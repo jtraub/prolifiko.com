@@ -25,12 +25,12 @@ class GoalsTest(fixtures.TestCase):
 
     def test_new_form_redirects_to_existing_five_day_challenge(self):
         user = fixtures.user(subscribed=False)
-        fixtures.five_day_challenge(user)
+        goal = fixtures.five_day_challenge(user)
+        fixtures.step(goal)
 
         response = fixtures.client(user).get(reverse('new_goal'), follow=True)
 
-        goal = Goal.objects.get(user=user)
-        myprogress_url = reverse('goal_progress', kwargs={'goal_id': goal.id})
+        myprogress_url = reverse('myprogress')
         self.assertEquals(response.redirect_chain[0], (myprogress_url, 302))
 
     @patch('app.views.goals.new_goal', spec=Signal)

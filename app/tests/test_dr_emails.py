@@ -1,15 +1,14 @@
 from datetime import datetime, timedelta
 from unittest.mock import patch, Mock
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.test import TestCase, override_settings
 import pytz
 
 from app.models import Subscription
 from app.tasks import send_dr_emails
 
-import logging
 
-
+@override_settings(DEBUG=True)
 @patch('django.core.mail.utils.socket')
 class DrEmailTest(TestCase):
     def test(self, socket):
