@@ -24,7 +24,6 @@ pip install -r requirements.common.txt
 python manage.py migrate --noinput
 
 # Build front end
-rm -rf node_modules
 npm install
 npm rebuild node-sass
 npm run build
