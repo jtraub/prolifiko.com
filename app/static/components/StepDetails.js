@@ -96,7 +96,7 @@ export class MidnightStepDetails extends AbstractDetails {
                 <section>
                     <p>
                         Still struggling? Check out our resources on how to set a first step.
-                        <a href="" target="_blank">Watch the video</a>
+                        <a href="http://blog.write-track.co.uk/how-to-set-your-first-step/" target="_blank">Watch the video</a>
                     </p>
                 </section>
             </div>

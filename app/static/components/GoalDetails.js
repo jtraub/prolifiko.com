@@ -42,7 +42,7 @@ export class FiveDayChallengeDetails extends AbstractDetails {
 
                 <section>
                     <p>
-                        Still struggling? Check out our resources on
+                        Still struggling? Check out our resources on&nbsp;
                         <a href="http://blog.write-track.co.uk/how-to-set-a-writing-goal/" target="_blank">
                             how to set a goal.
                         </a>
