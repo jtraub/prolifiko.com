@@ -98,7 +98,7 @@ def conversion(request):
     logger.info('Running conversion metric start=%s end=%s' % (start, end))
 
     users = []
-    for user in data.real_users(start, end):
+    for user in data.five_day_users(start, end):
         if start >= user.date_joined or end <= user.date_joined:
             continue
 

@@ -7,7 +7,7 @@ from app.models import Email, Goal
 from datetime import date
 
 
-def real_users(start=date(2016, 9, 11), end=date(2017, 1, 1)):
+def five_day_users(start=date(2016, 9, 11), end=date(2017, 1, 1)):
     email_domains = reduce(operator.or_, (
         Q(email__endswith=domain)
         for domain in settings.TEST_EMAIL_DOMAINS))
@@ -23,7 +23,7 @@ def real_users(start=date(2016, 9, 11), end=date(2017, 1, 1)):
 
 def active_users():
     # Have not deactivated
-    test_users = real_users() \
+    test_users = five_day_users() \
         .filter(is_active=True)
 
     # Have an active goal

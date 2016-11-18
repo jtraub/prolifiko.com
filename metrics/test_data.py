@@ -23,7 +23,7 @@ class DataTest(TestCase):
         User.objects.create(email='staff@real.com', username='staff',
                             is_staff=True)
 
-        real_users = [user.email for user in data.real_users()]
+        real_users = [user.email for user in data.five_day_users()]
 
         for email in emails:
             self.assertNotIn(email, real_users)

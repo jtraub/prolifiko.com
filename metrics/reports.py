@@ -1,6 +1,6 @@
 from django.utils.timezone import localtime, is_aware
 from app.models import Goal, Email
-from metrics.data import real_users
+from metrics.data import five_day_users
 
 
 def format_date(date):
@@ -23,7 +23,7 @@ def events(writer):
 
         return ''
 
-    for user in real_users():
+    for user in five_day_users():
         emails = list(Email.objects.filter(recipient=user))
 
         row = [
@@ -74,7 +74,7 @@ def content(writer):
         'DR1', 'DR2', 'DR3', 'D1', 'D2', 'D3'
     ])
 
-    for user in real_users():
+    for user in five_day_users():
         row = [
             user.email,
         ]
