@@ -74,6 +74,7 @@ if (timezoneInput) {
 $(document).ready(function() {
 
     $('.timezone-help-trigger').click(function () {
+        $(this).hide();
         $('.timezone-help').show();
     });
 
