@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block heading %}You’re on your way!{% endblock %}
+
+{% block content %}
+<section>
+    <p>Now, check your inbox.</p>
+
+    <p>We've just sent you an email summary of your goal, step and deadline.</p>
+
+    <p>The clock is now ticking.</p>
+
+    <p>Make sure you check in with us and track when you’ve completed your step.</p>
+
+    <p>Good luck with your writing – we’re rooting for you!</p>
+</section>
+
+<p><a href="{% url 'myprogress' %}"><button>Go to My Progress</button></a></p>
+{% endblock %}

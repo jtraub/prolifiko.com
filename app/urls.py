@@ -38,6 +38,8 @@ urlpatterns = [
 
     url(r'goals/(?P<goal_id>[^/]+)/$',
         goals.timeline, name='goal_progress'),
+    url(r'goals/(?P<goal_id>[^/]+)/start/$',
+        goals.start, name='start_goal'),
     url(r'goals/(?P<goal_id>[^/]+)/complete/$',
         goals.complete, name='complete_goal'),
 

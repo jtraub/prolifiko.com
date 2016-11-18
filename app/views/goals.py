@@ -154,7 +154,7 @@ def new(request):
     if goal.type == Goal.TYPE_FIVE_DAY:
         return redirect('start_step', goal_id=goal.id, step_id=first_step.id)
     else:
-        return redirect('myprogress')
+        return redirect('start_goal', goal_id=goal.id)
 
 
 @login_required
@@ -204,3 +204,14 @@ def complete(request, goal_id):
         return redirect('new_goal')
 
     return render(request, 'goals/complete.html', {'goal': goal})
+
+
+@login_required
+@is_active
+def start(request, goal_id):
+    try:
+        goal = Goal.objects.get(pk=goal_id)
+    except Goal.DoesNotExist:
+        raise Http404('Goal does not exist')
+
+    return render(request, 'goals/start.html', {'goal': goal})
