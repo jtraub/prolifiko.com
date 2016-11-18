@@ -1,6 +1,7 @@
 from django.dispatch import receiver
 
-from app.models import Goal
+from app.models import Goal, Subscription, Timezone
+from app.subscriptions import is_user_subscribed
 from .signals import *
 from .utils import send_email, add_event, get_logger
 
@@ -33,9 +34,25 @@ def log_signal(func):
 def receive_registration(sender, **kwargs):
     user = kwargs['user']
 
-    add_event('register', user)
+    add_event('register', user, {
+        'subscribed': is_user_subscribed(user),
+        'timezone': Timezone.objects.get(user=user).name
+    })
 
     send_email('n1_registration', user)
+
+
+@receiver(registration)
+@log_signal
+def receive_registration(sender, **kwargs):
+    user = kwargs['user']
+
+    add_event('register', user, {
+        'timezone': Timezone.objects.get(user=user).name
+    })
+
+    if is_user_subscribed(user):
+        add_event('subscribe', user)
 
 
 @receiver(new_goal)
@@ -101,4 +118,14 @@ def receive_step_complete(sender, **kwargs):
         'goal_type': step.goal.type,
         'step_id': step.id.hex,
         'step_num': step.number
+    })
+
+
+@receiver(email)
+@log_signal
+def receive_email(sender, **kwargs):
+    email_sent = kwargs['email']
+
+    add_event('email', email_sent.recipient, {
+        'email_name': email_sent.name
     })

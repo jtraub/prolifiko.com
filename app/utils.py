@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.template import loader
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
@@ -10,6 +11,7 @@ from html2text import html2text
 from typing import Dict
 
 from .models import Email, Goal
+from .signals import email
 
 events = []
 
@@ -71,7 +73,12 @@ def send_email(name: str, user: User, goal: Goal=None):
 
     msg.send()
 
-    return Email.objects.create(name=name, recipient=user)
+    with transaction.atomic():
+        result = Email.objects.create(name=name, recipient=user)
+
+        email.send('app.utils.send_email', email=result)
+
+    return result
 
 
 def add_event(collection, user: User, body: Dict=None):
