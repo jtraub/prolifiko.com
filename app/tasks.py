@@ -75,6 +75,7 @@ def send_d_emails_at_midnight(now=None):
     emails_sent = []
 
     late_steps = Step.objects.filter(goal__user__is_active=True,
+                                     goal__type=Goal.TYPE_FIVE_DAY,
                                      goal__deleted=False,
                                      goal__lives__gt=0,
                                      goal__complete=False,
@@ -84,9 +85,6 @@ def send_d_emails_at_midnight(now=None):
     for step in late_steps:
         goal = step.goal
         user = goal.user
-
-        if is_user_subscribed(user):
-            continue
 
         # 3 lives = d1
         # 2 lives = d2

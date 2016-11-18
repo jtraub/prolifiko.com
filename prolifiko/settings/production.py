@@ -5,6 +5,7 @@ from .base import *
 
 
 DEBUG = False
+LOGGING['loggers']['prolifiko']['level'] = 'INFO'
 
 LOCAL = 'LOCAL' in os.environ
 

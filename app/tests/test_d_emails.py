@@ -26,15 +26,15 @@ class DEmailTest(TestCase):
         start_nyc = nyc_tz.localize(datetime(2000, 1, 1, 19))
 
         uk_user = fixtures.user('uk@d.com', 'Europe/London', subscribed=False)
-        uk_goal = fixtures.goal(uk_user, start=start_uk)
+        uk_goal = fixtures.five_day_challenge(uk_user, start=start_uk)
         fixtures.step(uk_goal, start=start_uk)
 
         cali_user = fixtures.user('cali@d.com', 'US/Pacific', subscribed=False)
-        cali_goal = fixtures.goal(cali_user, start=start_cali)
+        cali_goal = fixtures.five_day_challenge(cali_user, start=start_cali)
         fixtures.step(cali_goal, start=start_cali)
 
         nyc_user = fixtures.user('nyc@d.com', 'US/Eastern', subscribed=False)
-        nyc_goal = fixtures.goal(nyc_user, start=start_nyc)
+        nyc_goal = fixtures.five_day_challenge(nyc_user, start=start_nyc)
         fixtures.step(nyc_goal, start=start_nyc)
 
         # Add a subscribed user to check they don't get any emails
