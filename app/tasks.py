@@ -31,8 +31,8 @@ def send_dr_emails(now=None):
         else:
             after = datetime(1970, 1, 1).replace(tzinfo=pytz.utc)
 
-        logger.debug('Looking for users where %s >= date joined > %s' %
-                     (before, after))
+        logger.info('Looking for users where %s >= date joined > %s' %
+                    (before, after))
 
         return User.objects \
             .annotate(goal_count=Count('goal')) \
@@ -69,10 +69,14 @@ def send_dr_emails(now=None):
 
 @shared_task
 def send_d_emails_at_midnight(now=None):
+    logger.info('Sending D email')
+
     if now is None:
         now = timezone.now()
 
     emails_sent = []
+
+    logger.info('Looking for late steps where deadline <= %s' % now)
 
     late_steps = Step.objects.filter(goal__user__is_active=True,
                                      goal__type=Goal.TYPE_FIVE_DAY,
