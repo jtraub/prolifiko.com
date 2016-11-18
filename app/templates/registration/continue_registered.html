@@ -3,15 +3,15 @@
 {% block heading %}Welcome Back{% endblock %}
 
 {% block content %}
-    <p>Thanks for joining the test, we&rsquo;re so excited to have you on board!</p>
-    <p>This product is all about helping you continue your writing, over 5 days – or longer.</p>
-    <p>Because you&rsquo;ve done the 5-day challenge the process of goal and step-setting should
-        be familiar.</p>
-    <p>But this time, you get to pick your own deadlines – that&rsquo;s the big difference.</p>
-    <p>You might be feeling a bit rusty on goals, steps, tracking and all that jazz so here&rsquo;s
-        a quick recap. <a href="https://youtu.be/NOpQTsyde8o" target="_blank">Watch the video</a></p>
-    <p>Ready to continue? Let&rsquo;s go.</p>
-    <a href="{% url 'new_goal' %}">
-        <button>Next</button>
-    </a>
+    <section>
+        <p>Thanks for joining the test, we&rsquo;re so excited to have you on board!</p>
+        <p>This product is all about helping you continue your writing, over 5 days – or longer.</p>
+        <p>Because you&rsquo;ve done the 5-day challenge the process of goal and step-setting should
+            be familiar.</p>
+        <p>But this time, you get to pick your own deadlines – that&rsquo;s the big difference.</p>
+        <p>You might be feeling a bit rusty on goals, steps, tracking and all that jazz so here&rsquo;s
+            a quick recap. <a href="https://youtu.be/NOpQTsyde8o" target="_blank">Watch the video</a></p>
+        <p>Ready to continue? Let&rsquo;s go.</p>
+        <a href="{% url 'new_goal' %}"><button>Next</button></a>
+    </section>
 {% endblock %}
