@@ -103,13 +103,16 @@ class StepsTest(TestCase):
         new_step_signal.send.assert_called_with(
             'app.views.steps.new', step=step)
 
-    def test_start_form(self):
-        step = fixtures.step(self.goal)
+    def test_start_five_day(self):
+        goal = fixtures.five_day_challenge(self.user)
+        step = fixtures.step(goal)
 
         response = self.client.get(reverse('start_step', kwargs={
                 'goal_id': step.goal.id, 'step_id': step.id}))
 
-        self.assertEquals(200, response.status_code)
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.templates[0].name,
+                          'steps/start_five_day.html')
 
     def test_track_form(self):
         step = fixtures.step(self.goal)

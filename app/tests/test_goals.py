@@ -98,7 +98,8 @@ class GoalsTest(fixtures.TestCase):
 
         self.assertIsNotNone(first_step)
 
-        self.assertRedirects(response, reverse('myprogress'))
+        self.assertRedirects(response, reverse('start_goal',
+                                               kwargs={'goal_id': goal.id}))
 
         self.assertIsNotNone(goal)
         self.assertAlmostEquals(timezone.now(), goal.start,

@@ -133,7 +133,7 @@ def load_step(view):
 @is_active
 @load_step
 def start(request, step):
-    return render(request, 'steps/start.html', {
+    return render(request, 'steps/start_five_day.html', {
         'step': step
     })
 
