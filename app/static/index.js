@@ -73,21 +73,9 @@ if (timezoneInput) {
 
 $(document).ready(function() {
 
-    $('.dash-goal .goal-name').on('click', function () {
-        $(this).siblings('.goal-description').toggle();
+    $('.timezone-help-trigger').click(function () {
+        $('.timezone-help').show();
     });
-
-    $('.dash-goal--complete .goal-name').on('click', function () {
-        $(this).siblings('.steps').toggle();
-    });
-
-    $('.step').on('click', function () {
-        $(this).children('.step-text').toggle();
-    });
-
-    $('.step button').on('click', function(event) {
-        event.stopPropagation();
-    })
 
     $('.burger').click(function () {
         $('.menu').toggleClass('show');
@@ -99,7 +87,7 @@ $(document).ready(function() {
     var activeGoal = $('.active-goal');
     var completedGoals = $('.completed-goals');
 
-    activeGoalSwitch.on('click', function () {
+    activeGoalSwitch.click(function () {
         if (activeGoal.is(':visible')) {
             return;
         }
@@ -111,7 +99,7 @@ $(document).ready(function() {
         completedGoalSwitch.toggleClass('goal-switch--active');
     });
 
-    completedGoalSwitch.on('click', function () {
+    completedGoalSwitch.click(function () {
         if (completedGoals.is(':visible')) {
             return;
         }
