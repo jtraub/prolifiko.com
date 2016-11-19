@@ -214,6 +214,7 @@ class Subscription(models.Model):
 
     name = models.CharField(max_length=16, choices=((name, name) for name in (
         'test',
+        'auto',
     )))
 
     def __str__(self):
