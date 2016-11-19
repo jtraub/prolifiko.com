@@ -78,7 +78,11 @@
             {% else %}
                 <div class="card">
                     <div class="card-body">
-                        <p>You haven't completed a goal yet - get to it!</p>
+                        {% if user_is_subscribed %}
+                            <p>You haven't completed a goal yet - keep writing!</p>
+                        {% else %}
+                            <p>You haven't completed a goal yet - keep writing to win the 5-day challenge!</p>
+                        {% endif %}
                     </div>
                 </div>
             {% endif %}

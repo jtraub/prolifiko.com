@@ -33,11 +33,13 @@
     {% csrf_token %}
     <div>{{ form.comments }}</div>
 
-    <section>
-        <p>Tracking your final step means you've finished this kickstart challenge. Congratulations!</p>
-        <p>Click on the button to complete.</p>
-    </section>
+    {% if step.number == 5 %}
+        <section>
+            <p>Tracking your final step means you've finished this kickstart challenge. Congratulations!</p>
+            <p>Click on the button to complete.</p>
+        </section>
+    {% endif %}
 
-    <div><button type="submit">Complete challenge</button></div>
+    <div><button type="submit">{% if step.number == 5 %}Complete challenge{% else %}Track{% endif %}</button></div>
 </form>
 {% endblock %}

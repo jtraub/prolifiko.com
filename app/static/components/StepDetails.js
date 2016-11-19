@@ -23,7 +23,7 @@ export class MidnightStepDetails extends AbstractDetails {
         const stepDescription = this.getDescription();
 
         const { stepNumber } = this.props;
-        let intro;
+        let intro, tip;
         let placeholder = 'Tip: Don’t think about the project as a whole. Just think ' +
             'about the one thing you can do next to progress your writing.';
 
@@ -31,6 +31,15 @@ export class MidnightStepDetails extends AbstractDetails {
             intro = (
                 <section>
                     <p>What's the first step you can take to achieve your 5-day writing goal?</p>
+                </section>
+            );
+
+            tip = (
+                <section>
+                    <p>
+                        Still struggling? Check out our resources on&nbsp;
+                        <a href="http://blog.write-track.co.uk/how-to-set-your-first-step/" target="_blank">how to set a first step</a>.
+                    </p>
                 </section>
             );
         } else if (stepNumber === 2) {
@@ -93,12 +102,7 @@ export class MidnightStepDetails extends AbstractDetails {
                     />
                 </div>
 
-                <section>
-                    <p>
-                        Still struggling? Check out our resources on how to set a first step.
-                        <a href="http://blog.write-track.co.uk/how-to-set-your-first-step/" target="_blank">Watch the video</a>
-                    </p>
-                </section>
+                {tip}
             </div>
         );
     }
