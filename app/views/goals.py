@@ -179,29 +179,26 @@ def timeline(request, goal_id):
 @login_required
 @is_active
 def complete(request, goal_id):
+    if request.method != 'POST':
+        raise HttpResponseNotAllowed(['GET'])
+
     try:
         goal = Goal.objects.get(pk=goal_id)
     except Goal.DoesNotExist:
         raise Http404('Goal does not exist')
 
-    if request.method == 'POST':
-        logger.info('Goal complete user=%s' % goal.user.email)
+    logger.info('Goal complete user=%s' % goal.user.email)
 
-        goal.complete = True
+    goal.complete = True
 
-        for step in goal.steps.all():
-            if not step.complete:
-                step.complete = True
-                step.save()
+    for step in goal.steps.all():
+        if not step.complete:
+            step.complete = True
+            step.save()
 
-        goal.save()
+    goal.save()
 
-        if goal.type == Goal.TYPE_FIVE_DAY:
-            goal_complete.send('app.views.goals.complete', goal=goal)
-
-            return render(request, 'feedback_five_day.html')
-
-        return redirect('new_goal')
+    goal_complete.send('app.views.goals.complete', goal=goal)
 
     return render(request, 'goals/complete.html', {'goal': goal})
 

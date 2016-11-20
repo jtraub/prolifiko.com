@@ -8,7 +8,7 @@ import pytz
 
 from app.models import Step, Goal, Timezone
 from app.forms import NewStepForm, TrackStepForm
-from app.signals import new_step, step_complete
+from app.signals import new_step, step_complete, goal_complete
 from app.utils import get_logger, is_active, parse_date
 
 logger = get_logger(__name__)
@@ -162,8 +162,16 @@ def track(request, step):
             if goal.steps.count() == 5:
                 goal.complete = True
 
+                for step in [s for s in goal.steps.all() if not s.complete]:
+                    step.complete = True
+                    step.save()
+
+                goal_complete.send('app.views.steps.track', goal=goal)
+
             goal.save()
 
+            # five day challenges should be shown the feedback page when
+            # they've finished
             if goal.complete:
                 return redirect('feedback')
 

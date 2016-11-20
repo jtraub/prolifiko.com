@@ -124,18 +124,15 @@ class GoalsTest(fixtures.TestCase):
                                          step=first_step)
 
     @patch('app.views.goals.goal_complete', spec=Signal)
-    def test_complete(self, goal_complete):
+    def test_complete_custom_goal(self, goal_complete):
         goal = fixtures.goal(self.user)
-        goal.type = Goal.TYPE_FIVE_DAY
-        goal.save()
 
-        response = self.client.post(reverse('complete_goal',
-                                            kwargs={'goal_id': goal.id}))
+        url = reverse('complete_goal', kwargs={'goal_id': goal.id})
 
-        self.assertContains(response, 'feedback')
+        response = self.client.post(url, follow=True)
+        self.assertContains(response, 'you\'ve achieved your writing goal')
 
         goal.refresh_from_db()
-
         self.assertTrue(goal.complete)
 
         goal_complete.send.assert_called_with(

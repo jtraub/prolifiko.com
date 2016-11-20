@@ -158,9 +158,10 @@ class StepsTest(TestCase):
         step_complete_signal.send.assert_called_with(
             'app.views.steps.track', step=step)
 
+    @patch('app.views.steps.goal_complete', spec=Signal)
     @patch('app.views.steps.step_complete', spec=Signal)
-    def test_track_last_five_day_step_redirects_to_feedback(
-            self, step_complete_signal):
+    def test_track_last_five_day_step(
+            self, step_complete_signal, goal_complete_signal):
 
         for i in range(5):
             fixtures.step(self.goal)
@@ -170,8 +171,12 @@ class StepsTest(TestCase):
             'step_id': self.goal.current_step.id})
 
         response = self.client.post(track_step_url, follow=False)
-
         self.assertRedirects(response, reverse('feedback'))
+
+        self.goal.refresh_from_db()
+        self.assertTrue(self.goal.complete)
+        goal_complete_signal.send.assert_called_with(
+            'app.views.steps.track', goal=self.goal)
 
     def test_new_to_track_redirect(self):
         step = fixtures.step(self.goal)

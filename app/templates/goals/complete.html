@@ -3,26 +3,11 @@
 {% block heading %}Congratulations!{% endblock %}
 
 {% block content %}
-    {% if goal.type == Goal.TYPE_FIVE_DAY %}
-        <section>
-            <p>Tracking your final step means you’ve finished this kickstart challenge. Amazing!</p>
+    <section>
+        <p>Wow – you've achieved your writing goal! Treat yourself to a victory dance.</p>
 
-            <p>Click on the button to complete.</p>
-        </section>
+        <p>Are you on a roll? Set another goal now.</p>
 
-    {% else %}
-        <section>
-            <p>Wow – you've achieved your writing goal! Treat yourself to a victory dance.</p>
-
-            <p>Are you on a roll? Set another goal now.</p>
-
-        </section>
-
-        <form action="{% url 'complete_goal' goal_id=goal.id %}" method="post">
-            {% csrf_token %}
-            <p>
-                <button type="submit">Next</button>
-            </p>
-        </form>
-    {% endif %}
+        <p><a href="{% url 'new_goal' %}"><button>Set my next goal</button></a></p>
+    </section>
 {% endblock %}
