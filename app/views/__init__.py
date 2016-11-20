@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+
 from app.models import Goal
 from app.subscriptions import is_user_subscribed
 from django.shortcuts import redirect, render

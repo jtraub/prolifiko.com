@@ -190,7 +190,7 @@ EMAIL_META = {
         'subject': 'You’ve completed the toughest step – well done!',
     },
     'n4_step_2_complete': {
-        'subject': 'Step 2 done - now set your next step',
+        'subject': 'Step 2 done - don\'t stop now',
     },
     'n5_step_3_complete': {
         'subject': 'Step 3 done - 2 steps remain',
