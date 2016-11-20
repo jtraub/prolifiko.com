@@ -6,7 +6,7 @@
 <form action="{% url 'register' %}" method="post" class="inline">
     {% csrf_token %}
     {{ form.as_p }}
-    <p><a class="timezone-help-trigger">Why do you need this?</a></p>
+    <p><a class="timezone-help-trigger">Why do we need this?</a></p>
     <section class="timezone-help" style="display: none">
         <p>The only reason we need to know where in the world you are is so we can set you the right deadline and send you friendly nudges to write.</p>
     </section>
