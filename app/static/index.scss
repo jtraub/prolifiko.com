@@ -30,6 +30,8 @@ h2, h3, h4 {
 
 a {
   color: $text-secondary;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 section {
