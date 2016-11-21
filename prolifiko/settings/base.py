@@ -263,5 +263,6 @@ TEST_EMAIL_DOMAINS = [
 ]
 
 CONTINUE_USERS = [
-    'continue@test.com'
+    'continue@test.com',
+    'beprolifiko@gmail.com',
 ]
