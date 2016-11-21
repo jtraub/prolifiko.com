@@ -18,9 +18,7 @@ export default class StepDeadline extends React.Component {
     };
 
     state = {
-        showCalendar: false,
-        today: moment(moment().format('YYYY-MM-DD')),
-        selected: moment(this.props.data.stepDeadline),
+        showCalendar: false
     };
 
     onChange(date) {
@@ -35,28 +33,35 @@ export default class StepDeadline extends React.Component {
         }
     }
 
-    renderSuggestion(days) {
-        const { today, selected } = this.state;
-
-        const target = moment(today).add({days});
-
-        let className = `suggestion suggestion--${days} flatButton`;
-
-        if (selected && selected.isSame(target)) {
-            className += ' flatButton--selected';
-        }
-
-        return (
-            <a className={className} onClick={() => this.onChange(target)}>
-                <div className="flatButton__content">
-                    <h3>In {days} Day{days > 1 ? 's' : null}</h3>
-                    <h5>{target.format('ddd MMM Do')}</h5>
-                </div>
-            </a>
-        );
-    };
 
     render() {
+        let selected;
+
+        if (this.props.data && this.props.data.stepDeadline) {
+            selected = moment(this.props.data.stepDeadline);
+        }
+
+        const today = moment(moment().format('YYYY-MM-DD'));
+
+        const suggestion = days => {
+            const target = moment(today).add({days});
+
+            let className = `suggestion suggestion--${days} flatButton`;
+
+            if (selected && selected.isSame(target)) {
+                className += ' flatButton--selected';
+            }
+
+            return (
+                <a className={className} onClick={() => this.onChange(target)}>
+                    <div className="flatButton__content">
+                        <h3>{days} Day{days > 1 ? 's' : null}</h3>
+                        <h5>{target.format('ddd MMM Do')}</h5>
+                    </div>
+                </a>
+            );
+        };
+
         let content;
         let intro;
 
@@ -70,8 +75,8 @@ export default class StepDeadline extends React.Component {
             content = (
                 <div>
                     <DatePicker inline
-                                minDate={moment(this.state.today).add(1, 'days')}
-                                selected={this.state.selected}
+                                minDate={moment(today).add(1, 'days')}
+                                selected={selected}
                                 onChange={this.onChange.bind(this)}/>
                 </div>
             );
@@ -80,10 +85,10 @@ export default class StepDeadline extends React.Component {
         } else {
             content = (
                 <div className="suggestions">
-                    {this.renderSuggestion(1)}
-                    {this.renderSuggestion(2)}
-                    {this.renderSuggestion(3)}
-                    {this.renderSuggestion(4)}
+                    {suggestion(1)}
+                    {suggestion(2)}
+                    {suggestion(3)}
+                    {suggestion(4)}
                     <div style={{clear: 'both'}}/>
                     <a className="flatButton custom"
                        onClick={() => this.setState({showCalendar: true})}>
@@ -94,8 +99,6 @@ export default class StepDeadline extends React.Component {
                 </div>
             );
         }
-
-
 
         return (
             <div>

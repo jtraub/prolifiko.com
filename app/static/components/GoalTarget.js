@@ -29,7 +29,7 @@ export default class GoalTarget extends React.Component {
     render() {
         let selected;
 
-        if (this.props.data) {
+        if (this.props.data && this.props.data.goalTarget) {
             selected = moment(this.props.data.goalTarget);
         }
 
