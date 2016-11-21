@@ -29,7 +29,8 @@
                         {% else %}
                             <div class="card-body">
                                 <a href="{% url 'new_step' goal_id=active_goal.id %}"><button>Create my next step</button></a>
-                                <a href="{% url 'complete_goal' goal_id=active_goal.id %}"><button>I've achieved my goal!</button></a>
+                                <p>Or</p>
+                                <a href="{% url 'complete_goal' goal_id=active_goal.id %}"><button>I've completed my goal!</button></a>
                             </div>
                         {% endif %}
                     {% endwith %}
