@@ -1,15 +1,14 @@
 {%  extends 'emails/base.html' %}
 
 {% block content %}
-<p>Hi</p>
 <p>Way to go! You've just set your writing goal and first step.</p>
-<p>You're now on your way to achieving your writing ambitions – and we couldn't be happier for you :)</p>
+<p>You're now on your way to achieving your writing ambitions – and we couldn't be happier for you.</p>
 
 <p>You told us that your goal was:</p>
-<p><h3>{{ goal.name }}</h3></p>
+<p><h3><pre>{{ goal.name }}</pre></h3></p>
 <p><pre>{{ goal.description }}</pre></p>
 <p>And that your first step towards reaching that goal is:</p>
-<p><h3>{{ goal.current_step.name }}</h3></p>
+<p><h3><pre>{{ goal.current_step.name }}</pre></h3></p>
 <p><pre>{{ goal.current_step.description }}</pre></p>
 <p>And you’ve given yourself this deadline to achieve this step:</p>
 <p>{{ goal.current_step.deadline }}</p>

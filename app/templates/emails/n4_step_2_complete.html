@@ -9,7 +9,7 @@
 <p>In our next email, you&rsquo;ll learn why creative power-ups are key to developing an effective writing practice.</p>
 <p>But now, back to the challenge.</p>
 <p>You set yourself a third step to:</p>
-<p><h3>{{ goal.current_step.name }}</h3></p>
+<p><h3><pre>{{ goal.current_step.name }}</pre></h3></p>
 <p><pre>{{ goal.current_step.description }}</pre></p>
 <p>When you&rsquo;ve completed this step, <a href="{{ BASE_URL }}{% url 'latest_step' goal_id=goal.id %}">click here</a> to track and tell us about your progress.</p>
 <p>Remember, if you don&rsquo;t track by midnight tomorrow &ndash; you&rsquo;ll lose a life. If you&rsquo;ve used both your lives you&rsquo;ll be off the challenge.</p>
