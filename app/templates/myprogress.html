@@ -30,7 +30,10 @@
                             <div class="card-body">
                                 <a href="{% url 'new_step' goal_id=active_goal.id %}"><button>Create my next step</button></a>
                                 <p>Or</p>
-                                <a href="{% url 'complete_goal' goal_id=active_goal.id %}"><button>I've completed my goal!</button></a>
+                                <form action="{% url 'complete_goal' goal_id=active_goal.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit">I've completed my goal!</button>
+                                </form>
                             </div>
                         {% endif %}
                     {% endwith %}

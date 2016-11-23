@@ -137,3 +137,10 @@ class GoalsTest(fixtures.TestCase):
 
         goal_complete.send.assert_called_with(
             'app.views.goals.complete', goal=goal)
+
+    def test_complete_custom_goal_405_on_GET(self):
+        goal = fixtures.goal(self.user)
+        url = reverse('complete_goal', kwargs={'goal_id': goal.id})
+        response = self.client.get(url, follow=True)
+
+        self.assertEquals(response.status_code, 405)

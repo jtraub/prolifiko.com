@@ -180,7 +180,7 @@ def timeline(request, goal_id):
 @is_active
 def complete(request, goal_id):
     if request.method != 'POST':
-        raise HttpResponseNotAllowed(['GET'])
+        return HttpResponseNotAllowed(['GET'])
 
     try:
         goal = Goal.objects.get(pk=goal_id)
