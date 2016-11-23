@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block heading %}You’re on your way!{% endblock %}
+{% block heading %}{% if is_first_goal %}You’re on your way!{% else %}Check your inbox{% endif %}{% endblock %}
 
 {% block content %}
 <section>
