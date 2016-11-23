@@ -95,20 +95,22 @@ class UtilsTest(TestCase):
     @override_settings(DEBUG=False)
     @patch('app.utils.keen')
     def test_add_event_test(self, keen):
+        test_users = []
+
         staff_user = User()
         staff_user.is_staff = Mock(return_value=True)
+        test_users.append(staff_user)
 
-        test_email_user = User()
-        test_email_user.email = 'mike@mbfisher.com'
+        for email in settings.TEST_EMAIL_ADDRESSES:
+            test_users.append(User(email=email))
 
-        test_domain_user = User()
-        test_domain_user.email = 'test@test.com'
+        for domain in settings.TEST_EMAIL_DOMAINS:
+            test_users.append(User(email='test' + domain))
 
         collection = 'test'
         body = {'foo': 'bar'}
 
-        utils.add_event(collection, staff_user, body)
-        utils.add_event(collection, test_email_user, body)
-        utils.add_event(collection, test_domain_user, body)
+        for user in test_users:
+            utils.add_event(collection, user, body)
 
         self.assertFalse(keen.add_event.called)

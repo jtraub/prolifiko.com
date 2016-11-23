@@ -110,8 +110,8 @@ def new(request):
             .first()
 
         if current_goal:
-            logger.debug('Redirecting free user to existing goal goal=%s' %
-                         current_goal.id)
+            logger.debug('Redirecting free user to existing goal user=%s' %
+                         current_goal.user.email)
             return redirect('myprogress')
 
     if request.method == 'GET':

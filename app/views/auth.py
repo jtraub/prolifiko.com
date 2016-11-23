@@ -62,8 +62,8 @@ def register(request):
         form = RegistrationForm(request.POST)
 
         if form.is_valid():
-            logger.debug('Registering user email=%s' %
-                         form.cleaned_data['email'])
+            logger.info('Registering user email=%s' %
+                        form.cleaned_data['email'])
             user = form.save()
 
             registration.send('app.views.auth.register', user=user)
@@ -81,7 +81,7 @@ def register(request):
             return redirect('welcome')
         else:
             errors = {field: error[0] for field, error in form.errors.items()}
-            logger.debug('Registration failed ' + str(errors))
+            logger.info('Registration failed ' + str(errors))
             status = 400
 
     else:

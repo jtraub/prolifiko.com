@@ -54,7 +54,7 @@ def send_email(name: str, user: User, goal: Goal=None):
 
     meta = settings.EMAIL_META[name]
 
-    logger.debug('Sending %s email to %s' % (name, user.email))
+    logger.info('Sending %s email user=%s' % (name, user.email))
 
     if user.email[-8:] == 'test.com':
         recipient = 'prolifikotest@gmail.com'
@@ -79,19 +79,24 @@ def send_email(name: str, user: User, goal: Goal=None):
     return result
 
 
-def add_event(collection, user: User, body: Dict=None):
+def is_real_user(user: User):
     if user.is_staff:
-        logger.debug('Skipping staff user event')
-        return
+        return False
 
     if user.email in settings.TEST_EMAIL_ADDRESSES:
-        logger.debug('Skipping test user event')
-        return
+        return False
 
     for domain in settings.TEST_EMAIL_DOMAINS:
         if user.email.endswith(domain):
-            logger.debug('Skipping test user event')
-            return
+            return False
+
+    return True
+
+
+def add_event(collection, user: User, body: Dict=None):
+    if not is_real_user(user):
+        logger.info('Skipping keen event user=%s' % user.email)
+        return
 
     if body is None:
         body = {}
@@ -99,7 +104,8 @@ def add_event(collection, user: User, body: Dict=None):
     body['user_id'] = user.id
     body['email'] = user.email
 
-    logger.debug('Recording %s event %s' % (collection, str(body)))
+    logger.info('Recording %s event %s user=%s' %
+                (collection, str(body), user.email))
 
     if settings.DEBUG:
         events.append({'collection': collection, 'body': body})

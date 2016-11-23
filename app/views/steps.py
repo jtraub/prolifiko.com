@@ -20,7 +20,7 @@ def create_midnight_step(params, goal, step_start, tz):
     if not valid:
         raise ValueError('Invalid midnight step params %s' % params)
 
-    logger.debug('Creating midnight step goal=%s user=%s' % (
+    logger.info('Creating midnight step goal=%s user=%s' % (
         goal.id, goal.user.email))
 
     return goal.create_step(params['step_name'],
@@ -37,7 +37,7 @@ def create_step(params, goal, step_start, tz):
     if not valid:
         raise ValueError('Invalid custom step params %s' % params)
 
-    logger.debug('Creating step goal=%s user=%s' % (
+    logger.info('Creating step goal=%s user=%s' % (
         goal.id, goal.user.email))
 
     deadline_date = parse_date(params['step_deadline'])
