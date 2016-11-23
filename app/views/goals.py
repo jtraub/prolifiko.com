@@ -1,3 +1,4 @@
+import json
 from datetime import timedelta, time, datetime
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -116,8 +117,12 @@ def new(request):
     if request.method == 'GET':
         logger.debug('Rendering new goal form is_subscribed=%s' %
                      user_is_subscribed)
+        is_first_goal = Goal.objects.filter(user=request.user).count() == 0
         return render(request, 'goals/new.html', {
             'user_is_subscribed': user_is_subscribed,
+            'data': json.dumps({
+                'isFirstGoal': is_first_goal
+            })
         })
 
     if request.method != 'POST':

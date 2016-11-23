@@ -59,6 +59,10 @@ export class FiveDayChallengeDetails extends AbstractDetails {
 export class CustomGoalDetails extends AbstractDetails {
     static HEADING = 'Set Your Goal';
 
+    static propTypes = {
+        help: React.PropTypes.node,
+    };
+
     componentWillMount() {
         this.setDataPrefix('goal');
     }
@@ -70,7 +74,7 @@ export class CustomGoalDetails extends AbstractDetails {
         const descPlaceholder = 'Tip: Don’t be too adventurous at this stage. Make' +
             ' your writing goal something you can achieve in four weeks or less.';
 
-        const namePlaceholder= 'Tip: in 140 characters or less describe your goal. For example,' +
+        const namePlaceholder = 'Tip: in 140 characters or less describe your goal. For example,' +
             ' this could be \'outline and write chapter 1\'.';
 
         const { nameCharsRemaining } = this.state;
@@ -79,6 +83,8 @@ export class CustomGoalDetails extends AbstractDetails {
         if (nameCharsRemaining < 0) {
             charLimitColor = 'red';
         }
+
+        let { help } = this.props;
 
         return (
             <div className="page form--inline">
@@ -111,12 +117,24 @@ export class CustomGoalDetails extends AbstractDetails {
                     <p style={{ color: charLimitColor }}>{nameCharsRemaining} characters remaining</p>
                 </div>
 
-                <section>
-                    <p>
-                        Want a quick primer on goal setting? We’ve made this video just for you. <a href="https://youtu.be/2Ngdj5_j_5E" target="_blank">Watch the video</a>
-                    </p>
-                </section>
+                {help}
             </div>
         );
     }
 }
+
+
+export function FirstGoalDetails(props) {
+    const help = (
+        <section>
+            <p>
+                Want a quick primer on goal setting? We’ve made this video just for you. <a href="https://youtu.be/2Ngdj5_j_5E" target="_blank">Watch the video</a>
+            </p>
+        </section>
+    );
+
+    return <CustomGoalDetails {...props }
+        help={help} />;
+}
+
+FirstGoalDetails.HEADING = CustomGoalDetails.HEADING;

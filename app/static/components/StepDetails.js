@@ -111,6 +111,12 @@ export class MidnightStepDetails extends AbstractDetails {
 export class CustomStepDetails extends AbstractDetails {
     static HEADING = 'Set Your Step';
 
+    static propTypes = {
+        intro: React.PropTypes.node,
+        namePlaceholder: React.PropTypes.string,
+        help: React.PropTypes.node,
+    };
+
     componentWillMount() {
         this.setDataPrefix('step');
     }
@@ -123,30 +129,25 @@ export class CustomStepDetails extends AbstractDetails {
         const stepName = this.getName();
         const stepDescription = this.getDescription();
 
-        const { stepNumber } = this.props;
-        let intro;
-        let namePlaceholder = 'Tip: Don’t think about the project as a whole. Just think ' +
-            'about what you can achieve in your next writing session.';
-        let descriptionPlaceholder = 'Use this box to give your step a longer description ' +
-            'or make any notes. You can refer to your notes in your dashboard.';
+        let { intro, namePlaceholder, help } = this.props;
 
-        if (stepNumber === 1) {
+        if (!intro) {
             intro = (
                 <section>
-                    <p>Briefly describe the first step you're going to take to meet your writing goal.</p>
+                    <p>Now, it's time to set another step.</p>
                 </section>
             );
-        } else if (stepNumber === 2) {
-            intro = (
-                <section>
-                    <p>Now, it's time to set another step:</p>
-                </section>
-            );
+        }
 
+        if (!namePlaceholder) {
             namePlaceholder = 'What are you going to achieve in your next ' +
                 'writing session? All those steps will build up. Just think ' +
                 'one step at a time.'
         }
+
+
+        let descriptionPlaceholder = 'Use this box to give your step a longer description ' +
+            'or make any notes. You can refer to your notes in your dashboard.';
 
         const { nameCharsRemaining } = this.state;
         let charLimitColor = 'inherit';
@@ -185,13 +186,35 @@ export class CustomStepDetails extends AbstractDetails {
                     />
                </div>
 
-                <section>
-                    <p>
-                        Need some tips on setting a step? Check out this video. <a href="https://youtu.be/MMlU6NEnxpg" target="_blank">Watch the video</a>
-                    </p>
-                </section>
+                {help}
             </div>
         );
     }
 }
 
+
+export function FirstStepDetails(props) {
+    const namePlaceholder = 'Tip: Don’t think about the project as a whole. Just think ' +
+        'about what you can achieve in your next writing session.';
+
+    const intro = (
+        <section>
+
+            <p>Briefly describe the first step you're going to take to
+                meet your writing goal.</p>
+        </section>
+    );
+
+    const help = (
+        <section>
+            <p>
+                Need some tips on setting a step? Check out this video. <a href="https://youtu.be/MMlU6NEnxpg" target="_blank">Watch the video</a>
+            </p>
+        </section>
+    );
+
+    return <CustomStepDetails {...props}
+        intro={intro} namePlaceholder={namePlaceholder} help={help} />;
+}
+
+FirstStepDetails.HEADING = CustomStepDetails.HEADING;

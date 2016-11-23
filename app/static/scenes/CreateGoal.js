@@ -1,27 +1,22 @@
 import React from 'react';
-import { CustomGoalDetails } from '../components/GoalDetails';
+import { CustomGoalDetails, FirstGoalDetails } from '../components/GoalDetails';
 import GoalTarget  from '../components/GoalTarget';
-import { CustomStepDetails } from '../components/StepDetails';
+import { CustomStepDetails, FirstStepDetails } from '../components/StepDetails';
 import StepDeadline from '../components/StepDeadline';
 import Scene from '../components/Scene';
 
-export default function CreateGoal({ csrfToken }) {
+export default function CreateGoal({ csrfToken, isFirstGoal }) {
     console.log('Rendering CreateGoal');
 
-    class CustomFirstStepDetails extends React.Component {
-        static HEADING = CustomStepDetails.HEADING;
-
-        render() {
-            return <CustomStepDetails {...this.props} stepNumber={1} />;
-        }
-    }
+    const goalDetails = isFirstGoal ? FirstGoalDetails : CustomGoalDetails;
+    const stepDetails = isFirstGoal ? FirstStepDetails : CustomStepDetails;
 
     return <Scene
         csrfToken={csrfToken}
         pages={[
-            CustomGoalDetails,
+            goalDetails,
             GoalTarget,
-            CustomFirstStepDetails,
+            stepDetails,
             StepDeadline,
         ]}
         data={{ type: 'CUSTOM' }}

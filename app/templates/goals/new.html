@@ -5,6 +5,8 @@
 
 {% block content %}
     <div id="create"></div>
+    <script>window.DATA = {{ data|safe }};</script>
+
     {% if user_is_subscribed %}
         <script src="{% static 'create-goal.js' %}"></script>
     {% else %}

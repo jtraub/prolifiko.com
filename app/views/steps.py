@@ -89,9 +89,7 @@ def new(request, goal_id):
             return HttpResponseBadRequest()
 
     return render(request, 'steps/new.html', {
-        'goal': goal,
         'next_step_num': goal.next_step_num,
-        'next_step_nth': goal.next_step_nth,
         'data': {
             'stepNumber': goal.next_step_num,
             'goalId': goal.id.hex,
