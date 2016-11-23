@@ -216,4 +216,7 @@ def start(request, goal_id):
     except Goal.DoesNotExist:
         raise Http404('Goal does not exist')
 
-    return render(request, 'goals/start.html', {'goal': goal})
+    return render(request, 'goals/start.html', {
+        'goal': goal,
+        'is_first_goal': Goal.objects.filter(user=request.user).count() == 1
+    })

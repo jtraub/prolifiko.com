@@ -57,8 +57,11 @@ def receive_new_goal(sender, **kwargs):
     if goal.is_five_day:
         send_email('n2_new_goal', goal.user, goal)
     else:
-        if Goal.objects.filter(user=goal.user).count() == 1:
-            send_email('new_custom_goal', goal.user, goal)
+        is_first_goal = Goal.objects.filter(user=goal.user).count() == 1
+
+        send_email('new_custom_goal', goal.user, goal, {
+            'is_first_goal': is_first_goal
+        })
 
 
 @receiver(goal_complete)

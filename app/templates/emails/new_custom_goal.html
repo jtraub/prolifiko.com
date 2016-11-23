@@ -1,25 +1,41 @@
 {%  extends 'emails/base.html' %}
 
 {% block content %}
-<p>Way to go! You've just set your writing goal and first step.</p>
-<p>You're now on your way to achieving your writing ambitions – and we couldn't be happier for you.</p>
+{% if is_first_goal %}
+    <p>Way to go! You've just set your writing goal and first step.</p>
+    <p>You're now on your way to achieving your writing ambitions – and we couldn't be happier for you.</p>
 
-<p>You told us that your goal was:</p>
-<p><h3><pre>{{ goal.name }}</pre></h3></p>
-<p><pre>{{ goal.description }}</pre></p>
-<p>And that your first step towards reaching that goal is:</p>
-<p><h3><pre>{{ goal.current_step.name }}</pre></h3></p>
-<p><pre>{{ goal.current_step.description }}</pre></p>
-<p>And you’ve given yourself this deadline to achieve this step:</p>
-<p>{{ goal.current_step.deadline }}</p>
+    <p>You told us that your goal was:</p>
+    <p><h3><pre>{{ goal.name }}</pre></h3></p>
+    <p><pre>{{ goal.description }}</pre></p>
+    <p>And that your first step towards reaching that goal is:</p>
+    <p><h3><pre>{{ goal.current_step.name }}</pre></h3></p>
+    <p><pre>{{ goal.current_step.description }}</pre></p>
+    <p>And you’ve given yourself this deadline to achieve this step:</p>
+    <p>{{ goal.current_step.deadline }}</p>
 
-<p>Check in with us and 'track' when you have completed this step. <a href="{{ BASE_URL }}{% url 'myprogress' %}">Go to My Progress</a></p>
-<p>Very often, taking the first step is the hardest.</p>
-<p>But research says that writers who write from the outset – even in small amounts – are more likely to keep
-going long term and have more successful outcomes.</p>
-<p>So, now it’s up to you. But we’ll be keeping a close eye on your progress.</p>
-<p>We hope we help you continue with your writing – we know you can do it!</p>
-<p>Don’t forget to <a href="{{ BASE_URL }}{% url 'myprogress' %}">bookmark the site</a> and sign-up to our <a href="https://www.facebook.com/groups/prolifiko/">Facebook group</a>.</p>
+    <p>Check in with us and 'track' when you have completed this step. <a href="{{ BASE_URL }}{% url 'myprogress' %}">Go to My Progress</a></p>
+    <p>Very often, taking the first step is the hardest.</p>
+    <p>But research says that writers who write from the outset – even in small amounts – are more likely to keep
+    going long term and have more successful outcomes.</p>
+    <p>So, now it’s up to you. But we’ll be keeping a close eye on your progress.</p>
+    <p>We hope we help you continue with your writing – we know you can do it!</p>
+    <p>Don’t forget to <a href="{{ BASE_URL }}{% url 'myprogress' %}">bookmark the site</a> and sign-up to our <a href="https://www.facebook.com/groups/prolifiko/">Facebook group</a>.</p>
+{% else %}
+    <p>Congratulations on setting another writing goal and step. You told us that your goal was:</p>
+
+    <p><h3><pre>{{ goal.name }}</pre></h3></p>
+    <p><pre>{{ goal.description }}</pre></p>
+    <p>And that your first step towards reaching that goal is:</p>
+    <p><h3><pre>{{ goal.current_step.name }}</pre></h3></p>
+    <p><pre>{{ goal.current_step.description }}</pre></p>
+    <p>You’ve given yourself this deadline to achieve this step:</p>
+    <p>{{ goal.current_step.deadline }}</p>
+
+    <p>Check in with us and 'track' when you have completed this step. <a href="{{ BASE_URL }}{% url 'myprogress' %}">Go to My Progress</a></p>
+    <p>Good luck with your writing – we know you can do it!</p>
+    <p>If you need some support and inspiration along the way why not <a href="https://www.facebook.com/groups/prolifiko/">sign-up to our Facebook group.</a></p>
+{% endif %}
 
 <p>See you soon</p>
 

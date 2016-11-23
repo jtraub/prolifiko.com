@@ -6,6 +6,7 @@ import { setHeading } from '../helpers';
 export default class GoalTarget extends React.Component {
     static propTypes = {
         onChange: React.PropTypes.func.isRequired,
+        help: React.PropTypes.node,
     };
 
     static HEADING = 'Set Your Goal Deadline';
@@ -90,11 +91,7 @@ export default class GoalTarget extends React.Component {
         return (
             <div className="goalTarget">
                 <section>
-                    <p>
-                        Don’t pick a deadline that makes your goal too easy or too hard to reach. If
-                        it seems easy-peasy – stretch yourself more. If it feels like mission
-                        impossible, be nicer to yourself!
-                    </p>
+                    {this.props.help}
                     <p>I want to achieve my goal {customDate ? 'by' : 'in'}:</p>
                 </section>
 
@@ -103,3 +100,17 @@ export default class GoalTarget extends React.Component {
         );
     }
 }
+
+export function FirstGoalTarget(props) {
+    const help = (
+        <p>
+            Don’t pick a deadline that makes your goal too easy or too hard to reach. If
+            it seems easy-peasy – stretch yourself more. If it feels like mission
+            impossible, be nicer to yourself!
+        </p>
+    );
+
+    return <GoalTarget {...props} help={help} />;
+}
+
+FirstGoalTarget.HEADING = GoalTarget.HEADING;

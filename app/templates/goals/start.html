@@ -4,15 +4,23 @@
 
 {% block content %}
 <section>
-    <p>Now, check your inbox.</p>
+    {% if is_first_goal %}
+        <p>Now, check your inbox.</p>
 
-    <p>We've just sent you an email summary of your goal, step and deadline.</p>
+        <p>We've just sent you an email summary of your goal, step and deadline.</p>
 
-    <p>The clock is now ticking.</p>
+        <p>The clock is now ticking.</p>
 
-    <p>Make sure you check in with us and track when you’ve completed your step.</p>
+        <p>Make sure you check in with us and track when you’ve completed your step.</p>
 
-    <p>Good luck with your writing – we’re rooting for you!</p>
+        <p>Good luck with your writing – we’re rooting for you!</p>
+    {% else %}
+        <p>We’ve sent you an email summary of your goal, step and deadline.</p>
+
+        <p>Good luck with your writing. Don't forget to check in with us and track when you've completed your step.</p>
+
+        <p>We're rooting for you!</p>
+    {% endif %}
 </section>
 
 <p><a href="{% url 'myprogress' %}"><button>Go to My Progress</button></a></p>

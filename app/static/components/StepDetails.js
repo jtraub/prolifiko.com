@@ -129,10 +129,10 @@ export class CustomStepDetails extends AbstractDetails {
         const stepName = this.getName();
         const stepDescription = this.getDescription();
 
-        let { intro, namePlaceholder, help } = this.props;
+        let { nameIntro, namePlaceholder, descIntro, descPlaceholder, help } = this.props;
 
-        if (!intro) {
-            intro = (
+        if (!nameIntro) {
+            nameIntro = (
                 <section>
                     <p>Now, it's time to set another step.</p>
                 </section>
@@ -141,13 +141,13 @@ export class CustomStepDetails extends AbstractDetails {
 
         if (!namePlaceholder) {
             namePlaceholder = 'What are you going to achieve in your next ' +
-                'writing session? All those steps will build up. Just think ' +
-                'one step at a time.'
+                'writing session?';
         }
 
-
-        let descriptionPlaceholder = 'Use this box to give your step a longer description ' +
-            'or make any notes. You can refer to your notes in your dashboard.';
+        if (!descPlaceholder) {
+            descPlaceholder = 'Use this box to give your step a longer description ' +
+                'or make any notes.';
+        }
 
         const { nameCharsRemaining } = this.state;
         let charLimitColor = 'inherit';
@@ -158,7 +158,7 @@ export class CustomStepDetails extends AbstractDetails {
 
         return (
             <div className="form--inline">
-                {intro}
+                {nameIntro}
 
                 <div className="form__input">
                     <textarea
@@ -171,15 +171,13 @@ export class CustomStepDetails extends AbstractDetails {
                     <p style={{ color: charLimitColor }}>{nameCharsRemaining} characters remaining</p>
                 </div>
 
-                <section>
-                    <p>Want more space to describe your step?</p>
-                </section>
+                {descIntro}
 
                 <div className="form__input">
                     <Textarea
                         required={false}
                         onChange={this.onDescriptionChange.bind(this)}
-                        placeholder={descriptionPlaceholder}
+                        placeholder={descPlaceholder}
                         name="stepDescription"
                         value={stepDescription || ''}
                         ref={ref => this.description = ref}
@@ -194,16 +192,24 @@ export class CustomStepDetails extends AbstractDetails {
 
 
 export function FirstStepDetails(props) {
-    const namePlaceholder = 'Tip: Don’t think about the project as a whole. Just think ' +
-        'about what you can achieve in your next writing session.';
-
-    const intro = (
+    const nameIntro = (
         <section>
-
             <p>Briefly describe the first step you're going to take to
                 meet your writing goal.</p>
         </section>
     );
+
+    const namePlaceholder = 'Tip: Don’t think about the project as a whole. Just think ' +
+        'about what you can achieve in your next writing session.';
+
+    const descIntro = (
+        <section>
+            <p>Want more space to describe your step?</p>
+        </section>
+    );
+
+    const descPlaceholder = 'Use this box to give your step a longer description ' +
+        'or make any notes. You can refer to your notes in your dashboard.';
 
     const help = (
         <section>
@@ -214,7 +220,9 @@ export function FirstStepDetails(props) {
     );
 
     return <CustomStepDetails {...props}
-        intro={intro} namePlaceholder={namePlaceholder} help={help} />;
+        nameIntro={nameIntro} namePlaceholder={namePlaceholder}
+        descIntro={descIntro} descPlacholder={descPlaceholder}
+        help={help} />;
 }
 
 FirstStepDetails.HEADING = CustomStepDetails.HEADING;

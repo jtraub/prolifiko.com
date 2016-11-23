@@ -22,7 +22,7 @@ def get_logger(name: str):
 logger = get_logger(__name__)
 
 
-def render_email(name: str, user: User, goal: Goal=None):
+def render_email(name: str, user: User, goal: Goal=None, extra=None):
     template = loader.get_template('emails/%s.html' % name)
 
     context = {
@@ -32,6 +32,9 @@ def render_email(name: str, user: User, goal: Goal=None):
 
     if goal:
         context['goal'] = goal
+
+    if extra:
+        context = {**context, **extra}
 
     try:
         html = template.render(context)
@@ -46,11 +49,11 @@ def render_email(name: str, user: User, goal: Goal=None):
     return html, text
 
 
-def send_email(name: str, user: User, goal: Goal=None):
+def send_email(name: str, user: User, goal: Goal=None, context=None):
     if not user.is_active:
         raise ValueError('Cannot send email to inactive user ' + user.email)
 
-    (html, text) = render_email(name, user, goal)
+    (html, text) = render_email(name, user, goal, context)
 
     meta = settings.EMAIL_META[name]
 

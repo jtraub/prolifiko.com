@@ -57,9 +57,13 @@ export class FiveDayChallengeDetails extends AbstractDetails {
 }
 
 export class CustomGoalDetails extends AbstractDetails {
-    static HEADING = 'Set Your Goal';
+    static HEADING = 'Set Another Goal';
 
     static propTypes = {
+        descIntro: React.PropTypes.node,
+        descPlaceholder: React.PropTypes.string,
+        nameIntro: React.PropTypes.node,
+        namePlaceholder: React.PropTypes.string,
         help: React.PropTypes.node,
     };
 
@@ -71,11 +75,19 @@ export class CustomGoalDetails extends AbstractDetails {
         const goalName = this.getName();
         const goalDescription = this.getDescription();
 
-        const descPlaceholder = 'Tip: Don’t be too adventurous at this stage. Make' +
-            ' your writing goal something you can achieve in four weeks or less.';
+        let { descIntro, descPlaceholder, nameIntro, namePlaceholder, help } = this.props;
 
-        const namePlaceholder = 'Tip: in 140 characters or less describe your goal. For example,' +
-            ' this could be \'outline and write chapter 1\'.';
+        if (!descIntro) {
+            descIntro = <p>What's the writing project you'd like to start?</p>;
+        }
+
+        if (!descPlaceholder) {
+            descPlaceholder = 'Describe your goal here.';
+        }
+
+        if (!namePlaceholder) {
+            namePlaceholder = 'Give your goal a short name.';
+        }
 
         const { nameCharsRemaining } = this.state;
         let charLimitColor = 'inherit';
@@ -84,13 +96,9 @@ export class CustomGoalDetails extends AbstractDetails {
             charLimitColor = 'red';
         }
 
-        let { help } = this.props;
-
         return (
             <div className="page form--inline">
-                <section>
-                    <p>What's your writing project? Describe your goal here.</p>
-                </section>
+                <section>{descIntro}</section>
 
                 <div className="form__input">
                     <Textarea
@@ -101,9 +109,7 @@ export class CustomGoalDetails extends AbstractDetails {
                     />
                 </div>
 
-                <section>
-                    <p>Now, give this goal a short name.</p>
-                </section>
+                {nameIntro}
 
                 <div className="form__input">
                     <textarea
@@ -125,6 +131,22 @@ export class CustomGoalDetails extends AbstractDetails {
 
 
 export function FirstGoalDetails(props) {
+    const descIntro = (
+        <p>What's your writing project? Describe your goal here.</p>
+    );
+
+    const descPlaceholder = 'Tip: Don’t be too adventurous at this stage. Make' +
+        ' your writing goal something you can achieve in four weeks or less.';
+
+    const nameIntro = (
+        <section>
+            <p>Now, give this goal a short name.</p>
+        </section>
+    );
+
+    const namePlaceholder = 'Tip: in 140 characters or less describe your goal. For example,' +
+        ' this could be \'outline and write chapter 1\'.';
+
     const help = (
         <section>
             <p>
@@ -134,7 +156,9 @@ export function FirstGoalDetails(props) {
     );
 
     return <CustomGoalDetails {...props }
+        descIntro={descIntro} descPlaceholder={descPlaceholder}
+        nameIntro={nameIntro} namePlaceholder={namePlaceholder}
         help={help} />;
 }
 
-FirstGoalDetails.HEADING = CustomGoalDetails.HEADING;
+FirstGoalDetails.HEADING = 'Set Your Goal';
