@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from unittest.mock import patch, Mock
 from django.test import TestCase, override_settings
+from freezegun import freeze_time
 import pytz
 from app import fixtures
 from app.tasks import send_d_emails_at_midnight
@@ -40,61 +41,63 @@ class DEmailTest(TestCase):
         subscribed_goal = fixtures.goal(subscribed_user, start=start_uk)
         fixtures.step(subscribed_goal, start=start_uk)
 
-        now = start_utc
-        while now <= pytz.utc.localize(datetime(2000, 1, 8, 0)):
-            # print(now)
-            self.send_emails(now)
+        with freeze_time(start_utc) as frozen_now:
+            while datetime.now(tz=pytz.utc) <= \
+                  pytz.utc.localize(datetime(2000, 1, 8, 0)):
 
-            # # # # uk # # # #
+                self.send_emails()
+                now = datetime.now(tz=pytz.utc)
 
-            if now == uk_tz.localize(datetime(2000, 1, 3, 0)):
-                self.assertEmail(uk_goal, 'd1', 2)
+                # # # # uk # # # #
 
-            elif now == uk_tz.localize(datetime(2000, 1, 4, 0)):
-                self.assertEmail(uk_goal, 'd2', 1)
+                if now == uk_tz.localize(datetime(2000, 1, 3, 0)):
+                    self.assertEmail(uk_goal, 'd1', 2)
 
-            elif now == uk_tz.localize(datetime(2000, 1, 5, 0)):
-                self.assertEmail(uk_goal, 'd3', 0)
+                elif now == uk_tz.localize(datetime(2000, 1, 4, 0)):
+                    self.assertEmail(uk_goal, 'd2', 1)
 
-            # # # # cali # # # #
+                elif now == uk_tz.localize(datetime(2000, 1, 5, 0)):
+                    self.assertEmail(uk_goal, 'd3', 0)
 
-            elif now == cali_tz.localize(datetime(2000, 1, 3, 0)):
-                self.assertEmail(cali_goal, 'd1', 2)
+                # # # # cali # # # #
 
-            elif now == cali_tz.localize(datetime(2000, 1, 3, 19)):
-                self.assertEquals(len(self.emails_sent), 0)
-                self.track_step(cali_goal, now)
+                elif now == cali_tz.localize(datetime(2000, 1, 3, 0)):
+                    self.assertEmail(cali_goal, 'd1', 2)
 
-            elif now == cali_tz.localize(datetime(2000, 1, 5, 0)):
-                self.assertEmail(cali_goal, 'd2', 1)
+                elif now == cali_tz.localize(datetime(2000, 1, 3, 19)):
+                    self.assertEquals(len(self.emails_sent), 0)
+                    self.track_step(cali_goal, now)
 
-            elif now == cali_tz.localize(datetime(2000, 1, 5, 19)):
-                self.assertEquals(len(self.emails_sent), 0)
-                self.track_step(cali_goal, now)
+                elif now == cali_tz.localize(datetime(2000, 1, 5, 0)):
+                    self.assertEmail(cali_goal, 'd2', 1)
 
-            elif now == cali_tz.localize(datetime(2000, 1, 7, 0)):
-                self.assertEmail(cali_goal, 'd3', 0)
+                elif now == cali_tz.localize(datetime(2000, 1, 5, 19)):
+                    self.assertEquals(len(self.emails_sent), 0)
+                    self.track_step(cali_goal, now)
 
-            # # # # nyc # # # #
+                elif now == cali_tz.localize(datetime(2000, 1, 7, 0)):
+                    self.assertEmail(cali_goal, 'd3', 0)
 
-            elif now == nyc_tz.localize(datetime(2000, 1, 3, 0)):
-                self.assertEmail(nyc_goal, 'd1', 2)
+                # # # # nyc # # # #
 
-            elif now == nyc_tz.localize(datetime(2000, 1, 4, 0)):
-                    self.assertEmail(nyc_goal, 'd2', 1)
+                elif now == nyc_tz.localize(datetime(2000, 1, 3, 0)):
+                    self.assertEmail(nyc_goal, 'd1', 2)
 
-            elif now == nyc_tz.localize(datetime(2000, 1, 5, 0)):
-                self.assertEmail(nyc_goal, 'd3', 0)
+                elif now == nyc_tz.localize(datetime(2000, 1, 4, 0)):
+                        self.assertEmail(nyc_goal, 'd2', 1)
 
-            # # # # none # # # #
+                elif now == nyc_tz.localize(datetime(2000, 1, 5, 0)):
+                    self.assertEmail(nyc_goal, 'd3', 0)
 
-            else:
-                self.assertEquals(len(self.emails_sent), 0)
+                # # # # none # # # #
 
-            now += timedelta(minutes=15)
+                else:
+                    self.assertEquals(len(self.emails_sent), 0)
 
-    def send_emails(self, now):
-        self.emails_sent = send_d_emails_at_midnight(now)
+                frozen_now.tick(delta=timedelta(minutes=15))
+
+    def send_emails(self):
+        self.emails_sent = send_d_emails_at_midnight()
 
     def track_step(self, goal, now):
         step = goal.steps.last()

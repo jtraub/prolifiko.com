@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from unittest.mock import patch, Mock
 from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
+from freezegun import freeze_time
 import pytz
 
 from app.models import Subscription
@@ -37,44 +38,44 @@ class DrEmailTest(TestCase):
             email='sub@dr.com', username='sub_dr', date_joined=register_uk)
         Subscription.objects.create(user=subscribed_user, name='test')
 
-        now = register_utc
-        while now <= pytz.utc.localize(datetime(2000, 1, 5, 0)):
-            self.send_emails(now)
+        with freeze_time(register_utc) as frozen_now:
+            while datetime.now(tz=pytz.utc) <= \
+                  pytz.utc.localize(datetime(2000, 1, 5, 0)):
 
-            # # # # dr1 # # # #
+                self.send_emails()
+                now = datetime.now(tz=pytz.utc)
 
-            if now == uk_tz.localize(datetime(2000, 1, 2, 19)):
-                self.assertEmail(uk_user, 'dr1')
-            elif now == cali_tz.localize(datetime(2000, 1, 2, 19)):
-                self.assertEmail(cali_user, 'dr1')
-            elif now == nyc_tz.localize(datetime(2000, 1, 2, 19)):
-                self.assertEmail(nyc_user, 'dr1')
+                # # # # dr1 # # # #
+                if now == uk_tz.localize(datetime(2000, 1, 2, 19)):
+                    self.assertEmail(uk_user, 'dr1')
+                elif now == cali_tz.localize(datetime(2000, 1, 2, 19)):
+                    self.assertEmail(cali_user, 'dr1')
+                elif now == nyc_tz.localize(datetime(2000, 1, 2, 19)):
+                    self.assertEmail(nyc_user, 'dr1')
 
-            # # # # dr2 # # # #
+                # # # # dr2 # # # #
+                elif now == uk_tz.localize(datetime(2000, 1, 3, 19)):
+                    self.assertEmail(uk_user, 'dr2')
+                elif now == cali_tz.localize(datetime(2000, 1, 3, 19)):
+                    self.assertEmail(cali_user, 'dr2')
+                elif now == nyc_tz.localize(datetime(2000, 1, 3, 19)):
+                    self.assertEmail(nyc_user, 'dr2')
 
-            elif now == uk_tz.localize(datetime(2000, 1, 3, 19)):
-                self.assertEmail(uk_user, 'dr2')
-            elif now == cali_tz.localize(datetime(2000, 1, 3, 19)):
-                self.assertEmail(cali_user, 'dr2')
-            elif now == nyc_tz.localize(datetime(2000, 1, 3, 19)):
-                self.assertEmail(nyc_user, 'dr2')
+                # # # # dr3 # # # #
+                elif now == uk_tz.localize(datetime(2000, 1, 4, 19)):
+                    self.assertEmail(uk_user, 'dr3')
+                elif now == cali_tz.localize(datetime(2000, 1, 4, 19)):
+                    self.assertEmail(cali_user, 'dr3')
+                elif now == nyc_tz.localize(datetime(2000, 1, 4, 19)):
+                    self.assertEmail(nyc_user, 'dr3')
 
-            # # # # dr3 # # # #
+                else:
+                    self.assertEquals(len(self.emails_sent), 0, now)
 
-            elif now == uk_tz.localize(datetime(2000, 1, 4, 19)):
-                self.assertEmail(uk_user, 'dr3')
-            elif now == cali_tz.localize(datetime(2000, 1, 4, 19)):
-                self.assertEmail(cali_user, 'dr3')
-            elif now == nyc_tz.localize(datetime(2000, 1, 4, 19)):
-                self.assertEmail(nyc_user, 'dr3')
+                frozen_now.tick(delta=timedelta(minutes=15))
 
-            else:
-                self.assertEquals(len(self.emails_sent), 0, now)
-
-            now += timedelta(minutes=15)
-
-    def send_emails(self, now):
-        self.emails_sent = send_dr_emails(now)
+    def send_emails(self):
+        self.emails_sent = send_dr_emails()
 
     def assertEmail(self, user, name):
         msg = 'Expected %s email to %s' % (name, user.email)
