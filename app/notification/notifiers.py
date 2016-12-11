@@ -12,6 +12,17 @@ def email_late_step(item, *args):
     return send_email(email_to_send, user, goal)
 
 
+def email_r_notifier(item, *args):
+    user = item.goal.user
+
+    email_obj = send_email('r', user)
+
+    email_obj.step = item
+    email_obj.save()
+
+    return email_obj
+
+
 def email_dr_notifier(user, *args, name=None):
     return send_email(name, user)
 

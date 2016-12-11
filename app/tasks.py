@@ -41,3 +41,13 @@ def send_d_emails_at_midnight():
         notifiers=notifiers.email_late_step,
         success=callbacks.late_step_success
     )
+
+
+@shared_task
+def send_r_emails():
+    logger.info('Sending R email')
+    return notify(
+        rule=rules.upcoming_step_deadlines,
+        filters=filters.not_subscribed_user,
+        notifiers=notifiers.email_r_notifier,
+    )

@@ -222,6 +222,9 @@ EMAIL_META = {
     'new_custom_goal': {
         'subject': 'Well done - you\'re on your way',
     },
+    'r': {
+        'subject': 'Your deadline on writing challenge approaches quickly!'
+    },
 }
 
 EMAIL_SEND_PERIOD = int(os.environ.setdefault('PF_EMAIL_SEND_PERIOD', '15'))
